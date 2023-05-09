@@ -35,5 +35,18 @@ public class Report {
     @Column //ako je null, nije pregledan
     private Boolean accepted;
 
-    //TODO veze izmedju entiteta
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "on_user")
+    private User onUser;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "on_post")
+    private Post onPost;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "on_comment")
+    private Comment onComment;
+
+    @Column(nullable = false)
+    private boolean deleted;
 }

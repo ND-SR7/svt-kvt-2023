@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,14 +27,18 @@ public class Group {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private String creationDate;
+    @Column(name = "creation_date", nullable = false)
+    private LocalDateTime creationDate;
 
-    @Column(nullable = false)
-    private Boolean isSuspended;
+    @Column(name = "is_suspended", nullable = false)
+    private boolean isSuspended;
 
-    @Column //ako je null, nije suspendovana
+    @Column(name = "suspended_reason") //ako je null, nije suspendovana
     private String suspendedReason;
 
-    //TODO veze izmedju entiteta
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Post> posts;
+
+    @Column(nullable = false)
+    private boolean deleted;
 }

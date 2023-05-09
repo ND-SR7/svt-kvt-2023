@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,11 +24,16 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
-    @Column //ako je null, nema slika
-    private String imagePaths;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Image> images;
 
-    //TODO veze izmedju entiteta
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "posted_by_user")
+    private User postedBy;
+
+    @Column(nullable = false)
+    private boolean deleted;
 }

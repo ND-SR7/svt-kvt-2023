@@ -28,5 +28,18 @@ public class Reaction {
     @Column(nullable = false)
     private LocalDate timestamp;
 
-    //TODO veze izmedju entiteta
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "made_by", nullable = false)
+    private User madeBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "on_comment")
+    private Comment onComment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "on_post")
+    private Post onPost;
+
+    @Column(nullable = false)
+    private boolean deleted;
 }

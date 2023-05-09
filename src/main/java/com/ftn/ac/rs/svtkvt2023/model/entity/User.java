@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -38,8 +39,12 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
-    @Column //ako je null, nije postavio sliku
-    private String profileImagePath;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<User> friends;
 
-    //TODO veze izmedju entiteta
+    @Column(nullable = false)
+    private boolean isAdmin;
+
+    @Column(nullable = false)
+    private boolean deleted;
 }

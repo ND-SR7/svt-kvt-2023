@@ -23,11 +23,20 @@ public class GroupRequest {
     @Column //ako je null, nije pregledan
     private Boolean approved;
 
-    @Column(nullable = false)
-    private LocalDateTime created_at;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @Column //ako je null, nije pregledan
     private LocalDateTime at;
 
-    //TODO veze izmedju entiteta
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "for_group", nullable = false)
+    private Group forGroup;
+
+    @Column(nullable = false)
+    private boolean deleted;
 }

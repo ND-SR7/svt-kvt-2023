@@ -23,5 +23,18 @@ public class Banned {
     @Column(nullable = false)
     private LocalDate timestamp;
 
-    //TODO veze izmedju entiteta
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private User by;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "towards_user", nullable = false)
+    private User towards;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group")
+    private Group group;
+
+    @Column
+    private boolean deleted;
 }

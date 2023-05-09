@@ -20,20 +20,23 @@ public class FriendRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private boolean approved;
+    @Column //ako je null, znaci da nije odgovoreno
+    private Boolean approved;
 
-    @Column(nullable = false)
-    private LocalDateTime created_at;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @Column //ako je null, znaci da nije odgovoreno
     private LocalDateTime at;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user_id", nullable = false)
     private User from;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user_id", nullable = false)
     private User to;
+
+    @Column
+    private boolean deleted;
 }
