@@ -1,1 +1,7 @@
-<p>group works!</p>
+<div class="card" *ngFor="let group of groups">
+    <h1>{{group.name}}</h1>
+    <h3>{{group.creationDate}}</h3>
+    <br>
+    <p>{{group.description}}</p>
+</div>
+
