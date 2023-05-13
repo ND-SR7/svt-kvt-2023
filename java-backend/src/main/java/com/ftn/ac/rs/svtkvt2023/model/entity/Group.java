@@ -37,12 +37,16 @@ public class Group {
     private String suspendedReason;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="post_id"))
+    @JoinTable(name = "group_posts", inverseJoinColumns=@JoinColumn(name="post_id"))
     private List<Post> posts;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="admin_id"))
+    @JoinTable(name = "group_admins", inverseJoinColumns=@JoinColumn(name="admin_id"))
     private List<User> groupAdmins;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "group_members", inverseJoinColumns=@JoinColumn(name="member_id"))
+    private List<User> groupMembers;
 
     @Column(nullable = false)
     private boolean deleted;

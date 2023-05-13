@@ -40,7 +40,7 @@ public class User {
     private String lastName;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="friend_id"))
+    @JoinTable(name = "user_friends", inverseJoinColumns=@JoinColumn(name="friend_id"))
     private List<User> friends;
 
     @Column(nullable = false)
