@@ -29,15 +29,15 @@ public class Reaction {
     private LocalDate timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "made_by", nullable = false)
+    @JoinColumn(name = "made_by_user_id", referencedColumnName = "id", nullable = false)
     private User madeBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "on_comment")
+    @JoinColumn(name = "on_comment_id", referencedColumnName = "id")
     private Comment onComment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "on_post")
+    @JoinColumn(name = "on_post_id", referencedColumnName = "id")
     private Post onPost;
 
     @Column(nullable = false)

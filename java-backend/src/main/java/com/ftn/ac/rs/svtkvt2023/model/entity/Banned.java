@@ -24,17 +24,17 @@ public class Banned {
     private LocalDate timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "by_user_id", nullable = false)
     private User by;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "towards_user", nullable = false)
+    @JoinColumn(name = "towards_user_id", referencedColumnName = "id", nullable = false)
     private User towards;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group")
+    @JoinColumn(name = "group_id", referencedColumnName = "id")
     private Group group;
 
-    @Column
+    @Column(nullable = false)
     private boolean deleted;
 }

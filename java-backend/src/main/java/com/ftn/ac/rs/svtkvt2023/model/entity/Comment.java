@@ -20,22 +20,22 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String text;
 
     @Column(nullable = false)
     private LocalDate timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "replies_to")
+    @JoinColumn(name = "replies_to_comment_id", referencedColumnName = "id")
     private Comment repliesTo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "belongs_to_user", nullable = false)
+    @JoinColumn(name = "belongs_to_user_id", referencedColumnName = "id", nullable = false)
     private User belongsToUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "belongs_to_post")
+    @JoinColumn(name = "belongs_to_post_id", referencedColumnName = "id")
     private Post belongsToPost;
 
     @Column(nullable = false)

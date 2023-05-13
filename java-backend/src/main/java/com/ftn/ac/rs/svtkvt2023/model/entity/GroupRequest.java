@@ -30,11 +30,11 @@ public class GroupRequest {
     private LocalDateTime at;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
+    @JoinColumn(name = "created_by_user_id", referencedColumnName = "id", nullable = false)
     private User createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "for_group", nullable = false)
+    @JoinColumn(name = "for_group_id", referencedColumnName = "id", nullable = false)
     private Group forGroup;
 
     @Column(nullable = false)

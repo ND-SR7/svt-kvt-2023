@@ -14,17 +14,17 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "groups")
+@Table(name = "groupss") //2 's' zbog kolizije sa rezervisanom recju
 public class Group {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 80, unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String description;
 
     @Column(name = "creation_date", nullable = false)
@@ -37,6 +37,7 @@ public class Group {
     private String suspendedReason;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="post_id"))
     private List<Post> posts;
 
     @Column(nullable = false)

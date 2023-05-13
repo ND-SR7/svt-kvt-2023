@@ -29,22 +29,22 @@ public class Report {
     private LocalDate timestamp;
 
     @OneToOne
-    @Column(nullable = false)
+    @JoinColumn(name = "by_user_id", referencedColumnName = "id", nullable = false)
     private User byUser;
 
     @Column //ako je null, nije pregledan
     private Boolean accepted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "on_user")
+    @JoinColumn(name = "on_user_id", referencedColumnName = "id")
     private User onUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "on_post")
+    @JoinColumn(name = "on_post_id", referencedColumnName = "id")
     private Post onPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "on_comment")
+    @JoinColumn(name = "on_comment_id", referencedColumnName = "id")
     private Comment onComment;
 
     @Column(nullable = false)

@@ -21,13 +21,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column //ako je null, nije se nikad prijavio
@@ -40,6 +40,7 @@ public class User {
     private String lastName;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="friend_id"))
     private List<User> friends;
 
     @Column(nullable = false)

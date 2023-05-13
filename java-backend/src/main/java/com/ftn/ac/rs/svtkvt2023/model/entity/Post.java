@@ -21,17 +21,18 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 250)
     private String content;
 
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="image_id"))
     private List<Image> images;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "posted_by_user")
+    @JoinColumn(name = "posted_by_user_id", referencedColumnName = "id")
     private User postedBy;
 
     @Column(nullable = false)

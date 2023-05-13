@@ -23,11 +23,11 @@ public class Image {
     private String path;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "belongs_to_post")
+    @JoinColumn(name = "belongs_to_post_id", referencedColumnName = "id")
     private Post belongsToPost;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "belongs_to_user")
+    @JoinColumn(name = "belongs_to_user_id", referencedColumnName = "id")
     private User belongsToUser;
 
     @Column(nullable = false)

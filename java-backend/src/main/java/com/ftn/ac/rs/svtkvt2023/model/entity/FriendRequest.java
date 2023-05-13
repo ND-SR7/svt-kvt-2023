@@ -30,11 +30,11 @@ public class FriendRequest {
     private LocalDateTime at;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_user_id", nullable = false)
+    @JoinColumn(name = "from_user_id", referencedColumnName = "id", nullable = false)
     private User from;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_user_id", nullable = false)
+    @JoinColumn(name = "to_user_id", referencedColumnName = "id", nullable = false)
     private User to;
 
     @Column
