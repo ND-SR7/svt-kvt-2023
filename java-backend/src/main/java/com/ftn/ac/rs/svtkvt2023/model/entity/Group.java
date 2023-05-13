@@ -40,6 +40,10 @@ public class Group {
     @JoinTable(inverseJoinColumns=@JoinColumn(name="post_id"))
     private List<Post> posts;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="admin_id"))
+    private List<User> groupAdmins;
+
     @Column(nullable = false)
     private boolean deleted;
 }
