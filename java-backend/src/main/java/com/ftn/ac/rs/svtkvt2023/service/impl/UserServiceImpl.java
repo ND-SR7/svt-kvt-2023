@@ -1,0 +1,74 @@
+package com.ftn.ac.rs.svtkvt2023.service.impl;
+
+import com.ftn.ac.rs.svtkvt2023.model.dto.UserDTO;
+import com.ftn.ac.rs.svtkvt2023.model.entity.User;
+import com.ftn.ac.rs.svtkvt2023.repository.UserRepository;
+import com.ftn.ac.rs.svtkvt2023.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public User findById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isEmpty())
+            return user.get();
+        return null;
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        Optional<User> user = userRepository.findFirstByUsername(username);
+        if (!user.isEmpty())
+            return user.get();
+        return null;
+    }
+
+    @Override
+    public List<User> findAll() {
+        return this.userRepository.findAll();
+    }
+
+    @Override
+    public User createUser(UserDTO userDTO) {
+        Optional<User> user = userRepository.findFirstByUsername(userDTO.getUsername());
+
+        if(user.isPresent()){
+            return null;
+        }
+
+        User newUser = new User();
+        newUser.setUsername(userDTO.getUsername());
+        newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        newUser.setEmail(userDTO.getEmail());
+        newUser.setFirstName(userDTO.getFirstName());
+        newUser.setLastName(userDTO.getLastName());
+        newUser.setAdmin(false);
+        newUser.setDeleted(false);
+        newUser = userRepository.save(newUser);
+
+        return newUser;
+    }
+
+    @Override
+    public User updateUser(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public Long deleteUser(Long id) {
+        return userRepository.deleteUserById(id);
+    }
+}
