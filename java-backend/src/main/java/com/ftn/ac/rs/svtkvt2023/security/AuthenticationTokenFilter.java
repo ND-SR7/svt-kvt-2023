@@ -18,8 +18,8 @@ import java.io.IOException;
 @Component
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
-    private UserDetailsService userDetailsService;
-    private TokenUtils tokenUtils;
+    private final UserDetailsService userDetailsService;
+    private final TokenUtils tokenUtils;
 
     @Autowired
     public AuthenticationTokenFilter(UserDetailsService userDetailsService, TokenUtils tokenUtils) {
@@ -29,7 +29,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletRequest httpServletRequest = request;
         String token = httpServletRequest.getHeader("Authorization");
         if(token != null){
             if(token.startsWith("Bearer ")){

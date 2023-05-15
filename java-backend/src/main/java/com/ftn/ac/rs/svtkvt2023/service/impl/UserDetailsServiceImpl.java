@@ -18,8 +18,12 @@ import java.util.List;
 @Primary
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -27,8 +27,12 @@ public class WebSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() { return new UserDetailsServiceImpl(); }
 
-    @Autowired
     private TokenUtils tokenUtils;
+
+    @Autowired
+    public void setTokenUtils(TokenUtils tokenUtils) {
+        this.tokenUtils = tokenUtils;
+    }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -46,8 +50,12 @@ public class WebSecurityConfig {
     }
 
     //handler za uniformno vracanje 401
-    @Autowired
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
+    @Autowired
+    public void setRestAuthenticationEntryPoint(RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
