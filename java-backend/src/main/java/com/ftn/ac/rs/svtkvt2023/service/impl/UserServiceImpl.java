@@ -53,9 +53,8 @@ public class UserServiceImpl implements UserService {
     public User createUser(UserDTO userDTO) {
         Optional<User> user = userRepository.findFirstByUsername(userDTO.getUsername());
 
-        if(user.isPresent()){
+        if(user.isPresent())
             return null;
-        }
 
         User newUser = new User();
         newUser.setUsername(userDTO.getUsername());
