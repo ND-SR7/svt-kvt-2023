@@ -8,9 +8,3 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'Social Network';
 }
-
-if (document.URL === "http://localhost:4200/") {
-  document.title = "Home Page";
-} else {
-  document.title = "Groups";
-}

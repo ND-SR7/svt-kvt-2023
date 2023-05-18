@@ -5,7 +5,7 @@ import { LoginComponent } from '../user/login/login.component';
 import { RegisterComponent } from '../user/register/register.component';
 
 export const routes :Routes = [
-	{path: '/api/groups', component: GroupListComponent},
-	{path: '/api/users/login', component: LoginComponent},
-	{path: '/api/users/signup', component: RegisterComponent}
+	{path: 'groups', component: GroupListComponent},
+	{path: 'users/login', component: LoginComponent},
+	{path: 'users/signup', component: RegisterComponent}
 ];

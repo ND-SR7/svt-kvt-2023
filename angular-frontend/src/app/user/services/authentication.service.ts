@@ -11,12 +11,12 @@ export class AuthenticationService {
 
   constructor(private http: HttpClient) {}
 
-  login(auth: any): Observable<any> {
+  	login(auth: any): Observable<any> {
 		return this.http.post('api/users/login', {username: auth.username, password: auth.password}, {headers: this.headers, responseType: 'json'});
 	}
 
 	logout(): Observable<any> {
-		return this.http.get('api/users/signup', {headers: this.headers, responseType: 'text'});
+		return this.http.get('api/users/logout', {headers: this.headers, responseType: 'text'});
 	}
 
 	isLoggedIn(): boolean {
