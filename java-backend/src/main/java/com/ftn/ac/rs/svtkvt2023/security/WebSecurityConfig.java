@@ -90,6 +90,7 @@ public class WebSecurityConfig {
 
         //login
         return (web) -> web.ignoring().antMatchers(HttpMethod.POST, "/api/users/login")
+                .antMatchers(HttpMethod.GET, "/api/users/logout")
 
                 //staticki resursi aplikacije
                 .antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "favicon.ico",

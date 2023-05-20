@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -72,6 +73,17 @@ public class UserController {
 
         //vracanje tokena kao odgovor na uspesnu autentifikaciju
         return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity logoutUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            SecurityContextHolder.clearContext();
+            return new ResponseEntity("You have successfully logged out!", HttpStatus.OK);
+        }
+        return new ResponseEntity("User is not authenticated!", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/all")
