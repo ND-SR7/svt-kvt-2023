@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit{
 				this.router.navigate(['groups']);
 			},
 			error => {
+        window.alert('An error occurred!');
 				console.log(error);
 			}
 		);

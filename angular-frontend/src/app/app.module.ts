@@ -11,6 +11,7 @@ import { UserComponent } from './user/user.component';
 import { RegisterComponent } from './user/register/register.component';
 import { PostComponent } from './post/post.component';
 import { HttpClientModule } from '@angular/common/http';
+import { NavbarComponent } from './core/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { HttpClientModule } from '@angular/common/http';
     GroupListComponent,
     UserComponent,
     RegisterComponent,
-    PostComponent
+    PostComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
