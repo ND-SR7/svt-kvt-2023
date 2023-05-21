@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,21 +8,26 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title: string = 'Social Network';
-  public logedIn: boolean;
+  
+  title = 'Social Network';
+  logedIn = false;
 
   constructor(
     private router: Router
-  ) { this.logedIn = false; }
-  
+  ) { }
+
   checkLogin() {
     const item = localStorage.getItem('user');
-
-    if(!item) {
-      this.router.navigate(['/users/login']);
-      this.logedIn = false;
+    
+		if (!item && !(this.router.url == '/users/register')) {
+			this.router.navigate(['/users/login']);
+			return;
+		} else if (!item && this.router.url == '/users/register') {
+      this.router.navigate(['/users/register']);
       return;
     }
+
     this.logedIn = true;
   }
+
 }

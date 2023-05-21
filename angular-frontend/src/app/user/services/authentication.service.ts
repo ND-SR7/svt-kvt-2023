@@ -16,13 +16,18 @@ export class AuthenticationService {
 	}
 
 	logout(): Observable<any> {
-		return this.http.get('api/users/logout', {headers: this.headers, responseType: 'text'});
-	}
+		const authorizedHeaders = new HttpHeaders({'authorization': 'Bearer ' + JSON.parse(localStorage.user).accessToken, 'Content-Type': 'application/json'})
+		return this.http.get('api/users/logout', {headers: authorizedHeaders, responseType: 'text'});
+	}	
 
 	register(auth: any): Observable<any> {
 		return this.http.post('/api/users/signup', 
 			{username: auth.username, password: auth.password, email: auth.email, firstName: auth.firstName, lastName: auth.lastName}, 
 			{headers: this.headers, responseType: 'json'});
+	}
+
+	changePassword(auth: any): Observable<any> {
+		return this.http.post('api/users/change-password', {username: auth.username, password: auth.password}, {headers: this.headers, responseType: 'json'});
 	}
 
 	isLoggedIn(): boolean {

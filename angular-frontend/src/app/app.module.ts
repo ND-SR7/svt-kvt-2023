@@ -12,6 +12,7 @@ import { RegisterComponent } from './user/register/register.component';
 import { PostComponent } from './post/post.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from './core/navbar/navbar.component';
+import { ChangePasswordComponent } from './user/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { NavbarComponent } from './core/navbar/navbar.component';
     UserComponent,
     RegisterComponent,
     PostComponent,
-    NavbarComponent
+    NavbarComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,
