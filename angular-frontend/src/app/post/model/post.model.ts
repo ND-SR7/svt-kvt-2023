@@ -12,4 +12,8 @@ export class Post {
         this.creationDate = obj && obj.creationDate || null;
         this.postedBy = obj && obj.postedBy || null;
     }
+
+    get id() {
+        return this._id;
+    }
 }

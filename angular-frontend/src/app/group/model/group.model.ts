@@ -14,4 +14,8 @@ export class Group {
         this.isSuspended = obj && obj.isSuspended || null;
         this.suspendedReason = obj && obj.suspendedReason || null;
     }
+
+    get id(): number {
+        return this._id;
+    }
 }

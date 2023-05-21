@@ -13,6 +13,9 @@ import { PostComponent } from './post/post.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from './core/navbar/navbar.component';
 import { ChangePasswordComponent } from './user/change-password/change-password.component';
+import { PostListComponent } from './post/post-list/post-list.component';
+import { EditPostComponent } from './post/edit-post/edit-post.component';
+import { EditGroupComponent } from './group/edit-group/edit-group.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,10 @@ import { ChangePasswordComponent } from './user/change-password/change-password.
     RegisterComponent,
     PostComponent,
     NavbarComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    PostListComponent,
+    EditPostComponent,
+    EditGroupComponent
   ],
   imports: [
     BrowserModule,

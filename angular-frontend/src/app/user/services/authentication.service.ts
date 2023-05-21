@@ -21,7 +21,7 @@ export class AuthenticationService {
 	}	
 
 	register(auth: any): Observable<any> {
-		return this.http.post('/api/users/signup', 
+		return this.http.post('api/users/signup', 
 			{username: auth.username, password: auth.password, email: auth.email, firstName: auth.firstName, lastName: auth.lastName}, 
 			{headers: this.headers, responseType: 'json'});
 	}
