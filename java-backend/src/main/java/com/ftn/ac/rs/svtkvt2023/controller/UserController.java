@@ -1,5 +1,6 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
+import com.ftn.ac.rs.svtkvt2023.model.dto.ChangePasswordRequest;
 import com.ftn.ac.rs.svtkvt2023.model.dto.JwtAuthenticationRequest;
 import com.ftn.ac.rs.svtkvt2023.model.dto.UserDTO;
 import com.ftn.ac.rs.svtkvt2023.model.dto.UserTokenState;
@@ -18,9 +19,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -84,6 +90,32 @@ public class UserController {
             return new ResponseEntity("You have successfully logged out!", HttpStatus.OK);
         }
         return new ResponseEntity("User is not authenticated!", HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<UserDTO> changePassword(
+            @RequestBody @Validated ChangePasswordRequest changePasswordRequest,
+            @RequestHeader("authorization") String token) {
+
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        // provera hash-a lozinki u bazi i u zahtevu
+        String oldPassRequest = changePasswordRequest.getOldPassword();
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        if (!passwordEncoder.matches(oldPassRequest, user.getPassword()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        user = userService.updateUser(user);
+
+        return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
     }
 
     @GetMapping("/all")
