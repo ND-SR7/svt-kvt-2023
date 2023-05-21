@@ -23,15 +23,6 @@ button {
     margin-right: 16px;
 }
 
-button a {
-    text-decoration: none;
-    color: black;
-}
-
-button:hover a {
-    color: lightgray;
-}
-
 .text-danger {
     color: red;
 }

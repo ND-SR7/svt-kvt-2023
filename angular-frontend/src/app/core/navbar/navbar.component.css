@@ -5,13 +5,20 @@ ul {
     background-color: #369;
     padding: 10px;
     border-radius: 20px;
+    display: flex;
+    justify-content: space-evenly;
   }
 
-ul li a {
-    color: lightgray;
+.nav-item {
+    display: inline;
 }
 
-ul li a:hover {
+.nav-link {
+    color: lightgray;
+    text-decoration: none;
+}
+
+.nav-link:hover {
     color: white;
     text-decoration: underline;
     cursor: pointer;
