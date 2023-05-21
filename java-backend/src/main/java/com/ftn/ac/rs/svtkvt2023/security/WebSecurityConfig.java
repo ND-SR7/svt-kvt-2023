@@ -71,6 +71,7 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users/signup").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/users/logout").permitAll()
                 .anyRequest().authenticated().and() //svaki drugi zahtev mora biti ulogovan
                 .cors().and() //cross-origin
                 .addFilterBefore(new AuthenticationTokenFilter(userDetailsService(), tokenUtils),
@@ -90,7 +91,6 @@ public class WebSecurityConfig {
 
         //login
         return (web) -> web.ignoring().antMatchers(HttpMethod.POST, "/api/users/login")
-                .antMatchers(HttpMethod.GET, "/api/users/logout")
 
                 //staticki resursi aplikacije
                 .antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "favicon.ico",
