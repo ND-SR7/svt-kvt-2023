@@ -2,6 +2,7 @@ package com.ftn.ac.rs.svtkvt2023.service;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.GroupDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
+import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +16,8 @@ public interface GroupService {
     List<Group> findByCreationDate(LocalDateTime creationDate);
 
     List<Group> findAll();
+
+    List<Long> findPostsByGroupId(Long id);
 
     Group createGroup(GroupDTO groupDTO);
 

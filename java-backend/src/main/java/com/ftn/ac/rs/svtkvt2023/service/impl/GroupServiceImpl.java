@@ -2,6 +2,7 @@ package com.ftn.ac.rs.svtkvt2023.service.impl;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.GroupDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
+import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.repository.GroupRepository;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public List<Long> findPostsByGroupId(Long id) {
+        Optional<List<Long>> postsIds = groupRepository.findPostsByGroupId(id);
+        if (!postsIds.isEmpty())
+            return postsIds.get();
+        return null;
+    }
+
+    @Override
     public Group createGroup(GroupDTO groupDTO) {
         Optional<Group> group = groupRepository.findByName(groupDTO.getName());
 
@@ -60,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
         Group newGroup = new Group();
         newGroup.setName(groupDTO.getName());
         newGroup.setDescription(groupDTO.getDescription());
-        newGroup.setCreationDate(groupDTO.getCreationDate());
+        newGroup.setCreationDate(LocalDateTime.parse(groupDTO.getCreationDate()));
         newGroup.setSuspended(groupDTO.isSuspended());
         newGroup.setSuspendedReason(groupDTO.getSuspendedReason());
         newGroup.setDeleted(false);
