@@ -27,12 +27,13 @@ export class AuthenticationService {
 	}
 
 	changePassword(auth: any): Observable<any> {
-		return this.http.post('api/users/change-password', {username: auth.username, password: auth.password}, {headers: this.headers, responseType: 'json'});
+		const authorizedHeaders = new HttpHeaders({'authorization': 'Bearer ' + JSON.parse(localStorage.user).accessToken, 'Content-Type': 'application/json'})
+		return this.http.post('api/users/change-password', {oldPassword: auth.oldPassword, newPassword: auth.newPassword}, {headers: authorizedHeaders, responseType: 'json'});
 	}
 
 	isLoggedIn(): boolean {
 		if (!localStorage.getItem('user')) {
-				return false;
+			return false;
 		}
 		return true;
 	}

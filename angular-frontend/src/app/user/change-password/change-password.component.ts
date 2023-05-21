@@ -42,7 +42,7 @@ export class ChangePasswordComponent implements OnInit {
       result => {
         window.alert('Successfully changed password!');
         localStorage.removeItem('user');
-        this.router.navigate(['/users/login']);
+        this.router.navigate(['/users/login']).then(() => window.location.reload());
       },
       error => {
         window.alert('An error occurred!');

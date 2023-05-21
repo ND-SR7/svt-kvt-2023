@@ -23,7 +23,7 @@ export class NavbarComponent implements OnInit {
       result => {
         localStorage.removeItem('user');
         window.alert('Successful logout!');
-        this.router.navigate(['users/login'])
+        this.router.navigate(['users/login']).then(() => window.location.reload());
       },
       error => {
         window.alert('An error occurred!');
