@@ -11,6 +11,7 @@ export class AppComponent {
   
   title = 'Social Network';
   logedIn = false;
+  info = '';
 
   constructor(
     private router: Router
@@ -28,6 +29,10 @@ export class AppComponent {
     }
 
     this.logedIn = true;
+
+    const jwt: JwtHelperService = new JwtHelperService();
+		const decoded = jwt.decodeToken(item || '');
+    this.info = decoded.role.authority + ': ' + decoded.sub;
   }
 
 }
