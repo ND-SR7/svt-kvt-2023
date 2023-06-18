@@ -23,15 +23,15 @@ public class PostDTO {
     private String content;
 
     @NotNull
-    private LocalDateTime creationDate;
+    private String creationDate;
 
     @NotNull
-    private User postedBy;
+    private Long postedByUserId;
 
     public PostDTO(Post createdPost) {
         this.id = createdPost.getId();
         this.content = createdPost.getContent();
-        this.creationDate = createdPost.getCreationDate();
-        this.postedBy = createdPost.getPostedBy();
+        this.creationDate = createdPost.getCreationDate().toString();
+        this.postedByUserId = createdPost.getPostedBy().getId();
     }
 }

@@ -2,6 +2,7 @@ package com.ftn.ac.rs.svtkvt2023.controller;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.GroupDTO;
 import com.ftn.ac.rs.svtkvt2023.model.dto.PostDTO;
+import com.ftn.ac.rs.svtkvt2023.model.dto.UserDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -84,5 +86,17 @@ public class PostController {
         }
 
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<PostDTO> addPost(@RequestBody @Validated PostDTO newPost) {
+        Post createdPost = postService.createPost(newPost);
+
+        if (createdPost == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+
+        PostDTO postDTO = new PostDTO(createdPost);
+
+        return new ResponseEntity<>(postDTO, HttpStatus.CREATED);
     }
 }

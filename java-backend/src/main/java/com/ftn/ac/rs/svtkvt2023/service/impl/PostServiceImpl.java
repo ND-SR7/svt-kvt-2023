@@ -5,6 +5,7 @@ import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.repository.PostRepository;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
+import com.ftn.ac.rs.svtkvt2023.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,13 @@ public class PostServiceImpl implements PostService {
     @Autowired
     public void setPostRepository(PostRepository postRepository) {
         this.postRepository = postRepository;
+    }
+
+    private UserService userService;
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -60,8 +68,8 @@ public class PostServiceImpl implements PostService {
 
         Post newPost = new Post();
         newPost.setContent(postDTO.getContent());
-        newPost.setCreationDate(postDTO.getCreationDate());
-        newPost.setPostedBy(postDTO.getPostedBy());
+        newPost.setCreationDate(LocalDateTime.parse(postDTO.getCreationDate()));
+        newPost.setPostedBy(userService.findById(postDTO.getPostedByUserId()));
         newPost.setDeleted(false);
         newPost = postRepository.save(newPost);
 

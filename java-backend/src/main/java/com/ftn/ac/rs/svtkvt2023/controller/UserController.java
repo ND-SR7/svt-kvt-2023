@@ -1,9 +1,7 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
-import com.ftn.ac.rs.svtkvt2023.model.dto.ChangePasswordRequest;
-import com.ftn.ac.rs.svtkvt2023.model.dto.JwtAuthenticationRequest;
-import com.ftn.ac.rs.svtkvt2023.model.dto.UserDTO;
-import com.ftn.ac.rs.svtkvt2023.model.dto.UserTokenState;
+import com.ftn.ac.rs.svtkvt2023.model.dto.*;
+import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
@@ -48,6 +46,26 @@ public class UserController {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.tokenUtils = tokenUtils;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getOne(@PathVariable String id,
+                                           @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        User findUser = userService.findById(Long.parseLong(id));
+
+        if (findUser == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        UserDTO userDTO = new UserDTO(findUser);
+
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @PostMapping("/signup")

@@ -21,6 +21,6 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     Long deleteGroupById(Long id);
 
     @Query(nativeQuery = true,
-            value = "select id from posts p where p.id in (select post_id from group_posts where group_id = 1)")
+            value = "select id from posts p where p.id in (select post_id from group_posts where group_id = :groupId)")
     Optional<List<Long>> findPostsByGroupId(@Param("groupId") Long groupId);
 }
