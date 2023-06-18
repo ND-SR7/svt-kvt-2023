@@ -1,0 +1,9 @@
+.card {
+    border: 5px black solid;
+    padding: 10px;
+    margin: 5px;
+}
+
+.show-btn{
+    background-color: #369;
+}

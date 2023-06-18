@@ -5,6 +5,8 @@ import { GroupService } from './services/group.service';
 import { Router } from '@angular/router';
 import { PostService } from '../post/services/post.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { UserService } from '../user/services/user.service';
+import { User } from '../user/model/user.model';
 
 @Component({
   selector: 'app-group',
@@ -15,10 +17,12 @@ export class GroupComponent implements OnInit{
 
   group: Group = new Group();
   posts: Post[] = [];
+  users: Map<number, User> = new Map();
 
   constructor(
     private groupService: GroupService,
     private postService: PostService,
+    private userService: UserService,
     private router: Router
   ) { }
 
@@ -32,11 +36,26 @@ export class GroupComponent implements OnInit{
       }
     );
 
-    // this.postService.getAllForGroup(id).subscribe(
-    //   result => {
-    //     this.posts = result.body as Post[];
-    //   }
-    // );
+    this.postService.getAllForGroup(id).subscribe(
+      result => {
+        this.posts = result.body as Post[];
+
+        this.posts.forEach(post => {
+          this.userService.getOne(post.postedByUserId).subscribe(
+            result => {
+              let user: User = result.body as User;
+              this.users.set(user.id, user);
+            }
+          )
+        });
+      }
+    );
+
+    console.log(this.userService.getOne(1).subscribe(
+      result => {
+        console.log(result);
+      }
+    ))
   }
 
   hasAuthority(): boolean {
