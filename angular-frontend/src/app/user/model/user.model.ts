@@ -16,4 +16,8 @@ export class User {
         this.firstName = obj && obj.firstName || null;
         this.lastName = obj && obj.lastName || null;
     }
+
+    get id() {
+        return this._id;
+    }
 }
