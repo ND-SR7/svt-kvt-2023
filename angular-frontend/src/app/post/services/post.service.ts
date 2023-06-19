@@ -53,7 +53,7 @@ export class PostService {
   }
 
   edit(editedPost: Post): Observable<any> {
-    return this.http.patch('api/posts/edit/' + editedPost._id, editedPost, {headers: this.headers, responseType: 'text'});
+    return this.http.patch('api/posts/edit/' + editedPost.id, editedPost, {headers: this.headers, responseType: 'text'});
   }
 
   delete(id: number): Observable<any> {

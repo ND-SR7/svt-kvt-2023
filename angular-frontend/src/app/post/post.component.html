@@ -1,1 +1,9 @@
-<p>post works!</p>
+<div>
+    <h1>{{user.username}}</h1>
+    <br>
+    <p class="bigText">{{post.content}}</p>
+    <br>
+    <h6>{{post.creationDate | date: 'MMMM d, y, HH:mm'}}</h6>
+    <button *ngIf="hasAuthority()" class="show-btn" [routerLink]="['/posts/edit', post.id]">Edit Post</button>
+    <button *ngIf="hasAuthority()" class="show-btn" (click)="deletePost()">Delete Post</button>
+</div>
