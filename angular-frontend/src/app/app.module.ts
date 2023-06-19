@@ -14,8 +14,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from './core/navbar/navbar.component';
 import { ChangePasswordComponent } from './user/change-password/change-password.component';
 import { PostListComponent } from './post/post-list/post-list.component';
-import { AddPostComponent } from './post/add-post/add-post.component';
-import { EditGroupComponent } from './group/edit-group/edit-group.component';
+import { AddEditPostComponent } from './post/add-edit-post/add-edit-post.component';
+import { AddEditGroupComponent } from './group/add-edit-group/add-edit-group.component';
 
 @NgModule({
   declarations: [
@@ -29,8 +29,8 @@ import { EditGroupComponent } from './group/edit-group/edit-group.component';
     NavbarComponent,
     ChangePasswordComponent,
     PostListComponent,
-    AddPostComponent,
-    EditGroupComponent,
+    AddEditPostComponent,
+    AddEditGroupComponent,
   ],
   imports: [
     BrowserModule,

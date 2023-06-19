@@ -5,11 +5,11 @@ import { Post } from '../model/post.model';
 import { PostService } from '../services/post.service';
 
 @Component({
-  selector: 'app-add-post',
-  templateUrl: './add-post.component.html',
-  styleUrls: ['./add-post.component.css']
+  selector: 'app-add-edit-post',
+  templateUrl: './add-edit-post.component.html',
+  styleUrls: ['./add-edit-post.component.css']
 })
-export class AddPostComponent implements OnInit{
+export class AddEditPostComponent implements OnInit{
 
   form: FormGroup;
   editing: boolean = this.router.url.includes('edit');

@@ -5,11 +5,11 @@ import { AuthenticationService } from 'src/app/user/services/authentication.serv
 import { Group } from "src/app/group/model/group.model";
 
 @Component({
-  selector: 'app-edit-group',
-  templateUrl: './edit-group.component.html',
-  styleUrls: ['./edit-group.component.css']
+  selector: 'app-add-edit-group',
+  templateUrl: './add-edit-group.component.html',
+  styleUrls: ['./add-edit-group.component.css']
 })
-export class EditGroupComponent implements OnInit {
+export class AddEditGroupComponent implements OnInit {
 
   form: FormGroup;
 

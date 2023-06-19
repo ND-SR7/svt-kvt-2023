@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditGroupComponent } from './edit-group.component';
+import { AddEditPostComponent } from './add-edit-post.component';
 
-describe('EditGroupComponent', () => {
-  let component: EditGroupComponent;
-  let fixture: ComponentFixture<EditGroupComponent>;
+describe('AddEditPostComponent', () => {
+  let component: AddEditPostComponent;
+  let fixture: ComponentFixture<AddEditPostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EditGroupComponent ]
+      declarations: [ AddEditPostComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EditGroupComponent);
+    fixture = TestBed.createComponent(AddEditPostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
