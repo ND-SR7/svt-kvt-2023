@@ -50,16 +50,11 @@ export class GroupComponent implements OnInit{
         });
       }
     );
-
-    console.log(this.userService.getOne(1).subscribe(
-      result => {
-        console.log(result);
-      }
-    ))
   }
 
   hasAuthority(): boolean {
     let role: string;
+    let sub: string;
     const item = localStorage.getItem('user');
 
     if (!item) {
@@ -69,9 +64,11 @@ export class GroupComponent implements OnInit{
 		}
 
     const jwt: JwtHelperService = new JwtHelperService();
-		role = jwt.decodeToken(item).role.authority;
+		const decodedToken = jwt.decodeToken(item);
+		role = decodedToken.role.authority;
+    sub = decodedToken.sub;
     
-    if (role == "ROLE_ADMIN")
+    if (role == "ROLE_ADMIN") //todo ako brise admin grupe
       return true;
     return false;
   }
