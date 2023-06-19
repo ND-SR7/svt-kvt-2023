@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PostDTO {
 
-    private Long id;
+    private Long id = -1L; // kod kreiranja novog entiteta
 
     @NotBlank
     private String content;
