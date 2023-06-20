@@ -61,6 +61,15 @@ export class PostComponent implements OnInit{
   }
 
   deletePost() {
-    this.postService.delete(this.post.id);
+    this.postService.delete(this.post.id).subscribe(
+      result => {
+        window.alert('Successfully deleted the post!');
+        this.router.navigate(['posts']);
+      },
+      error => {
+        window.alert('Error while deleting post');
+        console.log(error);
+      }
+    );
   }
 }
