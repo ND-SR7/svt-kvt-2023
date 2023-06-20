@@ -67,6 +67,26 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/user/{queryUsername}")
+    public ResponseEntity<UserDTO> getOneByUsername(@PathVariable String queryUsername,
+                                          @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        User findUser = userService.findByUsername(queryUsername);
+
+        if (findUser == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        UserDTO userDTO = new UserDTO(findUser);
+
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<UserDTO> createUser(@RequestBody @Validated UserDTO newUser) {
         User createdUser = userService.createUser(newUser);
