@@ -152,10 +152,11 @@ public class PostController {
         if (user == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        Long deleted = postService.deletePost(Long.parseLong(id));
+        postService.deletePostFromGroup(Long.parseLong(id));
+        Integer deletedFromAll = postService.deletePost(Long.parseLong(id));
 
-        if (deleted != 0)
-            return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);
+        if (deletedFromAll != 0)
+            return new ResponseEntity(deletedFromAll, HttpStatus.NO_CONTENT);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }

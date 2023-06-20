@@ -21,5 +21,7 @@ public interface PostService {
 
     Post updatePost(Post post);
 
-    Long deletePost(Long id);
+    Integer deletePost(Long id);
+
+    Integer deletePostFromGroup(Long id);
 }
