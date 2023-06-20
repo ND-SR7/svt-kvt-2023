@@ -139,7 +139,7 @@ public class GroupController {
         if (user == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        Long deleted = groupService.deleteGroup(Long.parseLong(id));
+        Integer deleted = groupService.deleteGroup(Long.parseLong(id));
 
         if (deleted != 0)
             return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);

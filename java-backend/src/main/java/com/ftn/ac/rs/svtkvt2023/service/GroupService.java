@@ -23,5 +23,5 @@ public interface GroupService {
 
     Group updateGroup(Group group);
 
-    Long deleteGroup(Long id);
+    Integer deleteGroup(Long id);
 }

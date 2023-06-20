@@ -36,15 +36,15 @@ public class Group {
     @Column(name = "suspended_reason") //ako je null, nije suspendovana
     private String suspendedReason;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "group_posts", inverseJoinColumns=@JoinColumn(name="post_id"))
     private List<Post> posts;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "group_admins", inverseJoinColumns=@JoinColumn(name="admin_id"))
     private List<User> groupAdmins;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "group_members", inverseJoinColumns=@JoinColumn(name="member_id"))
     private List<User> groupMembers;
 

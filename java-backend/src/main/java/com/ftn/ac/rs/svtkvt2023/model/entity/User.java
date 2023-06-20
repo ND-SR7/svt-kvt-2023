@@ -39,7 +39,7 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "user_friends", inverseJoinColumns=@JoinColumn(name="friend_id"))
     private List<User> friends;
 

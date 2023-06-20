@@ -1,7 +1,9 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
-import com.ftn.ac.rs.svtkvt2023.model.dto.*;
-import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
+import com.ftn.ac.rs.svtkvt2023.model.dto.ChangePasswordRequest;
+import com.ftn.ac.rs.svtkvt2023.model.dto.JwtAuthenticationRequest;
+import com.ftn.ac.rs.svtkvt2023.model.dto.UserDTO;
+import com.ftn.ac.rs.svtkvt2023.model.dto.UserTokenState;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
@@ -22,9 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
