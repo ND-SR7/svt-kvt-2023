@@ -32,7 +32,7 @@ export class AppComponent {
 
     const jwt: JwtHelperService = new JwtHelperService();
 		const decoded = jwt.decodeToken(item || '');
-    this.info = decoded.role.authority + ': ' + decoded.sub;
+    this.info = decoded.role.authority.slice(5) + ': ' + decoded.sub;
   }
 
 }

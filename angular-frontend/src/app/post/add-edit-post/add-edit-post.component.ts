@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
 import { Post } from '../model/post.model';
 import { PostService } from '../services/post.service';
+import { UserService } from 'src/app/user/services/user.service';
+import { User } from 'src/app/user/model/user.model';
 
 @Component({
   selector: 'app-add-edit-post',
@@ -17,12 +20,11 @@ export class AddEditPostComponent implements OnInit{
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private postService: PostService
+    private postService: PostService,
+    private userService: UserService
   ) {
     this.form = this.fb.group({
-      content: [null, Validators.required],
-      creationDate: [null, Validators.required],
-      postedByUserId: [null, Validators.required]
+      content: [null, Validators.required]
     })
 
     if (this.editing) {
@@ -48,24 +50,32 @@ export class AddEditPostComponent implements OnInit{
     if (!this.editing) {
       const post: Post = new Post();
       post.content = this.form.value.content;
-      post.creationDate = this.form.value.creationDate;
-      post.postedByUserId = this.form.value.postedByUserId;
+      post.creationDate = new Date().toISOString().slice(0, -1);
       
-      this.postService.add(post).subscribe(
+      const jwt: JwtHelperService = new JwtHelperService();
+      const userToken: string = localStorage.getItem('user') || '';
+		  const decoded = jwt.decodeToken(userToken);
+
+      this.userService.getOneByUsername(decoded.sub).subscribe(
         result => {
-          window.alert('Successfully added a post!');
-          this.router.navigate(['posts']);
-        },
-        error => {
-          window.alert('An error occurred adding a post!');
-          console.log(error);
+          let user: User = result.body as User;
+          post.postedByUserId = user.id;
+
+          this.postService.add(post).subscribe(
+            result => {
+              window.alert('Successfully added a post!');
+              this.router.navigate(['posts']);
+            },
+            error => {
+              window.alert('An error occurred adding a post!');
+              console.log(error);
+            }
+          );
         }
       );
     } else {
       const post: Post = new Post({_id: Number.parseInt(this.router.url.split('/')[3])});
       post.content = this.form.value.content;
-      post.creationDate = this.form.value.creationDate;
-      post.postedByUserId = this.form.value.postedByUserId;
 
       this.postService.edit(post).subscribe(
         result => {

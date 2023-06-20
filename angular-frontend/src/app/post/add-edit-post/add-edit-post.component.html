@@ -3,30 +3,12 @@
         <div>
           <label for="content"><b>Content:</b></label>
           <div>
-            <input type="text" id="content" name="content" [formControl]="form.controls['content']">
+            <textarea id="content" name="content" [formControl]="form.controls['content']"></textarea>
             <small class="text-danger"  *ngIf="form.controls.content.touched && form.controls.content.errors?.required">
               This field can't be empty!</small>
           </div>
         </div>
 
-        <div>
-            <label for="creationDate"><b>Creation Date:</b></label>
-            <div>
-              <input type="datetime-local" id="creationDate" name="creationDate" [formControl]="form.controls['creationDate']">
-              <small class="text-danger"  *ngIf="form.controls.creationDate.touched && form.controls.creationDate.errors?.required">
-                This field can't be empty!</small>
-            </div>
-        </div>
-
-        <div>
-            <label for="postedByUserId"><b>Posted by User(ID):</b></label>
-            <div>
-              <input type="text" id="postedByUserId" name="postedByUserId" [formControl]="form.controls['postedByUserId']">
-              <small class="text-danger"  *ngIf="form.controls.postedByUserId.touched && form.controls.postedByUserId.errors?.required">
-                This field can't be empty!</small>
-            </div>
-        </div>
-  
         <div>
             <button *ngIf="!editing" type="submit" class="btn btn-primary" [disabled]="!form.valid">Add Post</button>
             <button *ngIf="editing" type="submit" class="btn btn-primary" [disabled]="!form.valid">Save</button>

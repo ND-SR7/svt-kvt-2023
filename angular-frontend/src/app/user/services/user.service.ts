@@ -25,4 +25,15 @@ export class UserService {
 
     return this.http.get('api/users/' + id, queryParams);
   }
+
+  getOneByUsername(username: string): Observable<any> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.get('api/users/user/' + username, queryParams);
+  }
 }
