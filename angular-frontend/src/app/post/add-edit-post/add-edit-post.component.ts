@@ -6,6 +6,7 @@ import { Post } from '../model/post.model';
 import { PostService } from '../services/post.service';
 import { UserService } from 'src/app/user/services/user.service';
 import { User } from 'src/app/user/model/user.model';
+import { Image } from '../model/image.model';
 
 @Component({
   selector: 'app-add-edit-post',
@@ -16,6 +17,8 @@ export class AddEditPostComponent implements OnInit{
 
   form: FormGroup;
   editing: boolean = this.router.url.includes('edit');
+  imagePaths: string[] = [];
+  images: Image[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -24,7 +27,8 @@ export class AddEditPostComponent implements OnInit{
     private userService: UserService
   ) {
     this.form = this.fb.group({
-      content: [null, Validators.required]
+      content: [null, Validators.required],
+      imagepaths: [null, Validators.maxLength(255)]
     })
 
     if (this.editing) {
@@ -60,6 +64,16 @@ export class AddEditPostComponent implements OnInit{
         result => {
           let user: User = result.body as User;
           post.postedByUserId = user.id;
+
+          this.imagePaths = this.form.value.imagepaths.split(";");
+          this.imagePaths.forEach(path => {
+            let image: Image = new Image();
+            image.path = path.replaceAll('\\', '/') && path.replace('src', '../..');
+            image.belongsToPostId = post.id;
+            this.images.push(image);
+          });
+
+          post.images = this.images;
 
           this.postService.add(post).subscribe(
             result => {

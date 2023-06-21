@@ -50,3 +50,7 @@ button:disabled {
 .indented {
   margin-left: 20px;
 }
+
+small {
+  margin-left: 5px;
+}

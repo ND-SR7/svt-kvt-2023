@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { PostService } from '../post/services/post.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserService } from '../user/services/user.service';
+import { Image } from './model/image.model';
 import { User } from '../user/model/user.model';
 
 @Component({
@@ -15,6 +16,7 @@ export class PostComponent implements OnInit{
   
   post: Post = new Post();
   user: User = new User();
+  images: Image[] = [];
 
   constructor(
     private postService: PostService,
@@ -33,6 +35,20 @@ export class PostComponent implements OnInit{
         this.userService.getOne(this.post.postedByUserId).subscribe(
           result => {
             this.user = result.body as User;
+          },
+          error => {
+            window.alert('Error while retriving post\'s user');
+            console.log(error);
+          }
+        );
+
+        this.postService.getImages(this.post.id).subscribe(
+          result => {
+            this.images = result.body as Image[];
+          },
+          error => {
+            window.alert('Error while retriving images for post');
+            console.log(error);
           }
         );
       }

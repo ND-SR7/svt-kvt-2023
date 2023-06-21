@@ -1,8 +1,11 @@
+import { Image } from "./image.model";
+
 export class Post {
     _id: number;
     content: String;
     creationDate: String;
     postedByUserId: number;
+    images: Image[] = [];
 
     constructor(obj?: any) {
         this._id = obj && obj._id || null;
