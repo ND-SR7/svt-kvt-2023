@@ -1,10 +1,13 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
+import com.ftn.ac.rs.svtkvt2023.model.dto.ImageDTO;
 import com.ftn.ac.rs.svtkvt2023.model.dto.PostDTO;
+import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
+import com.ftn.ac.rs.svtkvt2023.service.ImageService;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +30,19 @@ public class PostController {
 
     UserService userService;
 
+    ImageService imageService;
+
     AuthenticationManager authenticationManager;
 
     TokenUtils tokenUtils;
 
     @Autowired
-    public PostController(PostService postService, UserService userService, GroupService groupService,
+    public PostController(PostService postService, UserService userService, GroupService groupService, ImageService imageService,
                           AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
         this.postService = postService;
         this.userService = userService;
         this.groupService = groupService;
+        this.imageService = imageService;
         this.authenticationManager = authenticationManager;
         this.tokenUtils = tokenUtils;
     }
@@ -59,6 +65,26 @@ public class PostController {
         PostDTO postDTO = new PostDTO(post);
 
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/images")
+    public ResponseEntity<List<ImageDTO>> getImagesForPost(@PathVariable String id,
+                                          @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<Image> images = imageService.findImagesForPost(Long.parseLong(id));
+        List<ImageDTO> imageDTOS = new ArrayList<>();
+
+        for (Image image: images) {
+            imageDTOS.add(new ImageDTO(image));
+        }
+
+        return new ResponseEntity<>(imageDTOS, HttpStatus.OK);
     }
 
     @GetMapping()
@@ -111,6 +137,13 @@ public class PostController {
 
         if (createdPost == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+
+        if (newPost.getImages() != null) {
+            for (ImageDTO imageDTO: newPost.getImages()) { //kada se pravi post, ne postoji id post-a
+                imageDTO.setBelongsToPostId(createdPost.getId()); //pa se mora ovde postaviti ili image nece pripadati nikom
+                imageService.createImage(imageDTO);
+            }
+        }
 
         PostDTO postDTO = new PostDTO(createdPost);
 

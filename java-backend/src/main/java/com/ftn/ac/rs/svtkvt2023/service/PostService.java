@@ -1,6 +1,7 @@
 package com.ftn.ac.rs.svtkvt2023.service;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.PostDTO;
+import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 

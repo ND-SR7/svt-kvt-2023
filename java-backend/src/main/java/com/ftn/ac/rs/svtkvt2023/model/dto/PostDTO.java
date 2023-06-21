@@ -1,15 +1,14 @@
 package com.ftn.ac.rs.svtkvt2023.model.dto;
 
+import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
-import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
-
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,6 +26,8 @@ public class PostDTO {
 
     @NotNull
     private Long postedByUserId;
+
+    private List<ImageDTO> images;
 
     public PostDTO(Post createdPost) {
         this.id = createdPost.getId();

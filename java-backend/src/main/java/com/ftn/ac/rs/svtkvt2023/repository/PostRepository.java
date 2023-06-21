@@ -1,5 +1,6 @@
 package com.ftn.ac.rs.svtkvt2023.repository;
 
+import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
