@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
+import javax.validation.constraints.NotBlank;
 
 //dto za login
 @Getter
