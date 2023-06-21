@@ -6,12 +6,14 @@ export class Post {
     creationDate: String;
     postedByUserId: number;
     images: Image[] = [];
+    belongsToGroupId: number;
 
     constructor(obj?: any) {
         this._id = obj && obj._id || null;
         this.content = obj && obj.content || null;
         this.creationDate = obj && obj.creationDate || null;
         this.postedByUserId = obj && obj.postedByUserId || null;
+        this.belongsToGroupId = obj && obj.belongsToGroupId || null;
     }
 
     get id() {

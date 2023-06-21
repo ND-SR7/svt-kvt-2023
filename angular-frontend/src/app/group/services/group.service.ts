@@ -48,4 +48,8 @@ export class GroupService {
   delete(id: number): Observable<any> {
     return this.http.delete('api/groups/delete/' + id, {headers: this.headers})
   }
+
+  checkUserInGroup(id:number): Observable<any> {
+    return this.http.get('api/posts/group/'+ id + '/user', {headers: this.headers});
+  }
 }

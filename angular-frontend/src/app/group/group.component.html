@@ -5,6 +5,8 @@
     <p>{{group.description}}</p>
     <button *ngIf="hasAuthority()" [routerLink]="['/groups/edit', group.id]">Edit Group</button>
     <button *ngIf="hasAuthority()" (click)="deleteGroup()">Delete Group</button>
+    <br>
+    <button *ngIf="canPost" [routerLink]="['/groups/'+ group.id + '/add-post']">Add Post to Group</button>
 </div>
 
 <div class="card" *ngFor="let post of posts">

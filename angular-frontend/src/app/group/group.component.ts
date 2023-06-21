@@ -18,6 +18,7 @@ export class GroupComponent implements OnInit{
   group: Group = new Group();
   posts: Post[] = [];
   users: Map<number, User> = new Map();
+  canPost: boolean = false;
 
   constructor(
     private groupService: GroupService,
@@ -48,6 +49,16 @@ export class GroupComponent implements OnInit{
             }
           )
         });
+      }
+    );
+
+    this.groupService.checkUserInGroup(id).subscribe(
+      result => {
+        const status = result.status;
+        if (status == 200) {
+          console.log(this.canPost);
+        }
+        this.canPost = true;
       }
     );
   }

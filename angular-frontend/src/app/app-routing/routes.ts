@@ -19,6 +19,7 @@ export const routes :Routes = [
 	{path: 'groups', component: GroupListComponent, title: 'Social Network'},
 	{path: 'groups/add', component: AddEditGroupComponent, title: 'Social Network'},
 	{path: 'groups/:id', component: GroupComponent, title: 'Social Network'},
+	{path: 'groups/:id/add-post', component: AddEditPostComponent, title: 'Social Network'},
 	{path: 'groups/edit/:id', component: AddEditGroupComponent, title: 'Social Network'},
 	{path: 'users/profile', component: UserComponent, title: 'Social Network'},
 	{path: 'users/login', component: LoginComponent, title: 'Social Network'},

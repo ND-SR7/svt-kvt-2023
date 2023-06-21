@@ -17,6 +17,7 @@ export class AddEditPostComponent implements OnInit{
 
   form: FormGroup;
   editing: boolean = this.router.url.includes('edit');
+  postForGroup: number = Number.parseInt(this.router.url.split('/')[2]) || 0;
   imagePaths: string[] = [];
   images: Image[] = [];
 
@@ -77,10 +78,16 @@ export class AddEditPostComponent implements OnInit{
 
           post.images = this.images;
 
+          if (this.postForGroup > 0)
+            post.belongsToGroupId = this.postForGroup;
+
           this.postService.add(post).subscribe(
             result => {
               window.alert('Successfully added a post!');
-              this.router.navigate(['posts']);
+              if (this.postForGroup > 0)
+                this.router.navigate(['groups/' + this.postForGroup]);
+              else
+                this.router.navigate(['posts']);
             },
             error => {
               window.alert('An error occurred adding a post!');
