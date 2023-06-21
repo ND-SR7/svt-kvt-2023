@@ -187,6 +187,7 @@ public class PostController {
 
         postService.deletePostFromGroup(Long.parseLong(id));
         Integer deletedFromAll = postService.deletePost(Long.parseLong(id));
+        imageService.deletePostImages(Long.parseLong(id));
 
         if (deletedFromAll != 0)
             return new ResponseEntity(deletedFromAll, HttpStatus.NO_CONTENT);

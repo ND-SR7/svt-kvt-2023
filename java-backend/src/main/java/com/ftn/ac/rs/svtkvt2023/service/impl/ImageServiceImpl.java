@@ -79,6 +79,11 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Integer deleteImage(Long id) {
-        return null;
+        return imageRepository.deleteImageById(id);
+    }
+
+    @Override
+    public Integer deletePostImages(Long postId) {
+        return imageRepository.deleteImagesByBelongsToPostId(postId);
     }
 }
