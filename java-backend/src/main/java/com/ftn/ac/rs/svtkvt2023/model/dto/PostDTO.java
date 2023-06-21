@@ -29,6 +29,8 @@ public class PostDTO {
 
     private List<ImageDTO> images;
 
+    private Long belongsToGroupId;
+
     public PostDTO(Post createdPost) {
         this.id = createdPost.getId();
         this.content = createdPost.getContent();

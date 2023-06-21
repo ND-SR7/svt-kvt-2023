@@ -131,8 +131,34 @@ public class PostController {
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
 
+    @GetMapping("/group/{id}/user")
+    public ResponseEntity<Boolean> checkUserInGroup(@PathVariable String id,
+                                                        @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Boolean userInGroup = groupService.checkUser(Long.parseLong(id), user.getId());
+
+        if (!userInGroup)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<PostDTO> addPost(@RequestBody @Validated PostDTO newPost) {
+    public ResponseEntity<PostDTO> addPost(@RequestBody @Validated PostDTO newPost,
+                                           @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         Post createdPost = postService.createPost(newPost);
 
         if (createdPost == null)

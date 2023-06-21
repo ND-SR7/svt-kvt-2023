@@ -87,4 +87,9 @@ public class GroupServiceImpl implements GroupService {
     public Integer deleteGroup(Long id) {
         return groupRepository.deleteGroupById(id);
     }
+
+    @Override
+    public Boolean checkUser(Long groupId, Long userId) {
+        return groupRepository.findUserInGroup(groupId, userId) > 0;
+    }
 }

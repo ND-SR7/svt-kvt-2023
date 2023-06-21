@@ -4,6 +4,7 @@ import com.ftn.ac.rs.svtkvt2023.model.dto.PostDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.repository.PostRepository;
+import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,13 @@ public class PostServiceImpl implements PostService {
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    private GroupService groupService;
+
+    @Autowired
+    public void setGroupService(GroupService groupService) {
+        this.groupService = groupService;
     }
 
     @Override
@@ -71,7 +79,18 @@ public class PostServiceImpl implements PostService {
         newPost.setCreationDate(LocalDateTime.parse(postDTO.getCreationDate()));
         newPost.setPostedBy(userService.findById(postDTO.getPostedByUserId()));
         newPost.setDeleted(false);
+
+        if (postDTO.getBelongsToGroupId() != null) {
+            boolean userInGroup = groupService.checkUser(postDTO.getBelongsToGroupId(), postDTO.getPostedByUserId());
+
+            if (!userInGroup)
+                return null;
+        }
+
         newPost = postRepository.save(newPost);
+
+        if (postDTO.getBelongsToGroupId() != null)
+            postRepository.saveGroupPost(postDTO.getBelongsToGroupId(), newPost.getId());
 
         return newPost;
     }

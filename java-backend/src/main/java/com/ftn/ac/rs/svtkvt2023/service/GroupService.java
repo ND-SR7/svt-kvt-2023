@@ -24,4 +24,6 @@ public interface GroupService {
     Group updateGroup(Group group);
 
     Integer deleteGroup(Long id);
+
+    Boolean checkUser(Long groupId, Long userId);
 }

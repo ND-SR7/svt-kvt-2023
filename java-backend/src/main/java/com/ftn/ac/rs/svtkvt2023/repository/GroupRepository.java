@@ -25,4 +25,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query(nativeQuery = true,
             value = "select id from posts p where p.id in (select post_id from group_posts where group_id = :groupId)")
     Optional<List<Long>> findPostsByGroupId(@Param("groupId") Long groupId);
+
+    @Query(nativeQuery = true,
+            value = "select count(*) from group_members where group_id = :groupId and member_id = :userId")
+    Integer findUserInGroup(@Param("groupId") Long groupId, @Param("userId") Long userId);
 }
