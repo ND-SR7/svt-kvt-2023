@@ -65,13 +65,15 @@ export class AddEditPostComponent implements OnInit{
           let user: User = result.body as User;
           post.postedByUserId = user.id;
 
-          this.imagePaths = this.form.value.imagepaths.split(";");
-          this.imagePaths.forEach(path => {
-            let image: Image = new Image();
-            image.path = path.replaceAll('\\', '/') && path.replace('src', '../..');
-            image.belongsToPostId = post.id;
-            this.images.push(image);
-          });
+          if (this.form.value.imagepaths != null) {
+            this.imagePaths = this.form.value.imagepaths.split(";");
+            this.imagePaths.forEach(path => {
+              let image: Image = new Image();
+              image.path = path.replaceAll('\\', '/') && path.replace('src', '../..');
+              image.belongsToPostId = post.id;
+              this.images.push(image);
+            });
+          }
 
           post.images = this.images;
 
