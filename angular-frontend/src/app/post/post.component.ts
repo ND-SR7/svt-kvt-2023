@@ -14,12 +14,15 @@ import { CommentService } from './services/comment.service';
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
-export class PostComponent implements OnInit{
+export class PostComponent implements OnInit {
   
   post: Post = new Post();
   user: User = new User();
   images: Image[] = [];
+
   comments: Comment[] = [];
+  replies: Comment[] = [];
+  
   users: Map<number, User> = new Map();
 
   constructor(
@@ -59,9 +62,25 @@ export class PostComponent implements OnInit{
 
         this.postService.getComments(this.post.id).subscribe(
           result => {
-            this.comments = result.body as Comment[];
+            let temp: Comment[] = result.body as Comment[];
+
+            temp.forEach(comment => {
+              if (comment.repliesToCommentId != null)
+                this.replies.push(comment);
+              else
+                this.comments.push(comment);
+            });
 
             this.comments.forEach(comment => {
+              this.userService.getOne(comment.belongsToUserId).subscribe(
+                result => {
+                  let user: User = result.body as User;
+                  this.users.set(user.id, user);
+                }
+              )
+            });
+
+            this.replies.forEach(comment => {
               this.userService.getOne(comment.belongsToUserId).subscribe(
                 result => {
                   let user: User = result.body as User;
@@ -100,8 +119,19 @@ export class PostComponent implements OnInit{
     return false;
   }
 
+  canReply(id: number): boolean {
+    const commentDiv = document.getElementById('comment' + id);
+    const replyDiv = commentDiv?.querySelector('div.indented');
+    if (replyDiv) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   canDeleteComment(): boolean {
     let sub: string;
+    let role: string;
     const item = localStorage.getItem('user');
     let canDelete: boolean = false;
 
@@ -112,12 +142,44 @@ export class PostComponent implements OnInit{
 
     const jwt: JwtHelperService = new JwtHelperService();
     const decodedToken = jwt.decodeToken(item);
+    role = decodedToken.role.authority;
     sub = decodedToken.sub;
     
     this.comments.forEach(comment => {
       if (this.users.get(comment.belongsToUserId)?.username == sub)
         canDelete = true;
     });
+
+    if (role == 'ROLE_ADMIN')
+      canDelete = true;
+    
+    return canDelete;
+  }
+
+  canDeleteReply(): boolean {
+    let sub: string;
+    let role: string;
+    const item = localStorage.getItem('user');
+    let canDelete: boolean = false;
+
+    if (!item) {
+			this.router.navigate(['login']);
+			return false;
+		}
+
+    const jwt: JwtHelperService = new JwtHelperService();
+    const decodedToken = jwt.decodeToken(item);
+    role = decodedToken.role.authority;
+    sub = decodedToken.sub;
+    
+    this.replies.forEach(reply => {
+      if (this.users.get(reply.belongsToUserId)?.username == sub)
+        canDelete = true;
+    });
+
+    if (role == 'ROLE_ADMIN')
+      canDelete = true;
+    
     return canDelete;
   }
 
