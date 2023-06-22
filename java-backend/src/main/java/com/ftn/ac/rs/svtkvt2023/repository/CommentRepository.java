@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query(nativeQuery = true,
-            value = "select * from comments where belongs_to_post_id = :postId")
+            value = "select * from comments where belongs_to_post_id = :postId and deleted = false")
     Optional<List<Comment>> findCommentsForPost(@Param("postId") Long postId);
 
     @Transactional

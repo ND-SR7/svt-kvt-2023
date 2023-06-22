@@ -102,7 +102,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Integer deletePostComments(Long postId) {
-        return commentRepository.deleteCommentsByBelongsToPostId(postId);
+        List<Comment> postComments = this.findCommentsForPost(postId);
+        for (Comment comment: postComments) {
+            this.deleteCommentReply(comment.getId()); //brisanje prvo svih odgovora na komentare
+        }
+        return commentRepository.deleteCommentsByBelongsToPostId(postId); //brisanje komentara
     }
 
     @Override
