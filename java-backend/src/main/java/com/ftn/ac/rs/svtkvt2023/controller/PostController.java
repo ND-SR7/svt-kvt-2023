@@ -1,15 +1,14 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
+import com.ftn.ac.rs.svtkvt2023.model.dto.CommentDTO;
 import com.ftn.ac.rs.svtkvt2023.model.dto.ImageDTO;
 import com.ftn.ac.rs.svtkvt2023.model.dto.PostDTO;
+import com.ftn.ac.rs.svtkvt2023.model.entity.Comment;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
-import com.ftn.ac.rs.svtkvt2023.service.GroupService;
-import com.ftn.ac.rs.svtkvt2023.service.ImageService;
-import com.ftn.ac.rs.svtkvt2023.service.PostService;
-import com.ftn.ac.rs.svtkvt2023.service.UserService;
+import com.ftn.ac.rs.svtkvt2023.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,17 +31,20 @@ public class PostController {
 
     ImageService imageService;
 
+    CommentService commentService;
+
     AuthenticationManager authenticationManager;
 
     TokenUtils tokenUtils;
 
     @Autowired
     public PostController(PostService postService, UserService userService, GroupService groupService, ImageService imageService,
-                          AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
+                          CommentService commentService,AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
         this.postService = postService;
         this.userService = userService;
         this.groupService = groupService;
         this.imageService = imageService;
+        this.commentService = commentService;
         this.authenticationManager = authenticationManager;
         this.tokenUtils = tokenUtils;
     }
@@ -85,6 +87,26 @@ public class PostController {
         }
 
         return new ResponseEntity<>(imageDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<CommentDTO>> getCommentsForPost(@PathVariable String id,
+                                                           @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<Comment> comments = commentService.findCommentsForPost(Long.parseLong(id));
+        List<CommentDTO> commentDTOS = new ArrayList<>();
+
+        for (Comment comment: comments) {
+            commentDTOS.add(new CommentDTO(comment));
+        }
+
+        return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
     }
 
     @GetMapping()
