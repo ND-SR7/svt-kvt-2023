@@ -9,6 +9,7 @@ import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
 import com.ftn.ac.rs.svtkvt2023.service.CommentService;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
+import com.ftn.ac.rs.svtkvt2023.service.ReactionService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,16 +30,19 @@ public class CommentController {
 
     UserService userService;
 
+    ReactionService reactionService;
+
     AuthenticationManager authenticationManager;
 
     TokenUtils tokenUtils;
 
     @Autowired
     public CommentController(CommentService commentService, PostService postService, UserService userService,
-                             AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
+                             ReactionService reactionService, AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
         this.commentService = commentService;
         this.postService = postService;
         this.userService = userService;
+        this.reactionService = reactionService;
         this.authenticationManager = authenticationManager;
         this.tokenUtils = tokenUtils;
     }
@@ -121,6 +125,7 @@ public class CommentController {
 
         commentService.deleteCommentReply(Long.parseLong(id));
         Integer deleted = commentService.deleteComment(Long.parseLong(id));
+        reactionService.deleteCommentReactions(Long.parseLong(id));
 
         if (deleted != 0)
             return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);
