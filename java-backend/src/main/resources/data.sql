@@ -40,6 +40,10 @@ insert into posts (content, creation_date, deleted, posted_by_user_id)
 -- COMMENTS --
 insert into comments (deleted, text, timestamp, belongs_to_post_id, belongs_to_user_id, replies_to_comment_id)
     values (false, 'Nice message', '2023-05-13', 1, 2, null);
+insert into comments (deleted, text, timestamp, belongs_to_post_id, belongs_to_user_id, replies_to_comment_id)
+    values (false, 'Nice answer', '2023-06-22', 1, 1, 1);
+insert into comments (deleted, text, timestamp, belongs_to_post_id, belongs_to_user_id, replies_to_comment_id)
+    values (false, 'Another nice message', '2023-06-22', 1, 3, null);
 
 -- REACTIONS --
 insert into reactions (deleted, timestamp, type, made_by_user_id, on_comment_id, on_post_id)
