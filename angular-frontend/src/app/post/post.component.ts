@@ -129,6 +129,87 @@ export class PostComponent implements OnInit {
     }
   }
 
+  reply(commentId: number) {
+    let reply: Comment = new Comment();
+    
+    let text = prompt('Enter your reply:');
+    if (text == null || text == "") {
+      return;
+    } else {
+      reply.text = text;
+    }
+
+    reply.timestamp = new Date().toISOString().slice(0, 10);
+
+    reply.belongsToPostId = this.post.id;
+    reply.repliesToCommentId = commentId;
+
+    let sub: string;
+    const item = localStorage.getItem('user') || "";
+
+    const jwt: JwtHelperService = new JwtHelperService();
+    const decodedToken = jwt.decodeToken(item);
+    sub = decodedToken.sub;
+
+    this.userService.getOneByUsername(sub).subscribe(
+      result => {
+        const user: User = result.body as User;
+        reply.belongsToUserId = user.id;
+
+        this.commentService.add(reply).subscribe(
+          result => {
+            window.alert('Replied to comment');
+            location.reload();
+          },
+          error => {
+            window.alert('Error while replying to comment');
+            console.log(error);
+          }
+        );
+      }
+    );
+  }
+
+  addComment(postId: number) {
+    let comment: Comment = new Comment();
+    
+    let text = prompt('Enter your comment:');
+    if (text == null || text == "") {
+      return;
+    } else {
+      comment.text = text;
+    }
+
+    comment.timestamp = new Date().toISOString().slice(0, 10);
+
+    comment.belongsToPostId = this.post.id;
+
+    let sub: string;
+    const item = localStorage.getItem('user') || "";
+
+    const jwt: JwtHelperService = new JwtHelperService();
+    const decodedToken = jwt.decodeToken(item);
+    sub = decodedToken.sub;
+
+    this.userService.getOneByUsername(sub).subscribe(
+      result => {
+        const user: User = result.body as User;
+        comment.belongsToUserId = user.id;
+
+        this.commentService.add(comment).subscribe(
+          result => {
+            window.alert('Successfully added a comment');
+            location.reload();
+          },
+          error => {
+            window.alert('Error while adding a comment');
+            console.log(error);
+          }
+        );
+      }
+    );
+  }
+
   canDeleteComment(): boolean {
     let sub: string;
     let role: string;
