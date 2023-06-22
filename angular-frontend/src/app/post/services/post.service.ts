@@ -37,6 +37,17 @@ export class PostService {
     return this.http.get('api/posts/' + id + '/images', queryParams);
   }
 
+  getComments(id: number): Observable<any> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.get('api/posts/' + id + '/comments', queryParams);
+  }
+
   getAll(): Observable<any> {
     let queryParams = {};
 

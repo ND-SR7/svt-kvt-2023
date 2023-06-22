@@ -10,6 +10,14 @@
           <img [src]="image.path" [alt]="'Image ' + image.id">
         </div>
     </div>
+    <br><br>
     <button *ngIf="hasAuthority()" class="show-btn" [routerLink]="['/posts/edit', post.id]">Edit Post</button>
     <button *ngIf="hasAuthority()" class="show-btn" (click)="deletePost()">Delete Post</button>
+    <br><br>
+    <div class="card rounded" *ngFor="let comment of comments">
+      <p class="bigText">{{comment.text}}</p>
+      <h3>{{comment.timestamp | date: 'MMMM d, y, HH:mm'}}</h3>
+      <p class="blue-bold" *ngIf="users.get(comment.belongsToUserId)">{{users.get(comment.belongsToUserId).username}}</p>
+      <button *ngIf="canDeleteComment()" class="show-btn" (click)="deleteComment(comment.id)">Delete Comment</button>
+    </div>
 </div>

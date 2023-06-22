@@ -6,6 +6,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserService } from '../user/services/user.service';
 import { Image } from './model/image.model';
 import { User } from '../user/model/user.model';
+import { Comment } from './model/comment.model';
+import { CommentService } from './services/comment.service';
 
 @Component({
   selector: 'app-post',
@@ -17,9 +19,12 @@ export class PostComponent implements OnInit{
   post: Post = new Post();
   user: User = new User();
   images: Image[] = [];
+  comments: Comment[] = [];
+  users: Map<number, User> = new Map();
 
   constructor(
     private postService: PostService,
+    private commentService: CommentService,
     private userService: UserService,
     private router: Router
   ) { }
@@ -51,6 +56,25 @@ export class PostComponent implements OnInit{
             console.log(error);
           }
         );
+
+        this.postService.getComments(this.post.id).subscribe(
+          result => {
+            this.comments = result.body as Comment[];
+
+            this.comments.forEach(comment => {
+              this.userService.getOne(comment.belongsToUserId).subscribe(
+                result => {
+                  let user: User = result.body as User;
+                  this.users.set(user.id, user);
+                }
+              )
+            });
+          },
+          error => {
+            window.alert('Error while retriving comments for post');
+            console.log(error);
+          }
+        );
       }
     );
   }
@@ -76,6 +100,27 @@ export class PostComponent implements OnInit{
     return false;
   }
 
+  canDeleteComment(): boolean {
+    let sub: string;
+    const item = localStorage.getItem('user');
+    let canDelete: boolean = false;
+
+    if (!item) {
+			this.router.navigate(['login']);
+			return false;
+		}
+
+    const jwt: JwtHelperService = new JwtHelperService();
+    const decodedToken = jwt.decodeToken(item);
+    sub = decodedToken.sub;
+    
+    this.comments.forEach(comment => {
+      if (this.users.get(comment.belongsToUserId)?.username == sub)
+        canDelete = true;
+    });
+    return canDelete;
+  }
+
   deletePost() {
     this.postService.delete(this.post.id).subscribe(
       result => {
@@ -84,6 +129,19 @@ export class PostComponent implements OnInit{
       },
       error => {
         window.alert('Error while deleting post');
+        console.log(error);
+      }
+    );
+  }
+
+  deleteComment(id: number) {
+    this.commentService.delete(id).subscribe(
+      result => {
+        window.alert('Successfully deleted comment!');
+        location.reload();
+      },
+      error => {
+        window.alert('Error while deleting comment');
         console.log(error);
       }
     );
