@@ -73,3 +73,12 @@ small {
   color: #369;
   font-weight: bold;
 }
+
+button > img {
+  width: 20px;
+  height: auto;
+}
+
+button:hover > img {
+  filter: brightness(0.9) invert(.7) sepia(.5) hue-rotate(100deg) saturate(200%);
+}

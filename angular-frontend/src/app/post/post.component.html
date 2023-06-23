@@ -15,6 +15,10 @@
     <button *ngIf="hasAuthority()" class="show-btn" [routerLink]="['/posts/edit', post.id]">Edit Post</button>
     <button *ngIf="hasAuthority()" class="show-btn" (click)="deletePost()">Delete Post</button>
     <br><br>
+    <button class="show-btn"><img src="../../assets/icons/like.png" alt="Like"></button>
+    <button class="show-btn"><img src="../../assets/icons/heart.png" alt="Heart"></button>
+    <button class="show-btn"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
+    <br><br>
 
     <div id="comment{{comment.id}}" class="card rounded" *ngFor="let comment of comments">
       <p class="bigText">{{comment.text}}</p>
@@ -22,6 +26,10 @@
       <p class="blue-bold" *ngIf="users.get(comment.belongsToUserId)">{{users.get(comment.belongsToUserId).username}}</p>
       <button *ngIf="canReply(comment.id)" class="show-btn" (click)="reply(comment.id)">Reply</button>
       <button *ngIf="canDeleteComment()" class="show-btn" (click)="deleteComment(comment.id)">Delete Comment</button>
+      <br><br>
+      <button class="show-btn"><img src="../../assets/icons/like.png" alt="Like"></button>
+      <button class="show-btn"><img src="../../assets/icons/heart.png" alt="Heart"></button>
+      <button class="show-btn"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
       <br>
 
       <div *ngFor="let reply of replies">
@@ -30,6 +38,10 @@
         <h3>{{reply.timestamp | date: 'MMMM d, y'}}</h3>
         <p class="blue-bold" *ngIf="users.get(reply.belongsToUserId)">{{users.get(reply.belongsToUserId).username}}</p>
         <button *ngIf="canDeleteReply()" class="show-btn" (click)="deleteComment(reply.id)">Delete Reply</button>
+        <br><br>
+        <button class="show-btn"><img src="../../assets/icons/like.png" alt="Like"></button>
+        <button class="show-btn"><img src="../../assets/icons/heart.png" alt="Heart"></button>
+        <button class="show-btn"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
         </div>
       </div>
 
