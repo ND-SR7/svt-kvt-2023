@@ -11,13 +11,15 @@
         </div>
     </div>
     <br><br>
-    <button class="show-btn" (click)="addComment(post.id)">Add Comment</button>
+    <button class="show-btn" (click)="addComment()">Add Comment</button>
     <button *ngIf="hasAuthority()" class="show-btn" [routerLink]="['/posts/edit', post.id]">Edit Post</button>
     <button *ngIf="hasAuthority()" class="show-btn" (click)="deletePost()">Delete Post</button>
     <br><br>
-    <button class="show-btn"><img src="../../assets/icons/like.png" alt="Like"></button>
-    <button class="show-btn"><img src="../../assets/icons/heart.png" alt="Heart"></button>
-    <button class="show-btn"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
+    <span>Likes: {{likes}} <b>|</b> Hearts: {{hearts}} <b>|</b> Dislikes: {{dislikes}}</span>
+    <br>
+    <button class="show-btn" (click)="reactedPost(post.id, 'LIKE')"><img src="../../assets/icons/like.png" alt="Like"></button>
+    <button class="show-btn" (click)="reactedPost(post.id, 'HEART')"><img src="../../assets/icons/heart.png" alt="Heart"></button>
+    <button class="show-btn" (click)="reactedPost(post.id, 'DISLIKE')"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
     <br><br>
 
     <div id="comment{{comment.id}}" class="card rounded" *ngFor="let comment of comments">
@@ -25,11 +27,17 @@
       <h3>{{comment.timestamp | date: 'MMMM d, y'}}</h3>
       <p class="blue-bold" *ngIf="users.get(comment.belongsToUserId)">{{users.get(comment.belongsToUserId).username}}</p>
       <button *ngIf="canReply(comment.id)" class="show-btn" (click)="reply(comment.id)">Reply</button>
-      <button *ngIf="canDeleteComment()" class="show-btn" (click)="deleteComment(comment.id)">Delete Comment</button>
+      <button *ngIf="canDeleteComment(comment.id)" class="show-btn" (click)="deleteComment(comment.id)">Delete Comment</button>
       <br><br>
-      <button class="show-btn"><img src="../../assets/icons/like.png" alt="Like"></button>
-      <button class="show-btn"><img src="../../assets/icons/heart.png" alt="Heart"></button>
-      <button class="show-btn"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
+      <span>
+        Likes: {{getReactionCount(comment.id, 'LIKE')}} <b>|</b> 
+        Hearts: {{getReactionCount(comment.id, 'HEART')}} <b>|</b> 
+        Dislikes: {{getReactionCount(comment.id, 'DISLIKE')}}
+      </span>
+      <br>
+      <button class="show-btn" (click)="reactedComment(comment.id, 'LIKE')"><img src="../../assets/icons/like.png" alt="Like"></button>
+      <button class="show-btn" (click)="reactedComment(comment.id, 'HEART')"><img src="../../assets/icons/heart.png" alt="Heart"></button>
+      <button class="show-btn" (click)="reactedComment(comment.id, 'DISLIKE')"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
       <br>
 
       <div *ngFor="let reply of replies">
@@ -39,9 +47,15 @@
         <p class="blue-bold" *ngIf="users.get(reply.belongsToUserId)">{{users.get(reply.belongsToUserId).username}}</p>
         <button *ngIf="canDeleteReply()" class="show-btn" (click)="deleteComment(reply.id)">Delete Reply</button>
         <br><br>
-        <button class="show-btn"><img src="../../assets/icons/like.png" alt="Like"></button>
-        <button class="show-btn"><img src="../../assets/icons/heart.png" alt="Heart"></button>
-        <button class="show-btn"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
+        <span>
+          Likes: {{getReactionCount(reply.id, 'LIKE')}} <b>|</b> 
+          Hearts: {{getReactionCount(reply.id, 'HEART')}} <b>|</b> 
+          Dislikes: {{getReactionCount(reply.id, 'DISLIKE')}}
+        </span>
+        <br>
+        <button class="show-btn" (click)="reactedComment(comment.id, 'LIKE')"><img src="../../assets/icons/like.png" alt="Like" (click)="reactedComment(comment.id, 'LIKE')"></button>
+        <button class="show-btn" (click)="reactedComment(comment.id, 'HEART')"><img src="../../assets/icons/heart.png" alt="Heart" (click)="reactedComment(comment.id, 'HEART')"></button>
+        <button class="show-btn" (click)="reactedComment(comment.id, 'DISLIKE')"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
         </div>
       </div>
 

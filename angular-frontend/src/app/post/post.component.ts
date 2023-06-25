@@ -8,6 +8,8 @@ import { Image } from './model/image.model';
 import { User } from '../user/model/user.model';
 import { Comment } from './model/comment.model';
 import { CommentService } from './services/comment.service';
+import { Reaction } from './model/reaction.model';
+import { ReactionService } from './services/reaction.service';
 
 @Component({
   selector: 'app-post',
@@ -22,6 +24,13 @@ export class PostComponent implements OnInit {
 
   comments: Comment[] = [];
   replies: Comment[] = [];
+  reactions: Reaction[] = [];
+
+  likes: number = 0;
+  hearts: number = 0;
+  dislikes: number = 0;
+
+  commentsReactions: Map<number, Reaction[]> = new Map();
   
   users: Map<number, User> = new Map();
 
@@ -29,6 +38,7 @@ export class PostComponent implements OnInit {
     private postService: PostService,
     private commentService: CommentService,
     private userService: UserService,
+    private reactionService: ReactionService,
     private router: Router
   ) { }
   
@@ -60,6 +70,25 @@ export class PostComponent implements OnInit {
           }
         );
 
+        this.reactionService.getReactionsForPost(this.post.id).subscribe(
+          result => {
+            this.reactions = result.body as Reaction[];
+            
+            this.reactions.forEach(reaction => {
+              if (reaction.reactionType == 'LIKE')
+                this.likes++;
+              else if (reaction.reactionType == 'HEART')
+                this.hearts++;
+              else if (reaction.reactionType == 'DISLIKE')
+                this.dislikes++;
+            });
+          },
+          error => {
+            window.alert('Error while retriving reactions for post');
+            console.log(error);
+          }
+        );
+
         this.postService.getComments(this.post.id).subscribe(
           result => {
             let temp: Comment[] = result.body as Comment[];
@@ -69,6 +98,19 @@ export class PostComponent implements OnInit {
                 this.replies.push(comment);
               else
                 this.comments.push(comment);
+            });
+
+            temp.forEach(comment => {
+              this.reactionService.getReactionsForComment(comment.id).subscribe(
+                result => {
+                  const reactions: Reaction[] = result.body as Reaction[];
+                  this.commentsReactions.set(comment.id, reactions);
+                },
+                error => {
+                  window.alert('Error while retriving reactions to comment ' + comment.id);
+                  console.log(error);
+                }
+              );
             });
 
             this.comments.forEach(comment => {
@@ -170,7 +212,7 @@ export class PostComponent implements OnInit {
     );
   }
 
-  addComment(postId: number) {
+  addComment() {
     let comment: Comment = new Comment();
     
     let text = prompt('Enter your comment:');
@@ -210,7 +252,7 @@ export class PostComponent implements OnInit {
     );
   }
 
-  canDeleteComment(): boolean {
+  canDeleteComment(commentId: number): boolean {
     let sub: string;
     let role: string;
     const item = localStorage.getItem('user');
@@ -227,7 +269,7 @@ export class PostComponent implements OnInit {
     sub = decodedToken.sub;
     
     this.comments.forEach(comment => {
-      if (this.users.get(comment.belongsToUserId)?.username == sub)
+      if (this.users.get(comment.belongsToUserId)?.username == sub && comment.id == commentId)
         canDelete = true;
     });
 
@@ -288,5 +330,107 @@ export class PostComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  getReactionCount(commentId: number, reactionType: string): number {
+    const reactions: Reaction[] = this.commentsReactions.get(commentId) || [];
+    let reactionCount: number = 0;
+
+    reactions.forEach(reaction => {
+      if (reaction.reactionType == reactionType)
+        reactionCount++;
+    });
+
+    return reactionCount;
+  }
+
+  async reactedPost(postId: number, reactionType: string) {
+    let reactorId: number = (await this.userService.extractUser() as User).id;
+    let reaction = this.reactions.find(
+      reaction => reaction.onPostId == postId && reaction.reactionType == reactionType && reaction.madeByUserId == reactorId);
+    let previousReaction = this.reactions.find(reaction => reaction.onPostId == postId && reaction.madeByUserId == reactorId);
+    
+    if (reaction === undefined && previousReaction !== undefined) {
+      this.reactionService.delete(previousReaction.id).subscribe(
+        result => {
+          if (reactionType == 'LIKE')
+            this.likes--;
+          else if (reactionType == 'HEART')
+            this.hearts--;
+          else if (reactionType == 'DISLIKE')
+            this.dislikes--;
+          location.reload();
+        },
+        error => {
+          window.alert('Error while removing reaction on post ' + postId);
+          console.log(error);
+        }
+      );
+
+      reaction = new Reaction();
+      reaction.reactionType = reactionType;
+      reaction.timestamp = new Date().toISOString().slice(0, 10);
+      reaction.madeByUserId = reactorId;
+      reaction.onPostId = postId;
+
+      this.reactionService.add(reaction).subscribe(
+        result => {
+          if (reactionType == 'LIKE')
+            this.likes++;
+          else if (reactionType == 'HEART')
+            this.hearts++;
+          else if (reactionType == 'DISLIKE')
+            this.dislikes++;
+          location.reload();
+        },
+        error => {
+          window.alert('Error while reacting on post ' + postId);
+          console.log(error);
+        }
+      );
+
+    } else if (reaction === undefined) {
+      reaction = new Reaction();
+      reaction.reactionType = reactionType;
+      reaction.timestamp = new Date().toISOString().slice(0, 10);
+      reaction.madeByUserId = reactorId;
+      reaction.onPostId = postId;
+
+      this.reactionService.add(reaction).subscribe(
+        result => {
+          if (reactionType == 'LIKE')
+            this.likes++;
+          else if (reactionType == 'HEART')
+            this.hearts++;
+          else if (reactionType == 'DISLIKE')
+            this.dislikes++;
+          location.reload();
+        },
+        error => {
+          window.alert('Error while reacting on post ' + postId);
+          console.log(error);
+        }
+      );
+    } else {
+      this.reactionService.delete(reaction.id).subscribe(
+        result => {
+          if (reactionType == 'LIKE')
+            this.likes--;
+          else if (reactionType == 'HEART')
+            this.hearts--;
+          else if (reactionType == 'DISLIKE')
+            this.dislikes--;
+          location.reload();
+        },
+        error => {
+          window.alert('Error while removing reaction on post ' + postId);
+          console.log(error);
+        }
+      );
+    }
+  }
+
+  async reactedComment(commentId: number, reactionType: string) {
+    let reactorId: number = (await this.userService.extractUser() as User).id;
   }
 }
