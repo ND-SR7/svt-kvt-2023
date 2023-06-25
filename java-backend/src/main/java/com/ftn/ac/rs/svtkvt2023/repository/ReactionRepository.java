@@ -15,11 +15,11 @@ import java.util.Optional;
 public interface ReactionRepository extends JpaRepository<Reaction, Long> {
 
     @Query(nativeQuery = true,
-            value = "select * from reactions where on_post_id = :postId")
+            value = "select * from reactions where on_post_id = :postId and deleted = false")
     Optional<List<Reaction>> findAllByOnPostId(@Param("postId") Long postId);
 
     @Query(nativeQuery = true,
-            value = "select * from reactions where on_comment_id = :commentId")
+            value = "select * from reactions where on_comment_id = :commentId and deleted = false")
     Optional<List<Reaction>> findAllByOnCommentId(@Param("commentId") Long commentId);
 
     @Transactional
