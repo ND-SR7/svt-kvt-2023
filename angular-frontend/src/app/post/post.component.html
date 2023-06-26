@@ -53,9 +53,9 @@
           Dislikes: {{getReactionCount(reply.id, 'DISLIKE')}}
         </span>
         <br>
-        <button class="show-btn" (click)="reactedComment(comment.id, 'LIKE')"><img src="../../assets/icons/like.png" alt="Like" (click)="reactedComment(comment.id, 'LIKE')"></button>
-        <button class="show-btn" (click)="reactedComment(comment.id, 'HEART')"><img src="../../assets/icons/heart.png" alt="Heart" (click)="reactedComment(comment.id, 'HEART')"></button>
-        <button class="show-btn" (click)="reactedComment(comment.id, 'DISLIKE')"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
+        <button class="show-btn" (click)="reactedComment(reply.id, 'LIKE')"><img src="../../assets/icons/like.png" alt="Like" (click)="reactedComment(comment.id, 'LIKE')"></button>
+        <button class="show-btn" (click)="reactedComment(reply.id, 'HEART')"><img src="../../assets/icons/heart.png" alt="Heart" (click)="reactedComment(comment.id, 'HEART')"></button>
+        <button class="show-btn" (click)="reactedComment(reply.id, 'DISLIKE')"><img src="../../assets/icons/dislike.png" alt="Dislike"></button>
         </div>
       </div>
 
