@@ -10,12 +10,9 @@
         </div>
         
         <div>
-          <label for="imagepaths"><b>Image path(s):</b></label>
-          <div>
-            <input type="text" id="imagepaths" name="imagepaths" [formControl]="form.controls['imagepaths']">
-            <small>Optional - if multiple, separate with ;</small>
-          </div>
-      </div>
+          <label for="images">Images:</label>
+          <input type="file" id="images" name="images" (change)="onFileChange($event)" multiple accept="image/*">
+        </div>
 
         <div>
             <button *ngIf="!editing" type="submit" class="btn btn-primary" [disabled]="!form.valid">Add Post</button>

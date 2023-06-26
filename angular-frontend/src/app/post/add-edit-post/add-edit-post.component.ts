@@ -29,7 +29,7 @@ export class AddEditPostComponent implements OnInit{
   ) {
     this.form = this.fb.group({
       content: [null, Validators.required],
-      imagepaths: [null, Validators.maxLength(255)]
+      images: [null, Validators.nullValidator]
     })
 
     if (this.editing) {
@@ -51,6 +51,16 @@ export class AddEditPostComponent implements OnInit{
     
   }
 
+  onFileChange(event: any) {
+    const files: FileList = event.target.files;
+    this.imagePaths = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file: File = files[i];
+      this.imagePaths.push(file.name);
+    }
+  }
+
   submit() {
     if (!this.editing) {
       const post: Post = new Post();
@@ -66,11 +76,10 @@ export class AddEditPostComponent implements OnInit{
           let user: User = result.body as User;
           post.postedByUserId = user.id;
 
-          if (this.form.value.imagepaths != null) {
-            this.imagePaths = this.form.value.imagepaths.split(";");
-            this.imagePaths.forEach(path => {
+          if (this.imagePaths.length > 0) {
+            this.imagePaths.forEach((imageName: string) => {
               let image: Image = new Image();
-              image.path = path.replaceAll('\\', '/') && path.replace('src', '../..');
+              image.path = '../../assets/images/' + imageName;
               image.belongsToPostId = post.id;
               this.images.push(image);
             });
