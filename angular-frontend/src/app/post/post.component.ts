@@ -30,7 +30,7 @@ export class PostComponent implements OnInit {
   hearts: number = 0;
   dislikes: number = 0;
 
-  commentsReactions: Map<number, Reaction[]> = new Map();
+  commentsReactions: Map<number, Map<number, Reaction>> = new Map(); //Map<idKomentara, Map<idReakcije, Reakcija>> zbog brisanja reakcija na komentar
   
   users: Map<number, User> = new Map();
 
@@ -104,7 +104,11 @@ export class PostComponent implements OnInit {
               this.reactionService.getReactionsForComment(comment.id).subscribe(
                 result => {
                   const reactions: Reaction[] = result.body as Reaction[];
-                  this.commentsReactions.set(comment.id, reactions);
+                  const reactionsMap: Map<number, Reaction> = new Map();
+                  reactions.forEach(reaction => {
+                    reactionsMap.set(reaction.id, reaction);
+                  });
+                  this.commentsReactions.set(comment.id, reactionsMap);
                 },
                 error => {
                   window.alert('Error while retriving reactions to comment ' + comment.id);
@@ -333,7 +337,10 @@ export class PostComponent implements OnInit {
   }
 
   getReactionCount(commentId: number, reactionType: string): number {
-    const reactions: Reaction[] = this.commentsReactions.get(commentId) || [];
+    const reactions: Reaction[] = [];
+    this.commentsReactions.get(commentId)?.forEach(reaction => {
+      reactions.push(reaction);
+    });
     let reactionCount: number = 0;
 
     reactions.forEach(reaction => {
@@ -359,7 +366,6 @@ export class PostComponent implements OnInit {
             this.hearts--;
           else if (reactionType == 'DISLIKE')
             this.dislikes--;
-          location.reload();
         },
         error => {
           window.alert('Error while removing reaction on post ' + postId);
@@ -432,5 +438,76 @@ export class PostComponent implements OnInit {
 
   async reactedComment(commentId: number, reactionType: string) {
     let reactorId: number = (await this.userService.extractUser() as User).id;
+    let reaction: Reaction = new Reaction();
+    let previousReaction: Reaction = new Reaction();
+
+    this.commentsReactions.get(commentId)?.forEach(temp => {
+      if (temp.onCommentId == commentId && temp.reactionType == reactionType && temp.madeByUserId == reactorId)
+        reaction = temp;
+    });
+
+    this.commentsReactions.get(commentId)?.forEach(temp => {
+      if (temp.onCommentId == commentId && temp.madeByUserId == reactorId)
+        previousReaction = temp;
+    });
+    
+    if (reaction.id == null && previousReaction.id != null) {
+      this.reactionService.delete(previousReaction.id).subscribe(
+        result => {
+          this.commentsReactions.get(commentId)?.delete(previousReaction.id);
+        },
+        error => {
+          window.alert('Error while removing reaction on comment ' + commentId);
+          console.log(error);
+        }
+      );
+
+      reaction = new Reaction();
+      reaction.reactionType = reactionType;
+      reaction.timestamp = new Date().toISOString().slice(0, 10);
+      reaction.madeByUserId = reactorId;
+      reaction.onCommentId = commentId;
+
+      this.reactionService.add(reaction).subscribe(
+        result => {
+          this.commentsReactions.get(commentId)?.set(reaction.id, reaction);
+          location.reload();
+        },
+        error => {
+          window.alert('Error while reacting on comment ' + commentId);
+          console.log(error);
+        }
+      );
+
+    } else if (reaction.id == null) {
+      reaction = new Reaction();
+      reaction.reactionType = reactionType;
+      reaction.timestamp = new Date().toISOString().slice(0, 10);
+      reaction.madeByUserId = reactorId;
+      reaction.onCommentId = commentId;
+
+      this.reactionService.add(reaction).subscribe(
+        result => {
+          this.commentsReactions.get(commentId)?.set(reaction.id, reaction);
+          location.reload();
+        },
+        error => {
+          window.alert('Error while reacting on comment ' + commentId);
+          console.log(error);
+        }
+      );
+
+    } else {
+      this.reactionService.delete(reaction.id).subscribe(
+        result => {
+          this.commentsReactions.get(commentId)?.delete(previousReaction.id);
+          location.reload();
+        },
+        error => {
+          window.alert('Error while removing reaction on comment ' + commentId);
+          console.log(error);
+        }
+      );
+    }
   }
 }
