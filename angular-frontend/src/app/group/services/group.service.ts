@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Group } from '../model/group.model';
@@ -15,7 +15,7 @@ export class GroupService {
     private http: HttpClient
   ) { }
 
-  getOne(id: number): Observable<any> {
+  getOne(id: number): Observable<HttpResponse<Group>> {
     let queryParams = {};
 
     queryParams = {
@@ -23,33 +23,33 @@ export class GroupService {
       observe: 'response'
     };
 
-    return this.http.get('api/groups/' + id, queryParams);
+    return this.http.get('api/groups/' + id, queryParams) as Observable<HttpResponse<Group>>;
   }
 
-  getAll(): Observable<any> {
+  getAll(): Observable<HttpResponse<Group[]>> {
     let queryParams = {};
 
     queryParams = {
       headers: this.headers,
       observe: 'response'
     };
-
-    return this.http.get('api/groups', queryParams);
+    
+    return this.http.get('api/groups', queryParams) as Observable<HttpResponse<Group[]>>;
   }
 
-  add(newGroup: Group): Observable<any> {
+  add(newGroup: Group): Observable<string> {
     return this.http.post('api/groups/add', newGroup, {headers: this.headers, responseType: 'text'});
   }
 
-  edit(editedGroup: Group): Observable<any> {
+  edit(editedGroup: Group): Observable<string> {
     return this.http.patch('api/groups/edit/' + editedGroup._id, editedGroup, {headers: this.headers, responseType: 'text'});
   }
 
-  delete(id: number): Observable<any> {
-    return this.http.delete('api/groups/delete/' + id, {headers: this.headers})
+  delete(id: number): Observable<HttpResponse<Group>> {
+    return this.http.delete('api/groups/delete/' + id, {headers: this.headers}) as Observable<HttpResponse<Group>>;
   }
 
-  checkUserInGroup(id:number): Observable<any> {
-    return this.http.get('api/posts/group/'+ id + '/user', {headers: this.headers});
+  checkUserInGroup(id:number): Observable<HttpResponse<boolean>> {
+    return this.http.get('api/posts/group/'+ id + '/user', {headers: this.headers}) as Observable<HttpResponse<boolean>>;
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Reaction } from '../model/reaction.model';
@@ -15,7 +15,7 @@ export class ReactionService {
     private http: HttpClient
   ) { }
 
-  getOne(id: number): Observable<any> {
+  getOne(id: number): Observable<HttpResponse<Reaction>> {
     let queryParams = {};
 
     queryParams = {
@@ -23,10 +23,10 @@ export class ReactionService {
       observe: 'response'
     };
 
-    return this.http.get('api/reactions/' + id, queryParams);
+    return this.http.get('api/reactions/' + id, queryParams) as Observable<HttpResponse<Reaction>>;
   }
 
-  getReactionsForPost(postId: number): Observable<any> {
+  getReactionsForPost(postId: number): Observable<HttpResponse<Reaction[]>> {
     let queryParams = {};
 
     queryParams = {
@@ -34,10 +34,10 @@ export class ReactionService {
       observe: 'response'
     };
 
-    return this.http.get('api/reactions/post/' + postId, queryParams);
+    return this.http.get('api/reactions/post/' + postId, queryParams) as Observable<HttpResponse<Reaction[]>>;
   }
 
-  getReactionsForComment(commentId: number): Observable<any> {
+  getReactionsForComment(commentId: number): Observable<HttpResponse<Reaction[]>> {
     let queryParams = {};
 
     queryParams = {
@@ -45,14 +45,14 @@ export class ReactionService {
       observe: 'response'
     };
 
-    return this.http.get('api/reactions/comment/' + commentId, queryParams);
+    return this.http.get('api/reactions/comment/' + commentId, queryParams) as Observable<HttpResponse<Reaction[]>>;
   }
 
-  add(newReaction: Reaction): Observable<any> {
+  add(newReaction: Reaction): Observable<string> {
     return this.http.post('api/reactions/add', newReaction, {headers: this.headers, responseType: 'text'});
   }
 
-  delete(id: number): Observable<any> {
-    return this.http.delete('api/reactions/delete/' + id, {headers: this.headers})
+  delete(id: number): Observable<HttpResponse<Reaction>> {
+    return this.http.delete('api/reactions/delete/' + id, {headers: this.headers}) as Observable<HttpResponse<Reaction>>;
   }
 }

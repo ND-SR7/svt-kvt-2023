@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
@@ -16,7 +16,7 @@ export class UserService {
     private http: HttpClient
   ) { }
 
-  getOne(id: number): Observable<any> {
+  getOne(id: number): Observable<HttpResponse<User>> {
     let queryParams = {};
 
     queryParams = {
@@ -24,10 +24,10 @@ export class UserService {
       observe: 'response'
     };
 
-    return this.http.get('api/users/' + id, queryParams);
+    return this.http.get('api/users/' + id, queryParams) as Observable<HttpResponse<User>>;
   }
 
-  getOneByUsername(username: string): Observable<any> {
+  getOneByUsername(username: string): Observable<HttpResponse<User>> {
     let queryParams = {};
 
     queryParams = {
@@ -35,7 +35,7 @@ export class UserService {
       observe: 'response'
     };
 
-    return this.http.get('api/users/user/' + username, queryParams);
+    return this.http.get('api/users/user/' + username, queryParams) as Observable<HttpResponse<User>>;
   }
 
   extractUser(): Promise<User> {

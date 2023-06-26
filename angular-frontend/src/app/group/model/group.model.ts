@@ -1,18 +1,25 @@
 export class Group {
     _id: number;
-    name: String;
-    description: String;
+    name: string;
+    description: string;
     creationDate: Date;
     isSuspended: boolean;
-    suspendedReason: String;
+    suspendedReason: string;
 
-    constructor(obj?: any) {
-        this._id = obj && obj._id || null;
-        this.name = obj && obj.name || null;
-        this.description = obj && obj.description || null;
-        this.creationDate = obj && obj.creationDate || null;
-        this.isSuspended = obj && obj.isSuspended || null;
-        this.suspendedReason = obj && obj.suspendedReason || null;
+    constructor(obj: {
+        _id?: number,
+        name?: string,
+        description?: string,
+        creationDate?: Date,
+        isSuspended?: boolean,
+        suspendedReason?: string
+    } = {}) {
+        this._id = obj._id || null as unknown as number;
+        this.name = obj.name || null as unknown as string;
+        this.description = obj.description || null as unknown as string;
+        this.creationDate = obj.creationDate || null as unknown as Date;
+        this.isSuspended = obj.isSuspended || null as unknown as boolean;
+        this.suspendedReason = obj.suspendedReason || null as unknown as string;
     }
 
     get id(): number {

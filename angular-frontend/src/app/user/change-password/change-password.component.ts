@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangePassword } from '../model/changePassword.model';
 
 @Component({
   selector: 'app-change-password',
@@ -34,7 +35,7 @@ export class ChangePasswordComponent implements OnInit {
       return;
     }
 
-    const auth: any = {};
+    const auth: ChangePassword = new ChangePassword();
     auth.oldPassword = this.form.value.oldPassword;
 		auth.newPassword = this.form.value.newPassword1;
 

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Comment } from '../model/comment.model';
@@ -15,7 +15,7 @@ export class CommentService {
     private http: HttpClient
   ) { }
 
-  getOne(id: number): Observable<any> {
+  getOne(id: number): Observable<HttpResponse<Comment>> {
     let queryParams = {};
 
     queryParams = {
@@ -23,18 +23,18 @@ export class CommentService {
       observe: 'response'
     };
 
-    return this.http.get('api/comments/' + id, queryParams);
+    return this.http.get('api/comments/' + id, queryParams) as Observable<HttpResponse<Comment>>;
   }
 
-  add(newComment: Comment): Observable<any> {
+  add(newComment: Comment): Observable<string> {
     return this.http.post('api/comments/add', newComment, {headers: this.headers, responseType: 'text'});
   }
 
-  edit(editedComment: Comment): Observable<any> {
+  edit(editedComment: Comment): Observable<string> {
     return this.http.patch('api/comments/edit/' + editedComment.id, editedComment, {headers: this.headers, responseType: 'text'});
   }
 
-  delete(id: number): Observable<any> {
-    return this.http.delete('api/comments/delete/' + id, {headers: this.headers})
+  delete(id: number): Observable<HttpResponse<Comment>> {
+    return this.http.delete('api/comments/delete/' + id, {headers: this.headers}) as Observable<HttpResponse<Comment>>;
   }
 }

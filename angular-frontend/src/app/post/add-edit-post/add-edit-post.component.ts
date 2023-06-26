@@ -51,13 +51,16 @@ export class AddEditPostComponent implements OnInit{
     
   }
 
-  onFileChange(event: any) {
-    const files: FileList = event.target.files;
+  onFileChange(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const files: FileList | null = inputElement.files;
     this.imagePaths = [];
 
-    for (let i = 0; i < files.length; i++) {
-      const file: File = files[i];
-      this.imagePaths.push(file.name);
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file: File = files[i];
+        this.imagePaths.push(file.name);
+      }
     }
   }
 

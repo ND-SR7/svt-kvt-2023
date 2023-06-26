@@ -1,7 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from '../model/post.model';
+import { Image } from '../model/image.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class PostService {
     private http: HttpClient
   ) { }
 
-  getOne(id: number): Observable<any> {
+  getOne(id: number): Observable<HttpResponse<Post>> {
     let queryParams = {};
 
     queryParams = {
@@ -23,10 +24,10 @@ export class PostService {
       observe: 'response'
     };
 
-    return this.http.get('api/posts/' + id, queryParams);
+    return this.http.get('api/posts/' + id, queryParams) as Observable<HttpResponse<Post>>;
   }
 
-  getImages(id: number): Observable<any> {
+  getImages(id: number): Observable<HttpResponse<Image[]>> {
     let queryParams = {};
 
     queryParams = {
@@ -34,10 +35,10 @@ export class PostService {
       observe: 'response'
     };
 
-    return this.http.get('api/posts/' + id + '/images', queryParams);
+    return this.http.get('api/posts/' + id + '/images', queryParams) as Observable<HttpResponse<Image[]>>;
   }
 
-  getComments(id: number): Observable<any> {
+  getComments(id: number): Observable<HttpResponse<Comment[]>> {
     let queryParams = {};
 
     queryParams = {
@@ -45,10 +46,10 @@ export class PostService {
       observe: 'response'
     };
 
-    return this.http.get('api/posts/' + id + '/comments', queryParams);
+    return this.http.get('api/posts/' + id + '/comments', queryParams) as Observable<HttpResponse<Comment[]>>;
   }
 
-  getAll(): Observable<any> {
+  getAll(): Observable<HttpResponse<Post[]>> {
     let queryParams = {};
 
     queryParams = {
@@ -56,10 +57,10 @@ export class PostService {
       observe: 'response'
     };
 
-    return this.http.get('api/posts', queryParams);
+    return this.http.get('api/posts', queryParams) as Observable<HttpResponse<Post[]>>;
   }
 
-  getAllForGroup(id: number): Observable<any> {
+  getAllForGroup(id: number): Observable<HttpResponse<Post[]>> {
     let queryParams = {};
 
     queryParams = {
@@ -67,18 +68,18 @@ export class PostService {
       observe: 'response'
     };
 
-    return this.http.get('api/posts/group/' + id, queryParams);
+    return this.http.get('api/posts/group/' + id, queryParams) as Observable<HttpResponse<Post[]>>;
   }
 
-  add(newPost: Post): Observable<any> {
+  add(newPost: Post): Observable<string> {
     return this.http.post('api/posts/add', newPost, {headers: this.headers, responseType: 'text'});
   }
 
-  edit(editedPost: Post): Observable<any> {
+  edit(editedPost: Post): Observable<string> {
     return this.http.patch('api/posts/edit/' + editedPost.id, editedPost, {headers: this.headers, responseType: 'text'});
   }
 
-  delete(id: number): Observable<any> {
-    return this.http.delete('api/posts/delete/' + id, {headers: this.headers})
+  delete(id: number): Observable<HttpResponse<Post>> {
+    return this.http.delete('api/posts/delete/' + id, {headers: this.headers}) as Observable<HttpResponse<Post>>;
   }
 }

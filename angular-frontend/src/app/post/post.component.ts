@@ -91,7 +91,7 @@ export class PostComponent implements OnInit {
 
         this.postService.getComments(this.post.id).subscribe(
           result => {
-            let temp: Comment[] = result.body as Comment[];
+            let temp: Comment[] = result.body as unknown as Comment[];
 
             temp.forEach(comment => {
               if (comment.repliesToCommentId != null)

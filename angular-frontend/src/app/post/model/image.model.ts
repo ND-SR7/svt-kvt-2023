@@ -4,11 +4,16 @@ export class Image {
     belongsToPostId: number;
     belongsToUserId: number;
 
-    constructor(obj?: any) {
-        this._id = obj && obj._id || null;
-        this.path = obj && obj.path || null;
-        this.belongsToPostId = obj && obj.belongsToPostId || null;
-        this.belongsToUserId = obj && obj.belongsToUserId || null;
+    constructor(obj: {
+        _id?: number,
+        path?: string,
+        belongsToPostId?: number,
+        belongsToUserId?: number
+    } = {}) {
+        this._id = obj._id || null as unknown as number;
+        this.path = obj.path || null as unknown as string;
+        this.belongsToPostId = obj.belongsToPostId || null as unknown as number;
+        this.belongsToUserId = obj.belongsToUserId || null as unknown as number;
     }
 
     get id() {

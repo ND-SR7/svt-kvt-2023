@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpHeaders, HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Login } from '../model/login.model';
+import { UserToken } from '../model/userToken.model';
+import { User } from '../model/user.model';
+import { ChangePassword } from '../model/changePassword.model';
+import { Register } from '../model/register.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,24 +16,24 @@ export class AuthenticationService {
 
   constructor(private http: HttpClient) {}
 
-  	login(auth: any): Observable<any> {
-		return this.http.post('api/users/login', {username: auth.username, password: auth.password}, {headers: this.headers, responseType: 'json'});
+  	login(auth: Login): Observable<HttpResponse<UserToken>> {
+		return this.http.post('api/users/login', {username: auth.username, password: auth.password}, {headers: this.headers, responseType: 'json'}) as Observable<HttpResponse<UserToken>>;
 	}
 
-	logout(): Observable<any> {
+	logout(): Observable<string> {
 		const authorizedHeaders = new HttpHeaders({'authorization': 'Bearer ' + JSON.parse(localStorage.user).accessToken, 'Content-Type': 'application/json'})
 		return this.http.get('api/users/logout', {headers: authorizedHeaders, responseType: 'text'});
 	}	
 
-	register(auth: any): Observable<any> {
+	register(auth: Register): Observable<HttpResponse<User>> {
 		return this.http.post('api/users/signup', 
 			{username: auth.username, password: auth.password, email: auth.email, firstName: auth.firstName, lastName: auth.lastName}, 
-			{headers: this.headers, responseType: 'json'});
+			{headers: this.headers, responseType: 'json'}) as Observable<HttpResponse<User>>;
 	}
 
-	changePassword(auth: any): Observable<any> {
+	changePassword(auth: ChangePassword): Observable<HttpResponse<User>> {
 		const authorizedHeaders = new HttpHeaders({'authorization': 'Bearer ' + JSON.parse(localStorage.user).accessToken, 'Content-Type': 'application/json'})
-		return this.http.post('api/users/change-password', {oldPassword: auth.oldPassword, newPassword: auth.newPassword}, {headers: authorizedHeaders, responseType: 'json'});
+		return this.http.post('api/users/change-password', {oldPassword: auth.oldPassword, newPassword: auth.newPassword}, {headers: authorizedHeaders, responseType: 'json'}) as Observable<HttpResponse<User>>;
 	}
 
 	isLoggedIn(): boolean {
