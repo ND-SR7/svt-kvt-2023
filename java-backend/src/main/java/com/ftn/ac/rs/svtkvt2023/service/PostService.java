@@ -18,6 +18,8 @@ public interface PostService {
 
     List<Post> findAll();
 
+    List<Post> findHomepagePosts(Long userId);
+
     Post createPost(PostDTO postDTO);
 
     Post updatePost(Post post);

@@ -9,7 +9,7 @@ insert into users(deleted, email, first_name, is_admin, last_login, last_name, p
     values (true, 'zika@mail.com', 'Zika', false, null, 'Zikic', '$2a$12$TeQF.oCNjgTsl9rFWA9Tb.zA3716nzJZ5wwxONeu1tTzHoqBkk7FK', 'zika');
 
 -- USERS FRIENDS --
-insert into user_friends(user_id, friend_id) values (1, 2);
+insert into user_friends(user_id, friend_id) values (2, 3);
 
 -- FRIEND REQUESTS --
 insert into friend_requests (approved, at, created_at, deleted, from_user_id, to_user_id)
@@ -25,17 +25,26 @@ insert into reports (accepted, deleted, reason, timestamp, by_user_id, on_commen
 
 -- POSTS --
 insert into posts (content, creation_date, deleted, posted_by_user_id)
-    values ('This is content intended for a test. If you see it, you are already inside',
+    values ('This is content intended for a test. If you see it, good for you',
             '2023-05-12', false, 1);
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is another content intended for a test. Say hi to everyone reading this',
-            '2023-05-13', true, 1);
+            '2023-05-13', true, 2);
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is a post in a group. If you see it, you are inside a group',
-            '2023-05-12', false, 1);
+            '2023-05-14', false, 1);
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is another post for a group. Say hi to everyone in this group',
-            '2023-05-13', false, 1);
+            '2023-05-15', false, 2);
+insert into posts (content, creation_date, deleted, posted_by_user_id)
+    values ('This is test post for second group. Say hi to everyone in this group',
+            '2023-06-13', false, 3);
+insert into posts (content, creation_date, deleted, posted_by_user_id)
+    values ('This is Ana\'s global post. Friends can see it',
+        '2023-06-20', false, 3);
+insert into posts (content, creation_date, deleted, posted_by_user_id)
+    values ('This is Mika\'s global post. Friends can see it',
+            '2023-06-27', false, 2);
 
 -- COMMENTS --
 insert into comments (deleted, text, timestamp, belongs_to_post_id, belongs_to_user_id, replies_to_comment_id)
@@ -60,24 +69,30 @@ insert into groupss (creation_date, deleted, description, is_suspended, name, su
     values ('2023-05-11', false, 'Test group for testing purposes', false, 'Test Group 1', null);
 insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason)
     values ('2023-05-11', false, 'Another test group for testing', false, 'Test Group 2', null);
+insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason)
+    values ('2023-05-12', true, 'Deleted test group for testing', true, 'Test Group 3', 'Un-moderated');
 
 -- GROUP MEMBERS --
 insert into group_members (group_id, member_id)
     values (1, 1);
 insert into group_members (group_id, member_id)
     values (1, 2);
+insert into group_members (group_id, member_id)
+    values (2, 3);
 
 -- GROUP ADMINS --
 insert into group_admins (group_id, admin_id)
     values (1, 1);
 insert into group_admins (group_id, admin_id)
-    values (1, 3);
+    values (2, 3);
 
 -- GROUP POSTS --
 insert into group_posts (group_id, post_id)
     values (1, 3);
 insert into group_posts (group_id, post_id)
     values (1, 4);
+insert into group_posts (group_id, post_id)
+    values (2, 5);
 
 -- GROUP REQUESTS --
 insert into group_requests (approved, at, created_at, deleted, created_by_user_id, for_group_id)

@@ -60,6 +60,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Group checkIfPostInGroup(Long postId) {
+        Optional<Group> group = groupRepository.checkIfPostInGroup(postId);
+        if (!group.isEmpty())
+            return group.get();
+        return null;
+    }
+
+    @Override
     public Group createGroup(GroupDTO groupDTO) {
         Optional<Group> group = groupRepository.findByName(groupDTO.getName());
 

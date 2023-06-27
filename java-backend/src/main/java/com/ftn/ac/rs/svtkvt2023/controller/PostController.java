@@ -3,10 +3,7 @@ package com.ftn.ac.rs.svtkvt2023.controller;
 import com.ftn.ac.rs.svtkvt2023.model.dto.CommentDTO;
 import com.ftn.ac.rs.svtkvt2023.model.dto.ImageDTO;
 import com.ftn.ac.rs.svtkvt2023.model.dto.PostDTO;
-import com.ftn.ac.rs.svtkvt2023.model.entity.Comment;
-import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
-import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
-import com.ftn.ac.rs.svtkvt2023.model.entity.User;
+import com.ftn.ac.rs.svtkvt2023.model.entity.*;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
 import com.ftn.ac.rs.svtkvt2023.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,6 +129,29 @@ public class PostController {
         return new ResponseEntity<>(postsDTOS, HttpStatus.OK);
     }
 
+    @GetMapping("/homepage")
+    public ResponseEntity<List<PostDTO>> getHomepagePosts(@RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<Post> posts = postService.findHomepagePosts(user.getId());
+        List<PostDTO> postsDTOS = new ArrayList<>();
+
+        for (Post post: posts) {
+            PostDTO postDTO = new PostDTO(post);
+            Group group = groupService.checkIfPostInGroup(post.getId());
+            if (group != null)
+                postDTO.setBelongsToGroupId(group.getId());
+            postsDTOS.add(postDTO);
+        }
+
+        return new ResponseEntity<>(postsDTOS, HttpStatus.OK);
+    }
+
     @GetMapping("/group/{id}")
     public ResponseEntity<List<PostDTO>> getAllForGroup(@PathVariable String id,
                                                         @RequestHeader("authorization") String token) {
@@ -151,7 +171,9 @@ public class PostController {
 
         for (Long postId: postsIds) {
             Post post = postService.findById(postId);
-            postDTOS.add(new PostDTO(post));
+            PostDTO postDTO = new PostDTO(post);
+            postDTO.setBelongsToGroupId(Long.parseLong(id));
+            postDTOS.add(postDTO);
         }
 
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);

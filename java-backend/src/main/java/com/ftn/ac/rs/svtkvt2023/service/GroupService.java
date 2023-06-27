@@ -19,6 +19,8 @@ public interface GroupService {
 
     List<Long> findPostsByGroupId(Long id);
 
+    Group checkIfPostInGroup(Long postId);
+
     Group createGroup(GroupDTO groupDTO);
 
     Group updateGroup(Group group);

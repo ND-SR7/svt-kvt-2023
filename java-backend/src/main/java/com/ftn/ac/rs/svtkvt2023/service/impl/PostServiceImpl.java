@@ -1,6 +1,7 @@
 package com.ftn.ac.rs.svtkvt2023.service.impl;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.PostDTO;
+import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.repository.PostRepository;
@@ -65,6 +66,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> findAll() {
         return this.postRepository.findAll();
+    }
+
+    @Override
+    public List<Post> findHomepagePosts(Long userId) {
+        Optional<List<Post>> posts = postRepository.findHomepagePosts(userId);
+        if (!posts.isEmpty())
+            return posts.get();
+        return null;
     }
 
     @Override
