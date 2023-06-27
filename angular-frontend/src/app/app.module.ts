@@ -16,6 +16,8 @@ import { ChangePasswordComponent } from './user/change-password/change-password.
 import { PostListComponent } from './post/post-list/post-list.component';
 import { AddEditPostComponent } from './post/add-edit-post/add-edit-post.component';
 import { AddEditGroupComponent } from './group/add-edit-group/add-edit-group.component';
+import { FriendsComponent } from './user/friends/friends.component';
+import { EditUserComponent } from './user/edit-user/edit-user.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ import { AddEditGroupComponent } from './group/add-edit-group/add-edit-group.com
     PostListComponent,
     AddEditPostComponent,
     AddEditGroupComponent,
+    FriendsComponent,
+    EditUserComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,6 @@
+<h1>Friends of {{user.displayName || user.username}}</h1>
+
+<h4 class="blue-bold" *ngIf="friends.length == 0">You have no friends :(</h4>
+<div *ngFor="let friend of friends" class="card">
+    <p>{{friend.username}}</p>
+</div>

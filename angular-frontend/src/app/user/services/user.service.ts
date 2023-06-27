@@ -62,6 +62,17 @@ export class UserService {
     return this.http.get('api/users/' + userId + '/groups', queryParams) as Observable<HttpResponse<Group[]>>;
   }
 
+  getUserFriends(userId: number): Observable<HttpResponse<User[]>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.get('api/users/friends', queryParams) as Observable<HttpResponse<User[]>>;
+  }
+
   extractUser(): Promise<User> {
     let sub: string;
     const item = localStorage.getItem('user') || "";
