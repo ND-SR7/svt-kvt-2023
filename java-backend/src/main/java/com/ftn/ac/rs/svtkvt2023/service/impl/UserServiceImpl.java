@@ -50,6 +50,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findFriendsForUser(Long userId) {
+        Optional<List<User>> users = userRepository.findFriendsByUserId(userId);
+        if (!users.isEmpty())
+            return users.get();
+        return null;
+    }
+
+    @Override
     public User createUser(UserDTO userDTO) {
         Optional<User> user = userRepository.findFirstByUsername(userDTO.getUsername());
 

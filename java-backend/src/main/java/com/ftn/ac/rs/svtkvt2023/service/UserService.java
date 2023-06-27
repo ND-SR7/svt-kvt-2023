@@ -13,6 +13,8 @@ public interface UserService {
 
     List<User> findAll();
 
+    List<User> findFriendsForUser(Long userId);
+
     User createUser(UserDTO userDTO);
 
     User updateUser(User user);

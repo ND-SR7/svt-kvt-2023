@@ -108,7 +108,6 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         List<Group> groups = groupService.findGroupsForUser(Long.parseLong(id));
-
         List<GroupDTO> groupDTOS = new ArrayList<>();
 
         for (Group group: groups) {
@@ -116,6 +115,25 @@ public class UserController {
         }
 
         return new ResponseEntity<>(groupDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping("/friends")
+    public ResponseEntity<List<UserDTO>> getUserFriends(@RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<User> users = userService.findFriendsForUser(user.getId());
+        List<UserDTO> userDTOS = new ArrayList<>();
+
+        for (User temp: users) {
+            userDTOS.add(new UserDTO(temp));
+        }
+
+        return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/user/{queryUsername}")
