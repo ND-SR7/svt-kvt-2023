@@ -60,6 +60,17 @@ export class PostService {
     return this.http.get('api/posts', queryParams) as Observable<HttpResponse<Post[]>>;
   }
 
+  getHomepagePosts(): Observable<HttpResponse<Post[]>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.get('api/posts/homepage', queryParams) as Observable<HttpResponse<Post[]>>;
+  }
+
   getAllForGroup(id: number): Observable<HttpResponse<Post[]>> {
     let queryParams = {};
 

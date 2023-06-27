@@ -4,4 +4,5 @@
     <br>
     <p>{{post.content}}</p>
     <button class="show-btn" [routerLink]="['/posts', post.id]">View Post</button>
+    <button *ngIf="post.belongsToGroupId" class="show-btn" [routerLink]="['/groups', post.belongsToGroupId]">View Group</button>
 </div>

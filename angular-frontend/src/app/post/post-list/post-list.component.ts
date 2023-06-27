@@ -22,7 +22,7 @@ export class PostListComponent implements OnInit{
   ) { }
 
   ngOnInit(): void {
-    this.postService.getAll().subscribe(
+    this.postService.getHomepagePosts().subscribe(
       result => {
         this.posts = result.body as Post[];
         
