@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
 import { User } from '../model/user.model';
+import { Image } from 'src/app/post/model/image.model';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,17 @@ export class UserService {
     };
 
     return this.http.get('api/users/user/' + username, queryParams) as Observable<HttpResponse<User>>;
+  }
+
+  getProfileImage(id: number): Observable<HttpResponse<Image>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.get('api/users/' + id + '/image', queryParams) as Observable<HttpResponse<Image>>;
   }
 
   extractUser(): Promise<User> {

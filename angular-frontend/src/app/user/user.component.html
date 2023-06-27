@@ -1,1 +1,9 @@
-<p>user works!</p>
+<div class="card rounded center">
+    <img *ngIf="image.path" class="profile-image" [src]="image.path" alt="Profile Image">
+    <h1>{{user.firstName + ' ' + user.lastName}}</h1>
+    <h3>{{'Username: ' + user.username}}</h3>
+    <h3 *ngIf="user.displayName">{{'Display Name: ' + user.displayName}}</h3>
+    <h4>{{'Email: ' + user.email}}</h4>
+    <h5 *ngIf="user.description">{{user.description}}</h5>
+    <h6>{{'Last login: ' + (user.lastLogin | date: 'MMMM d, y, HH:mm')}}</h6>
+</div>
