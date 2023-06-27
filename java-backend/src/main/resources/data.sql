@@ -65,6 +65,8 @@ insert into reactions (deleted, timestamp, type, made_by_user_id, on_comment_id,
 -- IMAGES --
 insert into images (deleted, path, belongs_to_post_id, belongs_to_user_id)
     values (false, 'https://shorturl.at/fLPR9', 1, null);
+insert into images (deleted, path, belongs_to_post_id, belongs_to_user_id)
+    values (false, '../../assets/images/profile.png', null, 1);
 
 -- GROUPS --
 insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason)

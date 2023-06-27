@@ -1,11 +1,10 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
-import com.ftn.ac.rs.svtkvt2023.model.dto.ChangePasswordRequest;
-import com.ftn.ac.rs.svtkvt2023.model.dto.JwtAuthenticationRequest;
-import com.ftn.ac.rs.svtkvt2023.model.dto.UserDTO;
-import com.ftn.ac.rs.svtkvt2023.model.dto.UserTokenState;
+import com.ftn.ac.rs.svtkvt2023.model.dto.*;
+import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
+import com.ftn.ac.rs.svtkvt2023.service.ImageService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
 import com.ftn.ac.rs.svtkvt2023.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +34,19 @@ public class UserController {
 
     UserDetailsService userDetailsService;
 
+    ImageService imageService;
+
     AuthenticationManager authenticationManager;
 
     TokenUtils tokenUtils;
 
     @Autowired
     public UserController(UserServiceImpl userService, AuthenticationManager authenticationManager,
-                          UserDetailsService userDetailsService, TokenUtils tokenUtils){
+                          UserDetailsService userDetailsService, ImageService imageService, TokenUtils tokenUtils){
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
+        this.imageService = imageService;
         this.tokenUtils = tokenUtils;
     }
 
@@ -66,6 +68,26 @@ public class UserController {
         UserDTO userDTO = new UserDTO(findUser);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<ImageDTO> getProfileImage(@PathVariable String id,
+                                           @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Image image = imageService.findProfileImageForUser(Long.parseLong(id));
+
+        if (image == null)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        ImageDTO imageDTO = new ImageDTO(image);
+
+        return new ResponseEntity<>(imageDTO, HttpStatus.OK);
     }
 
     @GetMapping("/user/{queryUsername}")

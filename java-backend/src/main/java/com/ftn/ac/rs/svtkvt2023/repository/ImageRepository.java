@@ -18,6 +18,10 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
             value = "select * from images where belongs_to_post_id = :id")
     Optional<List<Image>> findImagesForPost(@Param("id") Long id);
 
+    @Query(nativeQuery = true,
+            value = "select * from images where belongs_to_user_id = :userId")
+    Optional<Image> findProfileImageForUser(@Param("userId") Long userId);
+
     @Transactional
     Integer deleteImageById(Long id);
 

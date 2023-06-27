@@ -55,6 +55,14 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public Image findProfileImageForUser(Long userId) {
+        Optional<Image> image = imageRepository.findProfileImageForUser(userId);
+        if (!image.isEmpty())
+            return image.get();
+        return null;
+    }
+
+    @Override
     public Image createImage(ImageDTO imageDTO) {
         Optional<Image> image = imageRepository.findById(imageDTO.getId());
 

@@ -11,6 +11,8 @@ public interface ImageService {
 
     List<Image> findImagesForPost(Long id);
 
+    Image findProfileImageForUser(Long userId);
+
     Image createImage(ImageDTO imageDTO);
 
     Integer deleteImage(Long id);
