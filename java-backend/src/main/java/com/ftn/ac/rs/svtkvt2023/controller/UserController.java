@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -113,6 +114,11 @@ public class UserController {
         UserDetails user = (UserDetails) authentication.getPrincipal();
         String jwt = tokenUtils.generateToken(user);
         long expiresIn = tokenUtils.getExpiredIn();
+
+        //postavljanje poslednjeg pristupa aplikaciji
+        User loggedInUser = userService.findByUsername(authenticationRequest.getUsername());
+        loggedInUser.setLastLogin(LocalDateTime.now());
+        userService.updateUser(loggedInUser);
 
         //vracanje tokena kao odgovor na uspesnu autentifikaciju
         return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));

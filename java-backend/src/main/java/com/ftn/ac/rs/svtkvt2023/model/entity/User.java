@@ -43,6 +43,12 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
+    @Column(name = "display_name", length = 100) //ako je null, nije postavljeno
+    private String displayName;
+
+    @Column //ako je null, nije postavljeno
+    private String description;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_friends", inverseJoinColumns=@JoinColumn(name="friend_id"))
     private List<User> friends;

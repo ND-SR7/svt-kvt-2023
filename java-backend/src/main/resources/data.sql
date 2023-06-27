@@ -1,8 +1,10 @@
 -- USERS --
-insert into users(deleted, email, first_name, is_admin, last_login, last_name, password, username)
-    values (false, 'pera@mail.com', 'Pera', true, null, 'Peric', '$2a$12$6LRoZ4kDywW7WnK9bg16A.XXVHgKXxpi6YZ5JYptFnwW3y97DZGju', 'pera');
-insert into users(deleted, email, first_name, is_admin, last_login, last_name, password, username)
-    values (false, 'mika@mail.com', 'Mika', false, null, 'Mikic', '$2a$12$15ymkpdnVT1DGRfGjjqIY.SnwcaMTyiIUb71f3r3Be8i3zHuNRM.i', 'mika');
+insert into users(deleted, email, first_name, is_admin, last_login, last_name, password, username, display_name, description)
+    values (false, 'pera@mail.com', 'Pera', true, null, 'Peric', '$2a$12$6LRoZ4kDywW7WnK9bg16A.XXVHgKXxpi6YZ5JYptFnwW3y97DZGju', 'pera',
+            "-pera-", "Admin you will find in every project");
+insert into users(deleted, email, first_name, is_admin, last_login, last_name, password, username, display_name)
+    values (false, 'mika@mail.com', 'Mika', false, null, 'Mikic', '$2a$12$15ymkpdnVT1DGRfGjjqIY.SnwcaMTyiIUb71f3r3Be8i3zHuNRM.i', 'mika',
+            'mika-mika');
 insert into users(deleted, email, first_name, is_admin, last_login, last_name, password, username)
     values (false, 'ana@mail.com', 'Ana', false, null, 'Anic', '$2a$12$uVuGNCVu62e8v7YtlF9yZurtYkvWgOj9N5UEdb51eB1EM959We.v.', 'ana');
 insert into users(deleted, email, first_name, is_admin, last_login, last_name, password, username)
