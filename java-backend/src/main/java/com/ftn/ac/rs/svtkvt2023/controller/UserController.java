@@ -1,9 +1,11 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.*;
+import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
+import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import com.ftn.ac.rs.svtkvt2023.service.ImageService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
 import com.ftn.ac.rs.svtkvt2023.service.impl.UserServiceImpl;
@@ -24,6 +26,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -36,17 +39,21 @@ public class UserController {
 
     ImageService imageService;
 
+    GroupService groupService;
+
     AuthenticationManager authenticationManager;
 
     TokenUtils tokenUtils;
 
     @Autowired
     public UserController(UserServiceImpl userService, AuthenticationManager authenticationManager,
-                          UserDetailsService userDetailsService, ImageService imageService, TokenUtils tokenUtils){
+                          UserDetailsService userDetailsService, ImageService imageService, GroupService groupService,
+                          TokenUtils tokenUtils){
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.imageService = imageService;
+        this.groupService = groupService;
         this.tokenUtils = tokenUtils;
     }
 
@@ -88,6 +95,27 @@ public class UserController {
         ImageDTO imageDTO = new ImageDTO(image);
 
         return new ResponseEntity<>(imageDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/groups")
+    public ResponseEntity<List<GroupDTO>> getUserGroups(@PathVariable String id,
+                                                    @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<Group> groups = groupService.findGroupsForUser(Long.parseLong(id));
+
+        List<GroupDTO> groupDTOS = new ArrayList<>();
+
+        for (Group group: groups) {
+            groupDTOS.add(new GroupDTO(group));
+        }
+
+        return new ResponseEntity<>(groupDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/user/{queryUsername}")
