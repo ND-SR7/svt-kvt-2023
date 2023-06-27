@@ -6,4 +6,12 @@
     <h4>{{'Email: ' + user.email}}</h4>
     <h5 *ngIf="user.description">{{user.description}}</h5>
     <h6>{{'Last login: ' + (user.lastLogin | date: 'MMMM d, y, HH:mm')}}</h6>
+    <h2 *ngIf="groups.length > 0" class="blue-bold">Member of:</h2>
+    <div class="card" *ngFor="let group of groups">
+        <h1>{{group.name}}</h1>
+        <h3>{{group.creationDate | date: 'MMMM d, y, HH:mm'}}</h3>
+        <br>
+        <p>{{group.description}}</p>
+        <button class="show-btn" [routerLink]="['/groups', group.id]">View Group</button>
+    </div>
 </div>

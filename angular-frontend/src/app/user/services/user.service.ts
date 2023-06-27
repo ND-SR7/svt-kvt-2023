@@ -4,6 +4,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
 import { User } from '../model/user.model';
 import { Image } from 'src/app/post/model/image.model';
+import { Group } from 'src/app/group/model/group.model';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,17 @@ export class UserService {
     };
 
     return this.http.get('api/users/' + id + '/image', queryParams) as Observable<HttpResponse<Image>>;
+  }
+
+  getUserGroups(userId: number): Observable<HttpResponse<Group[]>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.get('api/users/' + userId + '/groups', queryParams) as Observable<HttpResponse<Group[]>>;
   }
 
   extractUser(): Promise<User> {

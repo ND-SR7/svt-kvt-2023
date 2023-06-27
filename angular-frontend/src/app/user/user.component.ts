@@ -4,6 +4,7 @@ import { UserService } from './services/user.service';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Image } from '../post/model/image.model';
+import { Group } from '../group/model/group.model';
 
 @Component({
   selector: 'app-user',
@@ -14,6 +15,7 @@ export class UserComponent implements OnInit {
 
   user: User = new User();
   image: Image = new Image();
+  groups: Group[] = [];
 
   constructor(
     private userService: UserService,
@@ -36,6 +38,16 @@ export class UserComponent implements OnInit {
           },
           error => {
             window.alert('Error while retriving profile image');
+            console.log(error);
+          }
+        );
+
+        this.userService.getUserGroups(this.user.id).subscribe(
+          result => {
+            this.groups = result.body as Group[];
+          },
+          error => {
+            window.alert('Error while retriving groups user is member of');
             console.log(error);
           }
         );
