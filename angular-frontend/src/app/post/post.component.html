@@ -1,5 +1,5 @@
 <div>
-    <h1>{{user.username}}</h1>
+    <h1>{{user.displayName || user.username}}</h1>
     <br>
     <p class="bigText">{{post.content}}</p>
     <br>
@@ -25,7 +25,7 @@
     <div id="comment{{comment.id}}" class="card rounded" *ngFor="let comment of comments">
       <p class="bigText">{{comment.text}}</p>
       <h3>{{comment.timestamp | date: 'MMMM d, y'}}</h3>
-      <p class="blue-bold" *ngIf="users.get(comment.belongsToUserId)">{{users.get(comment.belongsToUserId).username}}</p>
+      <p class="blue-bold" *ngIf="users.get(comment.belongsToUserId)">{{users.get(comment.belongsToUserId).displayName || users.get(comment.belongsToUserId).username}}</p>
       <button *ngIf="canReply(comment.id)" class="show-btn" (click)="reply(comment.id)">Reply</button>
       <button *ngIf="canDeleteComment(comment.id)" class="show-btn" (click)="deleteComment(comment.id)">Delete Comment</button>
       <br><br>
@@ -44,7 +44,7 @@
         <div *ngIf="reply.repliesToCommentId == comment.id" class="card rounded indented">
           <p class="bigText">{{reply.text}}</p>
         <h3>{{reply.timestamp | date: 'MMMM d, y'}}</h3>
-        <p class="blue-bold" *ngIf="users.get(reply.belongsToUserId)">{{users.get(reply.belongsToUserId).username}}</p>
+        <p class="blue-bold" *ngIf="users.get(reply.belongsToUserId)">{{users.get(reply.belongsToUserId).displayName|| users.get(reply.belongsToUserId).username}}</p>
         <button *ngIf="canDeleteReply()" class="show-btn" (click)="deleteComment(reply.id)">Delete Reply</button>
         <br><br>
         <span>
