@@ -64,4 +64,43 @@ export class FriendRequestsComponent implements OnInit {
       }
     );
   }
+
+  respondToRequest(id: number, response: string): void {
+    let respondedRequest: FriendRequest = new FriendRequest();
+    this.friendRequests.forEach(request => {
+      if (request.id == id)
+        respondedRequest = request;
+    });
+
+    if (response == 'accept')
+      respondedRequest.approved = true;
+    else if (response == 'decline')
+      respondedRequest.approved = false;
+
+    respondedRequest.at =  new Date().toISOString().slice(0, -1);
+
+    this.userService.updateFriendRequest(respondedRequest).subscribe(
+      result => {
+        window.alert('Successfully responded to friend request');
+        location.reload();
+      },
+      error => {
+        window.alert('Error while responding to friend request');
+        console.log(error);
+      }
+    );
+  }
+
+  deleteRequest(id: number): void {
+    this.userService.deleteFriendRequest(id).subscribe(
+      result => {
+        window.alert('Successfully deleted friend request');
+        location.reload();
+      },
+      error => {
+        window.alert('Error while deleting friend request');
+        console.log(error);
+      }
+    );
+  }
 }

@@ -8,8 +8,9 @@
         {{requestUsers.get(request.toUserId).firstName + ' ' + requestUsers.get(request.toUserId).lastName}}
     </h3>
     <h3>{{request.createdAt | date: 'MMMM d, y, HH:mm'}}</h3>
-    <h4>{{'Approved: ' + request.approved}}</h4>
+    <h4 *ngIf="request.at">{{request.approved ? 'User accepted the request' : 'User declined the request'}}</h4>
     <h5 *ngIf="request.at">{{'Datetime of response: ' + request.at}}</h5>
+    <button *ngIf="request.at == null" (click)="deleteRequest(request.id)">Delete Request</button>
 </div>
 
 <h1 class="center">Recieved Requests</h1>
@@ -22,6 +23,8 @@
         {{requestUsers.get(request.fromUserId).firstName + ' ' + requestUsers.get(request.fromUserId).lastName}}
     </h3>
     <h3>{{request.createdAt | date: 'MMMM d, y, HH:mm'}}</h3>
-    <button (click)="acceptRequest(request.id)">Accept</button>
-    <button (click)="declineRequest(request.id)">Decline</button>
+    <button *ngIf="request.at == null" (click)="respondToRequest(request.id, 'accept')">Accept</button>
+    <button *ngIf="request.at == null" (click)="respondToRequest(request.id, 'decline')">Decline</button>
+    <button *ngIf="request.at != null && request.approved == true" disabled>You accepted this request</button>
+    <button *ngIf="request.at != null && request.approved == false" disabled>You declined this request</button>
 </div>

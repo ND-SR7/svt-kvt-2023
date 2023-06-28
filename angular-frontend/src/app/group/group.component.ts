@@ -85,6 +85,15 @@ export class GroupComponent implements OnInit{
   }
 
   deleteGroup() {
-    this.groupService.delete(this.group.id);
+    this.groupService.delete(this.group.id).subscribe(
+      result => {
+        window.alert('Successfully deleted group');
+        this.router.navigate(['/groups']);
+      },
+      error => {
+        window.alert('Error while deleting group');
+        console.log(error);
+      }
+    );
   }
 }

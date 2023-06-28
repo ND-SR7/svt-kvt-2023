@@ -108,6 +108,14 @@ export class UserService {
     return this.http.get('api/users/friend-request', queryParams) as Observable<HttpResponse<FriendRequest[]>>;
   }
 
+  updateFriendRequest(request: FriendRequest): Observable<string> {
+    return this.http.patch('api/users/friend-request', request, {headers: this.headers, responseType: 'text'});
+  }
+
+  deleteFriendRequest(id: number): Observable<HttpResponse<Number>> {
+    return this.http.delete('api/users/friend-request/' + id, {headers: this.headers}) as Observable<HttpResponse<Number>>;
+  }
+
   extractUser(): Promise<User> {
     let sub: string;
     const item = localStorage.getItem('user') || "";
