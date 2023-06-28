@@ -96,3 +96,7 @@ button:hover > img {
   width: 110px;
   height: 110px;
 }
+
+.search {
+  text-align: end;
+}

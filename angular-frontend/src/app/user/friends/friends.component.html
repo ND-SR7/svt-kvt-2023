@@ -1,6 +1,25 @@
+<div class="search">
+    <input id="user-search" type="text" placeholder="Find New Friends">
+    <button (click)="findUsers()">Search</button>
+</div>
+
+<div *ngIf="foundUsers.length > 0">
+    <div *ngFor="let user of foundUsers" class="card rounded center">
+        <img *ngIf="images.get(user.id)" class="profile-image" [src]="images.get(user.id).path" alt="Profile Image">
+        <h3 class="blue-bold">{{user.displayName || user.username}}</h3>
+        <h3>{{user.firstName + ' ' + user.lastName}}</h3>
+        <button *ngIf="!checkIfFriend(user.id)" (click)="sendFriendRequest(user.id)">Send Friend Request</button>
+        <button *ngIf="checkIfFriend(user.id)" disabled>You are already friends</button>
+    </div>
+</div>
+
 <h1>Friends of {{user.displayName || user.username}}</h1>
 
 <h4 class="blue-bold" *ngIf="friends.length == 0">You have no friends :(</h4>
-<div *ngFor="let friend of friends" class="card">
-    <p>{{friend.username}}</p>
+<div *ngFor="let friend of friends" class="card rounded center">
+    <img *ngIf="images.get(friend.id)" class="profile-image" [src]="images.get(friend.id).path" alt="Profile Image">
+    <h3 class="blue-bold">{{friend.displayName || friend.username}}</h3>
+    <h3>{{friend.firstName + ' ' + friend.lastName}}</h3>
+    <h3 class="blue-bold">{{friend.email}}</h3>
+    <h6 *ngIf="friend.lastLogin">{{'Last login: ' + friend.lastLogin}}</h6>
 </div>

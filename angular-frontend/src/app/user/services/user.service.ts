@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { User } from '../model/user.model';
 import { Image } from 'src/app/post/model/image.model';
 import { Group } from 'src/app/group/model/group.model';
+import { UserQuery } from '../model/userQuery.model';
+import { FriendRequest } from '../model/friendRequest.model';
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +64,7 @@ export class UserService {
     return this.http.get('api/users/' + userId + '/groups', queryParams) as Observable<HttpResponse<Group[]>>;
   }
 
-  getUserFriends(userId: number): Observable<HttpResponse<User[]>> {
+  getUserFriends(): Observable<HttpResponse<User[]>> {
     let queryParams = {};
 
     queryParams = {
@@ -71,6 +73,28 @@ export class UserService {
     };
 
     return this.http.get('api/users/friends', queryParams) as Observable<HttpResponse<User[]>>;
+  }
+
+  searchUsers(query: UserQuery): Observable<HttpResponse<User[]>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.post('api/users/search', query, queryParams) as Observable<HttpResponse<User[]>>;
+  }
+
+  sendFriendRequest(friendRequest: FriendRequest): Observable<HttpResponse<boolean>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.post('api/users/' + friendRequest.toUserId + '/friend-request', friendRequest, queryParams) as Observable<HttpResponse<boolean>>;
   }
 
   extractUser(): Promise<User> {
