@@ -122,6 +122,28 @@ public class UserController {
         return new ResponseEntity<>(groupDTOS, HttpStatus.OK);
     }
 
+    @GetMapping("/friend-request")
+    public ResponseEntity<List<FriendRequestDTO>> getFriendRequests(@RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<FriendRequest> friendRequestsFromUser = friendRequestService.findAllFromUser(user.getId());
+        List<FriendRequest> friendRequestsToUser = friendRequestService.findAllToUser(user.getId());
+        List<FriendRequestDTO> friendRequestDTOS = new ArrayList<>();
+
+        for (FriendRequest friendRequest: friendRequestsFromUser)
+            friendRequestDTOS.add(new FriendRequestDTO(friendRequest));
+
+        for (FriendRequest friendRequest: friendRequestsToUser)
+            friendRequestDTOS.add(new FriendRequestDTO(friendRequest));
+
+        return new ResponseEntity<>(friendRequestDTOS, HttpStatus.OK);
+    }
+
     @PostMapping("/{id}/friend-request")
     public ResponseEntity<Boolean> saveFriendRequest(@PathVariable String id,
                                                      @RequestBody @Validated FriendRequestDTO friendRequestDTO,

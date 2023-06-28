@@ -33,9 +33,11 @@ public class FriendRequestDTO {
 
     public FriendRequestDTO(FriendRequest friendRequest) {
         this.id = friendRequest.getId();
-        this.approved = friendRequest.getApproved();
+        if (friendRequest.getApproved() != null)
+            this.approved = friendRequest.getApproved();
         this.createdAt = friendRequest.getCreatedAt().toString();
-        this.at = friendRequest.getAt().toString();
+        if (friendRequest.getAt() != null)
+            this.at = friendRequest.getAt().toString();
         this.fromUserId = friendRequest.getFrom().getId();
         this.toUserId = friendRequest.getTo().getId();
     }
