@@ -18,6 +18,7 @@ import { AddEditPostComponent } from './post/add-edit-post/add-edit-post.compone
 import { AddEditGroupComponent } from './group/add-edit-group/add-edit-group.component';
 import { FriendsComponent } from './user/friends/friends.component';
 import { EditUserComponent } from './user/edit-user/edit-user.component';
+import { FriendRequestsComponent } from './user/friend-requests/friend-requests.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { EditUserComponent } from './user/edit-user/edit-user.component';
     AddEditGroupComponent,
     FriendsComponent,
     EditUserComponent,
+    FriendRequestsComponent,
   ],
   imports: [
     BrowserModule,

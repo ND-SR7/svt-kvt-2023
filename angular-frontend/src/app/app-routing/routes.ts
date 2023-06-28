@@ -12,6 +12,7 @@ import { AddEditPostComponent } from '../post/add-edit-post/add-edit-post.compon
 import { AddEditGroupComponent } from '../group/add-edit-group/add-edit-group.component';
 import { EditUserComponent } from '../user/edit-user/edit-user.component';
 import { FriendsComponent } from '../user/friends/friends.component';
+import { FriendRequestsComponent } from '../user/friend-requests/friend-requests.component';
 
 export const routes :Routes = [
 	{path: 'posts', component: PostListComponent, title: 'Social Network'},
@@ -26,6 +27,7 @@ export const routes :Routes = [
 	{path: 'users/profile', component: UserComponent, title: 'Social Network'},
 	{path: 'users/profile/edit', component: EditUserComponent, title: 'Social Network'},
 	{path: 'users/friends', component: FriendsComponent, title: 'Social Network'},
+	{path: 'users/friends/requests', component: FriendRequestsComponent, title: 'Social Network'},
 	{path: 'users/login', component: LoginComponent, title: 'Social Network'},
 	{path: 'users/register', component: RegisterComponent, title: 'Social Network'},
 	{path: 'users/change-password', component: ChangePasswordComponent, title: 'Social Network'},
