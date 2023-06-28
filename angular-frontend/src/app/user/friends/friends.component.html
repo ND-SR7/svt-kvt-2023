@@ -9,8 +9,10 @@
         <h3 class="blue-bold">{{user.displayName || user.username}}</h3>
         <h3>{{user.firstName + ' ' + user.lastName}}</h3>
         <h3 *ngIf="user.description">{{user.description}}</h3>
-        <button *ngIf="!checkIfFriend(user.id)" (click)="sendFriendRequest(user.id)">Send Friend Request</button>
+        <button *ngIf="!checkIfFriend(user.id) && checkIfSentOrRecievedRequest(user.id) == ''" (click)="sendFriendRequest(user.id)">Send Friend Request</button>
         <button *ngIf="checkIfFriend(user.id)" disabled>You are already friends</button>
+        <button *ngIf="checkIfSentOrRecievedRequest(user.id) == 'sent'" disabled>You already sent a request</button>
+        <button *ngIf="checkIfSentOrRecievedRequest(user.id) == 'recieved'" disabled>You recieved a request from this user. Check your friend requests</button>
     </div>
 </div>
 

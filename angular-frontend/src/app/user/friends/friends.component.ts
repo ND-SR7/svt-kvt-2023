@@ -5,6 +5,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserQuery } from '../model/userQuery.model';
 import { Image } from 'src/app/post/model/image.model';
 import { FriendRequest } from '../model/friendRequest.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-friends',
@@ -16,11 +17,13 @@ export class FriendsComponent implements OnInit {
   user: User = new User();
   friends: User[] = [];
   foundUsers: User[] = [];
+  friendRequests: FriendRequest[] = [];
 
   images: Map<number, Image> = new Map();
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) { }
   
   ngOnInit(): void {
@@ -31,6 +34,12 @@ export class FriendsComponent implements OnInit {
     this.userService.getOneByUsername(sub).subscribe(
       result => {
         this.user = result.body as User;
+
+        this.userService.getFriendRequests().subscribe(
+          result => {
+            this.friendRequests = result.body as FriendRequest[];
+          }
+        );
       }
     );
 
@@ -103,6 +112,17 @@ export class FriendsComponent implements OnInit {
     return isFriend;
   }
 
+  checkIfSentOrRecievedRequest(userId: number): string {
+    let retVal: string = '';
+    this.friendRequests.forEach(request => {
+      if (request.toUserId == userId)
+        retVal = 'sent';
+      else if (request.fromUserId == userId)
+        retVal = 'recieved';
+    });
+    return retVal;
+  }
+
   sendFriendRequest(userId: number): void {
     const friendRequest: FriendRequest = new FriendRequest();
     friendRequest.fromUserId = this.user.id;
@@ -112,6 +132,11 @@ export class FriendsComponent implements OnInit {
     this.userService.sendFriendRequest(friendRequest).subscribe(
       result => {
         window.alert('Successfully sent friend request');
+        this.router.navigate(['/users/friends/requests']);
+      },
+      error => {
+        window.alert('Error while sending friend request');
+        console.log(error);
       }
     );
   }

@@ -97,6 +97,17 @@ export class UserService {
     return this.http.post('api/users/' + friendRequest.toUserId + '/friend-request', friendRequest, queryParams) as Observable<HttpResponse<boolean>>;
   }
 
+  getFriendRequests(): Observable<HttpResponse<FriendRequest[]>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.get('api/users/friend-request', queryParams) as Observable<HttpResponse<FriendRequest[]>>;
+  }
+
   extractUser(): Promise<User> {
     let sub: string;
     const item = localStorage.getItem('user') || "";
