@@ -1,1 +1,27 @@
-<p>friend-requests works!</p>
+<h1 class="center">Sent Requests</h1>
+
+<div *ngFor="let request of sentRequests" class="card">
+    <h3 *ngIf="requestUsers.get(request.toUserId)" class="blue-bold">
+        {{requestUsers.get(request.toUserId).displayName || requestUsers.get(request.toUserId).username}}
+    </h3>
+    <h3 *ngIf="requestUsers.get(request.toUserId)" class="blue-bold">
+        {{requestUsers.get(request.toUserId).firstName + ' ' + requestUsers.get(request.toUserId).lastName}}
+    </h3>
+    <h3>{{request.createdAt | date: 'MMMM d, y, HH:mm'}}</h3>
+    <h4>{{'Approved: ' + request.approved}}</h4>
+    <h5 *ngIf="request.at">{{'Datetime of response: ' + request.at}}</h5>
+</div>
+
+<h1 class="center">Recieved Requests</h1>
+
+<div *ngFor="let request of recievedRequests" class="card">
+    <h3 *ngIf="requestUsers.get(request.fromUserId)" class="blue-bold">
+        {{requestUsers.get(request.fromUserId).displayName || requestUsers.get(request.fromUserId).username}}
+    </h3>
+    <h3 *ngIf="requestUsers.get(request.fromUserId)" class="blue-bold">
+        {{requestUsers.get(request.fromUserId).firstName + ' ' + requestUsers.get(request.fromUserId).lastName}}
+    </h3>
+    <h3>{{request.createdAt | date: 'MMMM d, y, HH:mm'}}</h3>
+    <button (click)="acceptRequest(request.id)">Accept</button>
+    <button (click)="declineRequest(request.id)">Decline</button>
+</div>
