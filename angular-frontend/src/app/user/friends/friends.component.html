@@ -8,6 +8,7 @@
         <img *ngIf="images.get(user.id)" class="profile-image" [src]="images.get(user.id).path" alt="Profile Image">
         <h3 class="blue-bold">{{user.displayName || user.username}}</h3>
         <h3>{{user.firstName + ' ' + user.lastName}}</h3>
+        <h3 *ngIf="user.description">{{user.description}}</h3>
         <button *ngIf="!checkIfFriend(user.id)" (click)="sendFriendRequest(user.id)">Send Friend Request</button>
         <button *ngIf="checkIfFriend(user.id)" disabled>You are already friends</button>
     </div>
@@ -21,5 +22,6 @@
     <h3 class="blue-bold">{{friend.displayName || friend.username}}</h3>
     <h3>{{friend.firstName + ' ' + friend.lastName}}</h3>
     <h3 class="blue-bold">{{friend.email}}</h3>
+    <h3 *ngIf="friend.description">{{friend.description}}</h3>
     <h6 *ngIf="friend.lastLogin">{{'Last login: ' + friend.lastLogin}}</h6>
 </div>
