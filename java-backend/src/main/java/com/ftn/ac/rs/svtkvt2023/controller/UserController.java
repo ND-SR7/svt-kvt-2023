@@ -144,6 +144,50 @@ public class UserController {
         return new ResponseEntity<>(friendRequestDTOS, HttpStatus.OK);
     }
 
+    @PatchMapping("/friend-request")
+    public ResponseEntity<FriendRequestDTO> updateFriendRequest(@RequestBody @Validated FriendRequestDTO friendRequestDTO,
+                                                                @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        FriendRequest oldFriendRequest = friendRequestService.findById(friendRequestDTO.getId());
+        if (oldFriendRequest == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        if (friendRequestDTO.isApproved())
+            userService.addFriendship(friendRequestDTO.getFromUserId(), friendRequestDTO.getToUserId());
+
+        oldFriendRequest.setApproved(friendRequestDTO.isApproved());
+        oldFriendRequest.setAt(LocalDateTime.parse(friendRequestDTO.getAt()));
+
+        oldFriendRequest = friendRequestService.updateFriendRequest(oldFriendRequest);
+
+        FriendRequestDTO newFriendRequest = new FriendRequestDTO(oldFriendRequest);
+
+        return new ResponseEntity<>(newFriendRequest, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/friend-request/{id}")
+    public ResponseEntity deleteFriendRequest(@PathVariable String id,
+                                              @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Integer deleted = friendRequestService.deleteFriendRequest(Long.parseLong(id));
+
+        if (deleted != 0)
+            return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
     @PostMapping("/{id}/friend-request")
     public ResponseEntity<Boolean> saveFriendRequest(@PathVariable String id,
                                                      @RequestBody @Validated FriendRequestDTO friendRequestDTO,

@@ -58,6 +58,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Integer addFriendship(Long userId, Long friendId) {
+        return userRepository.saveFriendship(userId, friendId);
+    }
+
+    @Override
     public List<User> searchUsers(String name1, String name2) {
         Optional<List<User>> users = userRepository.findUsersByQuery(name1, name2);
         if (!users.isEmpty())

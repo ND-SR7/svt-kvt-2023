@@ -49,7 +49,7 @@ public class User {
     @Column //ako je null, nije postavljeno
     private String description;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_friends", inverseJoinColumns=@JoinColumn(name="friend_id"))
     private List<User> friends;
 

@@ -21,6 +21,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     "or id in (select friend_id from user_friends where user_id = :userId)")
     Optional<List<User>> findFriendsByUserId(@Param("userId") Long userId);
 
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "insert into user_friends(user_id, friend_id) values (:userId, :friendId);")
+    Integer saveFriendship(@Param("userId") Long userId, @Param("friendId") Long friendId);
+
     @Query(nativeQuery = true,
             value = "select * from users " +
                     "where (first_name like concat('%', :name1, '%') or last_name like concat('%', :name1, '%') or " +
