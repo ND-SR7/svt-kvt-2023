@@ -1,10 +1,12 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.*;
+import com.ftn.ac.rs.svtkvt2023.model.entity.FriendRequest;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
+import com.ftn.ac.rs.svtkvt2023.service.FriendRequestService;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import com.ftn.ac.rs.svtkvt2023.service.ImageService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
@@ -41,6 +43,8 @@ public class UserController {
 
     GroupService groupService;
 
+    FriendRequestService friendRequestService;
+
     AuthenticationManager authenticationManager;
 
     TokenUtils tokenUtils;
@@ -48,12 +52,13 @@ public class UserController {
     @Autowired
     public UserController(UserServiceImpl userService, AuthenticationManager authenticationManager,
                           UserDetailsService userDetailsService, ImageService imageService, GroupService groupService,
-                          TokenUtils tokenUtils){
+                          FriendRequestService friendRequestService, TokenUtils tokenUtils){
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.imageService = imageService;
         this.groupService = groupService;
+        this.friendRequestService = friendRequestService;
         this.tokenUtils = tokenUtils;
     }
 
@@ -115,6 +120,25 @@ public class UserController {
         }
 
         return new ResponseEntity<>(groupDTOS, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/friend-request")
+    public ResponseEntity<Boolean> saveFriendRequest(@PathVariable String id,
+                                                     @RequestBody @Validated FriendRequestDTO friendRequestDTO,
+                                                     @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        FriendRequest friendRequest = friendRequestService.createFriendRequest(friendRequestDTO);
+
+        if (friendRequest == null)
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @GetMapping("/friends")
@@ -227,6 +251,27 @@ public class UserController {
         user = userService.updateUser(user);
 
         return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<UserDTO>> searchUsers(@RequestBody UserQuery userQuery,
+                                                     @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<User> users = userService.searchUsers(userQuery.getName1(), userQuery.getName2());
+        List<UserDTO> userDTOS = new ArrayList<>();
+
+        for (User temp: users) {
+            userDTOS.add(new UserDTO(temp));
+        }
+
+        return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/all")

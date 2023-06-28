@@ -21,6 +21,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     "or id in (select friend_id from user_friends where user_id = :userId)")
     Optional<List<User>> findFriendsByUserId(@Param("userId") Long userId);
 
+    @Query(nativeQuery = true,
+            value = "select * from users " +
+                    "where (first_name like concat('%', :name1, '%') or last_name like concat('%', :name1, '%') or " +
+                    "first_name like concat('%', :name2, '%') or last_name like concat('%', :name2, '%')) " +
+                    "and deleted = false;")
+    Optional<List<User>> findUsersByQuery(@Param("name1") String name1, @Param("name2") String name2);
+
     @Transactional
     @Modifying
     Integer deleteUserById(Long id);

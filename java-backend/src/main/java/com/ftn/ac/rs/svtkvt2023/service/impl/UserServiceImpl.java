@@ -58,6 +58,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> searchUsers(String name1, String name2) {
+        Optional<List<User>> users = userRepository.findUsersByQuery(name1, name2);
+        if (!users.isEmpty())
+            return users.get();
+        return null;
+    }
+
+    @Override
     public User createUser(UserDTO userDTO) {
         Optional<User> user = userRepository.findFirstByUsername(userDTO.getUsername());
 

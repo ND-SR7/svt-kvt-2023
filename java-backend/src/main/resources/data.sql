@@ -15,7 +15,7 @@ insert into user_friends(user_id, friend_id) values (2, 3);
 
 -- FRIEND REQUESTS --
 insert into friend_requests (approved, at, created_at, deleted, from_user_id, to_user_id)
-    values (null, null, '2023-05-13', false, 2, 3);
+    values (null, null, '2023-05-13', false, 1, 3);
 
 -- BANNED --
 insert into banned (deleted, timestamp, by_user_id, group_id, towards_user_id)
@@ -66,7 +66,9 @@ insert into reactions (deleted, timestamp, type, made_by_user_id, on_comment_id,
 insert into images (deleted, path, belongs_to_post_id, belongs_to_user_id)
     values (false, 'https://shorturl.at/fLPR9', 1, null);
 insert into images (deleted, path, belongs_to_post_id, belongs_to_user_id)
-    values (false, '../../assets/images/profile.png', null, 1);
+    values (false, '../../assets/images/profile-p.png', null, 1);
+insert into images (deleted, path, belongs_to_post_id, belongs_to_user_id)
+    values (false, '../../assets/images/profile-m.png', null, 2);
 
 -- GROUPS --
 insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason)

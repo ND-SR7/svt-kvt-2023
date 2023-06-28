@@ -15,6 +15,8 @@ public interface UserService {
 
     List<User> findFriendsForUser(Long userId);
 
+    List<User> searchUsers(String name1, String name2);
+
     User createUser(UserDTO userDTO);
 
     User updateUser(User user);
