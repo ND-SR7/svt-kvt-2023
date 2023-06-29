@@ -1,3 +1,5 @@
+import { Image } from "src/app/post/model/image.model";
+
 export class User {
     _id: number;
     username: string;
@@ -8,6 +10,7 @@ export class User {
     lastName: string;
     displayName: string;
     description: string;
+    profileImage: Image;
 
     constructor(obj: {
         _id?: number,
@@ -18,7 +21,8 @@ export class User {
         firstName?: string,
         lastName?: string,
         displayName?: string,
-        description?: string
+        description?: string,
+        profileImage?: Image
     } = {}) {
         this._id = obj._id || null as unknown as number;
         this.username = obj.username || null as unknown as string;
@@ -29,6 +33,7 @@ export class User {
         this.lastName = obj.lastName || null as unknown as string;
         this.displayName = obj.displayName || null as unknown as string;
         this.description = obj.description || null as unknown as string;
+        this.profileImage = obj.profileImage || null as unknown as Image;
     }
 
     get id() {

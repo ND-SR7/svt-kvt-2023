@@ -75,6 +75,10 @@ export class UserService {
     return this.http.get('api/users/friends', queryParams) as Observable<HttpResponse<User[]>>;
   }
 
+  updateUser(user: User): Observable<string> {
+    return this.http.patch('api/users/edit/', user, {headers: this.headers, responseType: 'text'});
+  }
+
   searchUsers(query: UserQuery): Observable<HttpResponse<User[]>> {
     let queryParams = {};
 
