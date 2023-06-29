@@ -89,6 +89,11 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public Image updateImage(Image image) {
+        return imageRepository.save(image);
+    }
+
+    @Override
     public Integer deleteImage(Long id) {
         return imageRepository.deleteImageById(id);
     }

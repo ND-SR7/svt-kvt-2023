@@ -36,6 +36,8 @@ public class UserDTO {
 
     private String description;
 
+    private ImageDTO profileImage;
+
     public UserDTO(User createdUser) {
         this.id = createdUser.getId();
         this.username = createdUser.getUsername();

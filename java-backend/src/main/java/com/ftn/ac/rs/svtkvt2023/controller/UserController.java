@@ -1,10 +1,7 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.*;
-import com.ftn.ac.rs.svtkvt2023.model.entity.FriendRequest;
-import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
-import com.ftn.ac.rs.svtkvt2023.model.entity.Image;
-import com.ftn.ac.rs.svtkvt2023.model.entity.User;
+import com.ftn.ac.rs.svtkvt2023.model.entity.*;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
 import com.ftn.ac.rs.svtkvt2023.service.FriendRequestService;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
@@ -80,6 +77,43 @@ public class UserController {
         UserDTO userDTO = new UserDTO(findUser);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
+    @PatchMapping("/edit")
+    public ResponseEntity<UserDTO> editPost(@RequestBody @Validated UserDTO editedUser,
+                                            @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        User oldUser = userService.findById(editedUser.getId());
+
+        if (oldUser == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        if (editedUser.getDisplayName() != null)
+            oldUser.setDisplayName(editedUser.getDisplayName());
+
+        if (editedUser.getDescription() != null)
+            oldUser.setDescription(editedUser.getDescription());
+
+        Image oldImage = imageService.findProfileImageForUser(user.getId());
+
+        if (editedUser.getProfileImage() != null && oldImage == null)
+            imageService.createImage(editedUser.getProfileImage());
+        else if (editedUser.getProfileImage() != null){
+            oldImage.setPath(editedUser.getProfileImage().getPath());
+            imageService.updateImage(oldImage);
+        }
+
+        oldUser = userService.updateUser(oldUser);
+
+        UserDTO updatedUser = new UserDTO(oldUser);
+
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/image")

@@ -15,6 +15,8 @@ public interface ImageService {
 
     Image createImage(ImageDTO imageDTO);
 
+    Image updateImage(Image image);
+
     Integer deleteImage(Long id);
 
     Integer deletePostImages(Long postId);
