@@ -18,12 +18,12 @@ export class RegisterComponent {
     private authenticationService: AuthenticationService,
     private router: Router
   ) {
-      this.form = this.fb.group({
-			  username: [null, Validators.required],
-			  password: [null, Validators.required],
-        email: [null, Validators.email],
-        firstName: [null, Validators.required],
-        lastName: [null, Validators.required]
+    this.form = this.fb.group({
+      username: [null, Validators.required],
+      password: [null, Validators.required],
+      email: [null, Validators.email],
+      firstName: [null, Validators.required],
+      lastName: [null, Validators.required]
 		});
   }
 

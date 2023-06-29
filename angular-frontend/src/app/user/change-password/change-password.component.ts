@@ -22,7 +22,7 @@ export class ChangePasswordComponent implements OnInit {
       oldPassword: [null, Validators.required],
       newPassword1: [null, Validators.required],
       newPassword2: [null, Validators.required]
-  });
+    });
   }
 
   ngOnInit(): void {

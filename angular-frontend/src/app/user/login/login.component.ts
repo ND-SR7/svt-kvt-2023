@@ -18,10 +18,10 @@ export class LoginComponent implements OnInit{
     private authenticationService: AuthenticationService,
     private router: Router
   ) {
-      this.form = this.fb.group({
-			  username: [null, Validators.required],
-			  password: [null, Validators.required]
-		});
+    this.form = this.fb.group({
+      username: [null, Validators.required],
+      password: [null, Validators.required]
+    });
   }
 
   ngOnInit(): void {

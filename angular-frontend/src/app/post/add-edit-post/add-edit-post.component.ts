@@ -30,7 +30,7 @@ export class AddEditPostComponent implements OnInit{
     this.form = this.fb.group({
       content: [null, Validators.required],
       images: [null, Validators.nullValidator]
-    })
+    });
 
     if (this.editing) {
       const id: number = Number.parseInt(this.router.url.split('/')[3]);

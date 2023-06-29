@@ -24,7 +24,7 @@ export class AddEditGroupComponent implements OnInit {
       creationDate: [null, Validators.required],
       isSuspended: [null, Validators.required],
       suspendedReason: [null]
-    })
+    });
    }
 
    ngOnInit(): void {
