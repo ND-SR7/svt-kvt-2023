@@ -75,6 +75,17 @@ export class UserService {
     return this.http.get('api/users/friends', queryParams) as Observable<HttpResponse<User[]>>;
   }
 
+  getGroupAdmins(groupId: number): Observable<HttpResponse<User[]>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.get('api/users/group/' + groupId + '/admins', queryParams) as Observable<HttpResponse<User[]>>;
+  }
+
   updateUser(user: User): Observable<string> {
     return this.http.patch('api/users/edit/', user, {headers: this.headers, responseType: 'text'});
   }

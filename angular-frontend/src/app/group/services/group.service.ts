@@ -42,11 +42,15 @@ export class GroupService {
   }
 
   edit(editedGroup: Group): Observable<string> {
-    return this.http.patch('api/groups/edit/' + editedGroup._id, editedGroup, {headers: this.headers, responseType: 'text'});
+    return this.http.patch('api/groups/edit/' + editedGroup.id, editedGroup, {headers: this.headers, responseType: 'text'});
   }
 
   delete(id: number): Observable<HttpResponse<Group>> {
     return this.http.delete('api/groups/delete/' + id, {headers: this.headers}) as Observable<HttpResponse<Group>>;
+  }
+
+  deleteGroupAdmin(groupId: number, adminId: number): Observable<HttpResponse<Group>> {
+    return this.http.delete('api/groups/delete/' + groupId + '/admin/' + adminId, {headers: this.headers}) as Observable<HttpResponse<Group>>;
   }
 
   checkUserInGroup(id:number): Observable<HttpResponse<boolean>> {

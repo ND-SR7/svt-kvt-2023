@@ -36,7 +36,7 @@ export class AddEditGroupComponent implements OnInit {
 		group.name = this.form.value.name;
 		group.description = this.form.value.description;
     group.creationDate = this.form.value.creationDate;
-    group.isSuspended = this.form.value.isSuspended;
+    group.suspended = this.form.value.isSuspended;
     group.suspendedReason = this.form.value.suspendedReason;
 // todo
 		// this.authenticationService.login(auth).subscribe(

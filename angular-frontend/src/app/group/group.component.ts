@@ -20,6 +20,8 @@ export class GroupComponent implements OnInit{
   users: Map<number, User> = new Map();
   canPost: boolean = false;
 
+  groupAdmins: User[] = [];
+
   constructor(
     private groupService: GroupService,
     private postService: PostService,
@@ -34,6 +36,12 @@ export class GroupComponent implements OnInit{
     this.groupService.getOne(id).subscribe(
       result => {
         this.group = result.body as Group;
+
+        this.userService.getGroupAdmins(this.group.id).subscribe(
+          result => {
+            this.groupAdmins = result.body as User[];
+          }
+        );
       }
     );
 
@@ -84,7 +92,7 @@ export class GroupComponent implements OnInit{
     return false;
   }
 
-  deleteGroup() {
+  deleteGroup(): void {
     this.groupService.delete(this.group.id).subscribe(
       result => {
         window.alert('Successfully deleted group');
@@ -92,6 +100,72 @@ export class GroupComponent implements OnInit{
       },
       error => {
         window.alert('Error while deleting group');
+        console.log(error);
+      }
+    );
+  }
+
+  suspendGroup(): void {
+    const suspensionReason = prompt('Enter suspension reason');
+    if (suspensionReason == null)
+      return;
+
+    this.group.suspendedReason = suspensionReason;
+    this.group.suspended = true;
+
+    this.groupService.edit(this.group).subscribe(
+      result => {
+        this.groupService.delete(this.group.id).subscribe(
+          result => {
+            window.alert('Group ' + this.group.name + ' suspended');
+            this.router.navigate(['/groups']);
+          },
+          error => {
+            window.alert('Error while suspending group ' + this.group.name);
+            console.log(error);
+          }
+        );
+      },
+      error => {
+        window.alert('Error while suspending group ' + this.group.name);
+        console.log(error);
+      }
+    );
+  }
+
+  deleteGroupAdmin(): void {
+    if (this.groupAdmins.length == 0) {
+      window.alert('Group is unmoderated');
+      return;
+    }
+
+    let promptText: string = '';
+    this.groupAdmins.forEach(admin => {
+      promptText += admin.id + ' -> ' + admin.displayName || admin.username;
+    });
+
+    const adminId: number = prompt('Enter group admin id to be removed\n' + promptText) as unknown as number;
+    if (adminId == null)
+      return;
+    
+    let idExists: boolean = false;
+    this.groupAdmins.forEach(admin => {
+      if (admin.id == adminId)
+        idExists = true;
+    });
+
+    if (!idExists) {
+      window.alert('Wrong input');
+      return;
+    }
+
+    this.groupService.deleteGroupAdmin(this.group.id, adminId).subscribe(
+      result => {
+        window.alert('Successfully deleted selected group admin');
+        location.reload();
+      },
+      error => {
+        window.alert('Error while deleting group admin');
         console.log(error);
       }
     );

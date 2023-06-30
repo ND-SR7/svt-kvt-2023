@@ -3,7 +3,7 @@ export class Group {
     name: string;
     description: string;
     creationDate: Date;
-    isSuspended: boolean;
+    suspended: boolean;
     suspendedReason: string;
 
     constructor(obj: {
@@ -11,14 +11,14 @@ export class Group {
         name?: string,
         description?: string,
         creationDate?: Date,
-        isSuspended?: boolean,
+        suspended?: boolean,
         suspendedReason?: string
     } = {}) {
         this._id = obj._id || null as unknown as number;
         this.name = obj.name || null as unknown as string;
         this.description = obj.description || null as unknown as string;
         this.creationDate = obj.creationDate || null as unknown as Date;
-        this.isSuspended = obj.isSuspended || null as unknown as boolean;
+        this.suspended = obj.suspended || null as unknown as boolean;
         this.suspendedReason = obj.suspendedReason || null as unknown as string;
     }
 
