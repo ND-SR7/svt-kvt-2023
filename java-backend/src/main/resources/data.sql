@@ -28,25 +28,25 @@ insert into reports (accepted, deleted, reason, timestamp, by_user_id, on_commen
 -- POSTS --
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is content intended for a test. If you see it, good for you',
-            '2023-05-12', false, 1);
+            '2023-05-12 17:05:00', false, 1);
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is another content intended for a test. Say hi to everyone reading this',
-            '2023-05-13', true, 2);
+            '2023-05-13 13:02:30', true, 2);
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is a post in a group. If you see it, you are inside a group',
-            '2023-05-14', false, 1);
+            '2023-05-14 15:23:35', false, 1);
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is another post for a group. Say hi to everyone in this group',
-            '2023-05-15', false, 2);
+            '2023-05-15 14:56:55', false, 2);
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is test post for second group. Say hi to everyone in this group',
-            '2023-06-13', false, 3);
+            '2023-06-13 12:12:12', false, 3);
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is Ana\'s global post. Friends can see it',
-        '2023-06-20', false, 3);
+        '2023-06-20 05:22:12', false, 3);
 insert into posts (content, creation_date, deleted, posted_by_user_id)
     values ('This is Mika\'s global post. Friends can see it',
-            '2023-06-27', false, 2);
+            '2023-06-27 01:12:39', false, 2);
 
 -- COMMENTS --
 insert into comments (deleted, text, timestamp, belongs_to_post_id, belongs_to_user_id, replies_to_comment_id)

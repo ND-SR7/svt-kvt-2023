@@ -152,6 +152,35 @@ public class PostController {
         return new ResponseEntity<>(postsDTOS, HttpStatus.OK);
     }
 
+    @GetMapping("/homepage/sort/{order}")
+    public ResponseEntity<List<PostDTO>> getHomepagePosts(@PathVariable String order,
+                                                          @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<Post> posts = null;
+        if (order.equals("asc"))
+            posts = postService.findHomepagePostsSortedAsc(user.getId());
+        else if (order.equals("desc"))
+            posts = postService.findHomepagePostsSortedDesc(user.getId());
+
+        List<PostDTO> postsDTOS = new ArrayList<>();
+
+        for (Post post: posts) {
+            PostDTO postDTO = new PostDTO(post);
+            Group group = groupService.checkIfPostInGroup(post.getId());
+            if (group != null)
+                postDTO.setBelongsToGroupId(group.getId());
+            postsDTOS.add(postDTO);
+        }
+
+        return new ResponseEntity<>(postsDTOS, HttpStatus.OK);
+    }
+
     @GetMapping("/group/{id}")
     public ResponseEntity<List<PostDTO>> getAllForGroup(@PathVariable String id,
                                                         @RequestHeader("authorization") String token) {

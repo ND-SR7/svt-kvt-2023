@@ -20,6 +20,9 @@ public interface PostService {
 
     List<Post> findHomepagePosts(Long userId);
 
+    List<Post> findHomepagePostsSortedAsc(Long userId);
+    List<Post> findHomepagePostsSortedDesc(Long userId);
+
     Post createPost(PostDTO postDTO);
 
     Post updatePost(Post post);

@@ -34,6 +34,36 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                     "and deleted = false;")
     Optional<List<Post>> findHomepagePosts(@Param("userId") Long userId);
 
+    @Query(nativeQuery = true,
+            value = "select * from posts where (((posted_by_user_id = :userId\n" +
+                    "\tor posted_by_user_id in (\n" +
+                    "\t\tselect friend_id from user_friends where user_id = :userId)\n" +
+                    "\tor posted_by_user_id in (\n" +
+                    "\t\tselect user_id from user_friends where friend_id = :userId))\n" +
+                    "\tand id not in (\n" +
+                    "\t\tselect post_id from group_posts where group_id not in (\n" +
+                    "\t\t\tselect group_id from group_members where member_id = :userId)))\n" +
+                    "\tor id in (\n" +
+                    "\t\tselect post_id from group_posts GP left join group_members GM on GP.group_id = GM.group_id where member_id = :userId))\n" +
+                    "\tand deleted = false\n" +
+                    "order by creation_date asc;")
+    Optional<List<Post>> findHomepagePostsSortedAsc(@Param("userId") Long userId);
+
+    @Query(nativeQuery = true,
+            value = "select * from posts where (((posted_by_user_id = :userId\n" +
+                    "\tor posted_by_user_id in (\n" +
+                    "\t\tselect friend_id from user_friends where user_id = :userId)\n" +
+                    "\tor posted_by_user_id in (\n" +
+                    "\t\tselect user_id from user_friends where friend_id = :userId))\n" +
+                    "\tand id not in (\n" +
+                    "\t\tselect post_id from group_posts where group_id not in (\n" +
+                    "\t\t\tselect group_id from group_members where member_id = :userId)))\n" +
+                    "\tor id in (\n" +
+                    "\t\tselect post_id from group_posts GP left join group_members GM on GP.group_id = GM.group_id where member_id = :userId))\n" +
+                    "\tand deleted = false\n" +
+                    "order by creation_date desc;")
+    Optional<List<Post>> findHomepagePostsSortedDesc(@Param("userId") Long userId);
+
     @Transactional
     @Modifying
     @Query(nativeQuery = true,

@@ -77,6 +77,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> findHomepagePostsSortedAsc(Long userId) {
+        Optional<List<Post>> posts = postRepository.findHomepagePostsSortedAsc(userId);
+        if (!posts.isEmpty())
+            return posts.get();
+        return null;
+    }
+
+    @Override
+    public List<Post> findHomepagePostsSortedDesc(Long userId) {
+        Optional<List<Post>> posts = postRepository.findHomepagePostsSortedDesc(userId);
+        if (!posts.isEmpty())
+            return posts.get();
+        return null;
+    }
+
+    @Override
     public Post createPost(PostDTO postDTO) {
         Optional<Post> post = postRepository.findById(postDTO.getId());
 
