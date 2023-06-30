@@ -3,6 +3,7 @@ package com.ftn.ac.rs.svtkvt2023.repository;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,25 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     @Transactional
     Integer deleteGroupById(Long id);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "delete from group_admins where group_id = :groupId and admin_id = :adminId")
+    Integer deleteGroupAdmin(@Param("groupId") Long groupId, @Param("adminId") Long adminId);
+
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "delete from group_members where group_id = :id")
+    Integer deleteGroupMembers(@Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "delete from group_admins where group_id = :id")
+    Integer deleteGroupAdmins(@Param("id") Long id);
 
     @Query(nativeQuery = true,
             value = "select id from posts p where p.id in (select post_id from group_posts where group_id = :groupId)")

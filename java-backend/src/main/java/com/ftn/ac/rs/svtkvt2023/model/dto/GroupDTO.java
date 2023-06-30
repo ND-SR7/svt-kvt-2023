@@ -27,7 +27,7 @@ public class GroupDTO {
     private String creationDate;
 
     @NotNull
-    private boolean isSuspended;
+    private boolean suspended;
 
     private String suspendedReason;
 
@@ -36,7 +36,7 @@ public class GroupDTO {
         this.name = createdGroup.getName();
         this.description = createdGroup.getDescription();
         this.creationDate = createdGroup.getCreationDate().toString();
-        this.isSuspended = createdGroup.isSuspended();
+        this.suspended = createdGroup.isSuspended();
         this.suspendedReason = createdGroup.getSuspendedReason();
     }
 }

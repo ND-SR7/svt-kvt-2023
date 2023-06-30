@@ -105,6 +105,21 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Integer deleteGroupAdmin(Long groupId, Long adminId) {
+        return groupRepository.deleteGroupAdmin(groupId, adminId);
+    }
+
+    @Override
+    public Integer deleteGroupMembers(Long id) {
+        return groupRepository.deleteGroupMembers(id);
+    }
+
+    @Override
+    public Integer deleteGroupAdmins(Long id) {
+        return groupRepository.deleteGroupAdmins(id);
+    }
+
+    @Override
     public Boolean checkUser(Long groupId, Long userId) {
         return groupRepository.findUserInGroup(groupId, userId) > 0;
     }

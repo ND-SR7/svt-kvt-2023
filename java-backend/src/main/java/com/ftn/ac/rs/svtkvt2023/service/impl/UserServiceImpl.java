@@ -58,6 +58,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findGroupAdmins(Long groupId) {
+        Optional<List<User>> users = userRepository.findGroupAdmins(groupId);
+        if (!users.isEmpty())
+            return users.get();
+        return null;
+    }
+
+    @Override
     public Integer addFriendship(Long userId, Long friendId) {
         return userRepository.saveFriendship(userId, friendId);
     }

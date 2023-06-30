@@ -15,6 +15,8 @@ public interface UserService {
 
     List<User> findFriendsForUser(Long userId);
 
+    List<User> findGroupAdmins(Long groupId);
+
     Integer addFriendship(Long userId, Long friendId);
 
     List<User> searchUsers(String name1, String name2);

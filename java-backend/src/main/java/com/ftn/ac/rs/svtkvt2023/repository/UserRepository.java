@@ -17,6 +17,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findFirstByUsername(String username);
 
     @Query(nativeQuery = true,
+            value = "select * from users where id in (select admin_id from group_admins where group_id = :groupId)")
+    Optional<List<User>> findGroupAdmins(@Param("groupId") Long groupId);
+
+    @Query(nativeQuery = true,
             value = "select * from users where id in (select user_id from user_friends where friend_id = :userId)" +
                     "or id in (select friend_id from user_friends where user_id = :userId)")
     Optional<List<User>> findFriendsByUserId(@Param("userId") Long userId);

@@ -121,6 +121,7 @@ public class GroupController {
         oldGroup.setDescription(editedGroup.getDescription());
         oldGroup.setCreationDate(LocalDateTime.parse(editedGroup.getCreationDate()));
         oldGroup.setSuspended(editedGroup.isSuspended());
+        oldGroup.setSuspendedReason(editedGroup.getSuspendedReason());
 
         oldGroup = groupService.updateGroup(oldGroup);
 
@@ -139,7 +140,26 @@ public class GroupController {
         if (user == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+        groupService.deleteGroupMembers(Long.parseLong(id));
+        groupService.deleteGroupAdmins(Long.parseLong(id));
         Integer deleted = groupService.deleteGroup(Long.parseLong(id));
+
+        if (deleted != 0)
+            return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/delete/{groupId}/admin/{id}")
+    public ResponseEntity deleteGroupAdmin(@PathVariable String groupId, @PathVariable String id,
+                                      @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Integer deleted = groupService.deleteGroupAdmin(Long.parseLong(groupId), Long.parseLong(id));
 
         if (deleted != 0)
             return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);

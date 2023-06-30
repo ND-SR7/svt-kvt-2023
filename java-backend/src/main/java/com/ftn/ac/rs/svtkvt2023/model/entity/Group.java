@@ -35,7 +35,7 @@ public class Group {
     private LocalDateTime creationDate;
 
     @Column(name = "is_suspended", nullable = false)
-    private boolean isSuspended;
+    private boolean suspended;
 
     @Column(name = "suspended_reason") //ako je null, nije suspendovana
     private String suspendedReason;
