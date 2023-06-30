@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Post } from '../model/post.model';
 import { PostService } from '../services/post.service';
-import { Router } from '@angular/router';
 import { UserService } from '../../user/services/user.service';
 import { User } from '../../user/model/user.model'
 
@@ -17,7 +16,6 @@ export class PostListComponent implements OnInit{
 
   constructor(
     private postService: PostService,
-    private router: Router,
     private userService: UserService,
   ) { }
 
@@ -34,7 +32,37 @@ export class PostListComponent implements OnInit{
             }
           )
         });
+
+        this.randomize(this.posts);
       }
     );
+  }
+
+  sortPosts(order: string) {
+    this.postService.getHomepagePostsSorted(order).subscribe(
+      result => {
+        this.posts = result.body as Post[];
+      },
+      error => {
+        window.alert('Error while sorting posts');
+        console.log(error);
+      }
+    );
+  }
+
+  //funkcija za prikaz nasumicnih post-ova (Knuth Shuffle)
+  randomize(posts: Post[]): Post[] {
+    let currentIndex = posts.length,  randomIndex;
+  
+    while (currentIndex != 0) {
+  
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      [posts[currentIndex], posts[randomIndex]] = [
+        posts[randomIndex], posts[currentIndex]];
+    }
+  
+    return posts;
   }
 }
