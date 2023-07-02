@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Group } from '../model/group.model';
+import { GroupRequest } from '../model/groupRequest.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,17 @@ export class GroupService {
     return this.http.get('api/groups', queryParams) as Observable<HttpResponse<Group[]>>;
   }
 
+  getGroupRequests(groupId: number): Observable<HttpResponse<GroupRequest[]>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+    
+    return this.http.get('api/groups/' + groupId + '/group-requests', queryParams) as Observable<HttpResponse<GroupRequest[]>>;
+  }
+
   add(newGroup: Group): Observable<string> {
     return this.http.post('api/groups/add', newGroup, {headers: this.headers, responseType: 'text'});
   }
@@ -55,5 +67,16 @@ export class GroupService {
 
   checkUserInGroup(id:number): Observable<HttpResponse<boolean>> {
     return this.http.get('api/posts/group/'+ id + '/user', {headers: this.headers}) as Observable<HttpResponse<boolean>>;
+  }
+
+  sendGroupRequest(groupRequest: GroupRequest): Observable<HttpResponse<boolean>> {
+    let queryParams = {};
+
+    queryParams = {
+      headers: this.headers,
+      observe: 'response'
+    };
+
+    return this.http.post('api/groups/' + groupRequest.forGroupId + '/group-request', groupRequest, queryParams) as Observable<HttpResponse<boolean>>;
   }
 }
