@@ -61,6 +61,10 @@ export class GroupService {
     return this.http.delete('api/groups/delete/' + id, {headers: this.headers}) as Observable<HttpResponse<Group>>;
   }
 
+  addGroupAdmin(groupId: number, adminId: number): Observable<string> {
+    return this.http.post('api/groups/' + groupId + '/admin/' + adminId, {}, {headers: this.headers, responseType: 'text'});
+  }
+
   deleteGroupAdmin(groupId: number, adminId: number): Observable<HttpResponse<Group>> {
     return this.http.delete('api/groups/delete/' + groupId + '/admin/' + adminId, {headers: this.headers}) as Observable<HttpResponse<Group>>;
   }
