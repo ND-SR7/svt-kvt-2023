@@ -39,7 +39,7 @@ public class GroupController {
 
     TokenUtils tokenUtils;
 
-    private static final Logger logger = LogManager.getLogger(CommentController.class);
+    private static final Logger logger = LogManager.getLogger(GroupController.class);
 
     @Autowired
     public GroupController(GroupService groupService, UserService userService, PostService postService,

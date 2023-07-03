@@ -38,7 +38,7 @@ public class PostController {
 
     TokenUtils tokenUtils;
 
-    private static final Logger logger = LogManager.getLogger(CommentController.class);
+    private static final Logger logger = LogManager.getLogger(PostController.class);
 
     @Autowired
     public PostController(PostService postService, UserService userService, GroupService groupService, ImageService imageService,

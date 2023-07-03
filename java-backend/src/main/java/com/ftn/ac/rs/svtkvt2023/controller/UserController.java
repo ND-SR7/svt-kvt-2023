@@ -48,7 +48,7 @@ public class UserController {
 
     TokenUtils tokenUtils;
 
-    private static final Logger logger = LogManager.getLogger(CommentController.class);
+    private static final Logger logger = LogManager.getLogger(UserController.class);
 
     @Autowired
     public UserController(UserServiceImpl userService, AuthenticationManager authenticationManager,

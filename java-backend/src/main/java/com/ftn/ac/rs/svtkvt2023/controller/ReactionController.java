@@ -40,7 +40,7 @@ public class ReactionController {
 
     TokenUtils tokenUtils;
 
-    private static final Logger logger = LogManager.getLogger(CommentController.class);
+    private static final Logger logger = LogManager.getLogger(ReactionController.class);
 
     @Autowired
     public ReactionController(ReactionService reactionService, PostService postService, CommentService commentService,
