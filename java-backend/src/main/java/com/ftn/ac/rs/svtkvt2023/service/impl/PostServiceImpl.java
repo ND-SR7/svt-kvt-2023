@@ -8,6 +8,8 @@ import com.ftn.ac.rs.svtkvt2023.repository.PostRepository;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +41,14 @@ public class PostServiceImpl implements PostService {
         this.groupService = groupService;
     }
 
+    private static final Logger logger = LogManager.getLogger(PostServiceImpl.class);
+
     @Override
     public Post findById(Long id) {
         Optional<Post> post = postRepository.findById(id);
         if (!post.isEmpty())
             return post.get();
+        logger.error("Repository search for post with id: " + id + " returned null");
         return null;
     }
 
@@ -52,6 +57,7 @@ public class PostServiceImpl implements PostService {
         Optional<List<Post>> posts = postRepository.findAllByCreationDate(creationDate);
         if (!posts.isEmpty())
             return posts.get();
+        logger.error("Repository search for post created on date: " + creationDate.toString() + " returned null");
         return null;
     }
 
@@ -60,6 +66,7 @@ public class PostServiceImpl implements PostService {
         Optional<List<Post>> posts = postRepository.findAllByPostedBy(user);
         if (!posts.isEmpty())
             return posts.get();
+        logger.error("Repository search for post created by user with id: " + user.getId() + " returned null");
         return null;
     }
 
@@ -73,6 +80,7 @@ public class PostServiceImpl implements PostService {
         Optional<List<Post>> posts = postRepository.findHomepagePosts(userId);
         if (!posts.isEmpty())
             return posts.get();
+        logger.error("Repository search for homepage posts for user with id: " + userId + " returned null");
         return null;
     }
 
@@ -81,6 +89,7 @@ public class PostServiceImpl implements PostService {
         Optional<List<Post>> posts = postRepository.findHomepagePostsSortedAsc(userId);
         if (!posts.isEmpty())
             return posts.get();
+        logger.error("Repository search for sorted homepage posts for user with id: " + userId + " returned null");
         return null;
     }
 
@@ -89,6 +98,7 @@ public class PostServiceImpl implements PostService {
         Optional<List<Post>> posts = postRepository.findHomepagePostsSortedDesc(userId);
         if (!posts.isEmpty())
             return posts.get();
+        logger.error("Repository search for sorted homepage posts for user with id: " + userId + " returned null");
         return null;
     }
 
@@ -96,8 +106,10 @@ public class PostServiceImpl implements PostService {
     public Post createPost(PostDTO postDTO) {
         Optional<Post> post = postRepository.findById(postDTO.getId());
 
-        if (post.isPresent())
+        if (post.isPresent()) {
+            logger.error("Post with id: " + postDTO.getId() + " already exists in repository");
             return null;
+        }
 
         Post newPost = new Post();
         newPost.setContent(postDTO.getContent());
@@ -108,8 +120,12 @@ public class PostServiceImpl implements PostService {
         if (postDTO.getBelongsToGroupId() != null) {
             boolean userInGroup = groupService.checkUser(postDTO.getBelongsToGroupId(), postDTO.getPostedByUserId());
 
-            if (!userInGroup)
+            if (!userInGroup) {
+                logger.error("User with id: " + postDTO.getPostedByUserId() +
+                        " tried posting in group with id: " + postDTO.getBelongsToGroupId() +
+                        " while not being a member");
                 return null;
+            }
         }
 
         newPost = postRepository.save(newPost);

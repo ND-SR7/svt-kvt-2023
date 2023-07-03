@@ -8,6 +8,8 @@ import com.ftn.ac.rs.svtkvt2023.repository.ImageRepository;
 import com.ftn.ac.rs.svtkvt2023.service.ImageService;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,11 +40,14 @@ public class ImageServiceImpl implements ImageService {
         this.imageRepository = imageRepository;
     }
 
+    private static final Logger logger = LogManager.getLogger(ImageServiceImpl.class);
+
     @Override
     public Image findById(Long id) {
         Optional<Image> image = imageRepository.findById(id);
         if (!image.isEmpty())
             return image.get();
+        logger.error("Repository search for image with id: " + id + " returned null");
         return null;
     }
 
@@ -51,6 +56,7 @@ public class ImageServiceImpl implements ImageService {
         Optional<List<Image>> images = imageRepository.findImagesForPost(id);
         if (!images.isEmpty())
             return images.get();
+        logger.error("Repository search for images for post with id: " + id + " returned null");
         return null;
     }
 
@@ -59,6 +65,7 @@ public class ImageServiceImpl implements ImageService {
         Optional<Image> image = imageRepository.findProfileImageForUser(userId);
         if (!image.isEmpty())
             return image.get();
+        logger.error("Repository search for profile image for user with id: " + userId + " returned null");
         return null;
     }
 
@@ -66,8 +73,10 @@ public class ImageServiceImpl implements ImageService {
     public Image createImage(ImageDTO imageDTO) {
         Optional<Image> image = imageRepository.findById(imageDTO.getId());
 
-        if (image.isPresent())
+        if (image.isPresent()) {
+            logger.error("Image with id: " + imageDTO.getId() + " already exists in repository");
             return null;
+        }
 
         Image newImage = new Image();
         newImage.setPath(imageDTO.getPath());

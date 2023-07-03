@@ -1,5 +1,6 @@
 package com.ftn.ac.rs.svtkvt2023.service.impl;
 
+import com.ftn.ac.rs.svtkvt2023.controller.CommentController;
 import com.ftn.ac.rs.svtkvt2023.model.dto.CommentDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Comment;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
@@ -8,6 +9,8 @@ import com.ftn.ac.rs.svtkvt2023.repository.CommentRepository;
 import com.ftn.ac.rs.svtkvt2023.service.CommentService;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +42,14 @@ public class CommentServiceImpl implements CommentService {
         this.userService = userService;
     }
 
+    private static final Logger logger = LogManager.getLogger(CommentServiceImpl.class);
+
     @Override
     public Comment findById(Long id) {
         Optional<Comment> comment = commentRepository.findById(id);
         if (!comment.isEmpty())
             return comment.get();
+        logger.error("Repository search for comment with id: " + id + " returned null");
         return null;
     }
 
@@ -52,6 +58,7 @@ public class CommentServiceImpl implements CommentService {
         Optional<List<Comment>> comments = commentRepository.findCommentsForPost(postId);
         if (!comments.isEmpty())
             return comments.get();
+        logger.error("Repository search for comments for post with id: " + postId + " returned null");
         return null;
     }
 
@@ -59,8 +66,10 @@ public class CommentServiceImpl implements CommentService {
     public Comment createComment(CommentDTO commentDTO) {
         Optional<Comment> comment = commentRepository.findById(commentDTO.getId());
 
-        if (comment.isPresent())
+        if (comment.isPresent()) {
+            logger.error("Comment with id: " + commentDTO.getId() + " already exists in repository");
             return null;
+        }
 
         Comment newComment = new Comment();
         newComment.setText(commentDTO.getText());

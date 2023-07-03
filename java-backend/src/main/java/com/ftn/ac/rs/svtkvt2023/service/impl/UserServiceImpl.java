@@ -4,6 +4,8 @@ import com.ftn.ac.rs.svtkvt2023.model.dto.UserDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.repository.UserRepository;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,11 +30,14 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
+
     @Override
     public User findById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (!user.isEmpty())
             return user.get();
+        logger.error("Repository search for user with id: " + id + " returned null");
         return null;
     }
 
@@ -41,6 +46,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findFirstByUsername(username);
         if (!user.isEmpty())
             return user.get();
+        logger.error("Repository search for user with username: " + username + " returned null");
         return null;
     }
 
@@ -54,6 +60,7 @@ public class UserServiceImpl implements UserService {
         Optional<List<User>> users = userRepository.findFriendsByUserId(userId);
         if (!users.isEmpty())
             return users.get();
+        logger.error("Repository search for friends of user with id: " + userId + " returned null");
         return null;
     }
 
@@ -62,6 +69,7 @@ public class UserServiceImpl implements UserService {
         Optional<List<User>> users = userRepository.findGroupAdmins(groupId);
         if (!users.isEmpty())
             return users.get();
+        logger.error("Repository search for group admins for group with id: " + groupId + " returned null");
         return null;
     }
 
@@ -75,6 +83,7 @@ public class UserServiceImpl implements UserService {
         Optional<List<User>> users = userRepository.findUsersByQuery(name1, name2);
         if (!users.isEmpty())
             return users.get();
+        logger.error("Repository search for users with provided query returned null");
         return null;
     }
 
@@ -82,8 +91,10 @@ public class UserServiceImpl implements UserService {
     public User createUser(UserDTO userDTO) {
         Optional<User> user = userRepository.findFirstByUsername(userDTO.getUsername());
 
-        if(user.isPresent())
+        if(user.isPresent()) {
+            logger.error("User with id: " + userDTO.getId() + " already exists in repository");
             return null;
+        }
 
         User newUser = new User();
         newUser.setUsername(userDTO.getUsername());

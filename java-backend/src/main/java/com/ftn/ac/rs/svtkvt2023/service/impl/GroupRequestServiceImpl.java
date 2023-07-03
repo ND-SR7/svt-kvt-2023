@@ -8,6 +8,8 @@ import com.ftn.ac.rs.svtkvt2023.repository.GroupRequestRepository;
 import com.ftn.ac.rs.svtkvt2023.service.GroupRequestService;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +41,14 @@ public class GroupRequestServiceImpl implements GroupRequestService {
         this.userService = userService;
     }
 
+    private static final Logger logger = LogManager.getLogger(GroupRequestServiceImpl.class);
+
     @Override
     public GroupRequest findById(Long id) {
         Optional<GroupRequest> groupRequest = groupRequestRepository.findById(id);
         if (!groupRequest.isEmpty())
             return groupRequest.get();
+        logger.error("Repository search for group request with id: " + id + " returned null");
         return null;
     }
 
@@ -52,6 +57,7 @@ public class GroupRequestServiceImpl implements GroupRequestService {
         Optional<List<GroupRequest>> groupRequests = groupRequestRepository.findAllByForGroup(groupId);
         if (!groupRequests.isEmpty())
             return groupRequests.get();
+        logger.error("Repository search for group requests for group with id: " + groupId + " returned null");
         return null;
     }
 
@@ -59,8 +65,10 @@ public class GroupRequestServiceImpl implements GroupRequestService {
     public GroupRequest createGroupRequest(GroupRequestDTO groupRequestDTO) {
         Optional<GroupRequest> groupRequest = groupRequestRepository.findById(groupRequestDTO.getId());
 
-        if (groupRequest.isPresent())
+        if (groupRequest.isPresent()) {
+            logger.error("Group request with id: " + groupRequestDTO.getId() + " already exists in repository");
             return null;
+        }
 
         GroupRequest newGroupRequest = new GroupRequest();
         newGroupRequest.setCreatedAt(LocalDateTime.parse(groupRequestDTO.getCreatedAt()));

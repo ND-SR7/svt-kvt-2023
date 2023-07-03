@@ -2,10 +2,11 @@ package com.ftn.ac.rs.svtkvt2023.service.impl;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.GroupDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
-import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.repository.GroupRepository;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +31,14 @@ public class GroupServiceImpl implements GroupService {
         this.userService = userService;
     }
 
+    private static final Logger logger = LogManager.getLogger(GroupServiceImpl.class);
+
     @Override
     public Group findById(Long id) {
         Optional<Group> group = groupRepository.findById(id);
         if (!group.isEmpty())
             return group.get();
+        logger.error("Repository search for group with id: " + id + " returned null");
         return null;
     }
 
@@ -43,6 +47,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<Group> group = groupRepository.findByName(name);
         if (!group.isEmpty())
             return group.get();
+        logger.error("Repository search for group with name: " + name + " returned null");
         return null;
     }
 
@@ -51,6 +56,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<List<Group>> groups = groupRepository.findAllByCreationDate(creationDate);
         if (!groups.isEmpty())
             return groups.get();
+        logger.error("Repository search for group created on date: " + creationDate.toString() + " returned null");
         return null;
     }
 
@@ -64,6 +70,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<List<Long>> postsIds = groupRepository.findPostsByGroupId(id);
         if (!postsIds.isEmpty())
             return postsIds.get();
+        logger.error("Repository search for posts for group with id: " + id + " returned null");
         return null;
     }
 
@@ -72,6 +79,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<List<Group>> groups = groupRepository.findGroupsByMemberId(userId);
         if (!groups.isEmpty())
             return groups.get();
+        logger.error("Repository search for groups for user with id: " + userId + " returned null");
         return null;
     }
 
@@ -80,6 +88,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<Group> group = groupRepository.checkIfPostInGroup(postId);
         if (!group.isEmpty())
             return group.get();
+        logger.error("Repository search in groups for post with id: " + postId + " returned null");
         return null;
     }
 
@@ -87,8 +96,10 @@ public class GroupServiceImpl implements GroupService {
     public Group createGroup(GroupDTO groupDTO) {
         Optional<Group> group = groupRepository.findByName(groupDTO.getName());
 
-        if (group.isPresent())
+        if (group.isPresent()) {
+            logger.error("Group with id: " + groupDTO.getId() + " already exists in repository");
             return null;
+        }
 
         Group newGroup = new Group();
         newGroup.setName(groupDTO.getName());

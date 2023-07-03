@@ -11,6 +11,8 @@ import com.ftn.ac.rs.svtkvt2023.service.CommentService;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
 import com.ftn.ac.rs.svtkvt2023.service.ReactionService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,11 +51,14 @@ public class ReactionServiceImpl implements ReactionService {
         this.userService = userService;
     }
 
+    private static final Logger logger = LogManager.getLogger(ReactionServiceImpl.class);
+
     @Override
     public Reaction findById(Long id) {
         Optional<Reaction> reaction = reactionRepository.findById(id);
         if (!reaction.isEmpty())
             return reaction.get();
+        logger.error("Repository search for reaction with id: " + id + " returned null");
         return null;
     }
 
@@ -62,6 +67,7 @@ public class ReactionServiceImpl implements ReactionService {
         Optional<List<Reaction>> reactions = reactionRepository.findAllByOnPostId(postId);
         if (!reactions.isEmpty())
             return reactions.get();
+        logger.error("Repository search for reactions for post with id: " + postId + " returned null");
         return null;
     }
 
@@ -70,6 +76,7 @@ public class ReactionServiceImpl implements ReactionService {
         Optional<List<Reaction>> reactions = reactionRepository.findAllByOnCommentId(commentId);
         if (!reactions.isEmpty())
             return reactions.get();
+        logger.error("Repository search for reactions for comment with id: " + commentId + " returned null");
         return null;
     }
 
@@ -77,8 +84,10 @@ public class ReactionServiceImpl implements ReactionService {
     public Reaction createReaction(ReactionDTO reactionDTO) {
         Optional<Reaction> reaction = reactionRepository.findById(reactionDTO.getId());
 
-        if (reaction.isPresent())
+        if (reaction.isPresent()) {
+            logger.error("Reaction with id: " + reactionDTO.getId() + " already exists in repository");
             return null;
+        }
 
         Reaction newReaction = new Reaction();
         newReaction.setType(EnumReactionType.valueOf(reactionDTO.getReactionType()));
@@ -86,8 +95,11 @@ public class ReactionServiceImpl implements ReactionService {
 
         User user = userService.findById(reactionDTO.getMadeByUserId());
 
-        if (user == null)
+        if (user == null) {
+            logger.error("User with id: " + reactionDTO.getMadeByUserId() +
+                    ", that made the reaction, was not found in the database");
             return null;
+        }
 
         newReaction.setMadeBy(user);
 
