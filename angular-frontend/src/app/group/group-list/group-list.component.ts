@@ -14,8 +14,10 @@ import { GroupRequest } from '../model/groupRequest.model';
 export class GroupListComponent implements OnInit {
   groups: Group[] = [];
   user: User = new User();
+  isAdmin: boolean = false;
 
   groupRequests: Map<number, GroupRequest[]> = new Map(); //id grupe i njeni zahtevi
+  userGroups: Group[] = []; //grupe kojih je ulogovani korisnik clan
 
   constructor(
     private groupService: GroupService,
@@ -37,28 +39,38 @@ export class GroupListComponent implements OnInit {
       }
     );
 
-    let sub: string;
+    let sub, role: string;
     const item = localStorage.getItem('user') || '';
 
     const jwt: JwtHelperService = new JwtHelperService();
 		const decodedToken = jwt.decodeToken(item);
     sub = decodedToken.sub;
+    role = decodedToken.role.authority;
+
+    if (role.includes('ADMIN'))
+      this.isAdmin = true;
 
     this.userService.getOneByUsername(sub).subscribe(
       result => {
         this.user = result.body as User;
+
+        this.userService.getUserGroups(this.user.id).subscribe(
+          result => {
+            this.userGroups = result.body as Group[];
+          }
+        );
       }
     );
   }
 
   canAccess(groupId: number): boolean {
     let access: boolean = false;
-    this.groupService.checkUserInGroup(groupId).subscribe(
-      result => {
-        if (result.body == true)
-          access = true;
-      }
-    );
+    
+    this.userGroups.forEach(group => {
+      if (group.id == groupId)
+        access = true;
+    });
+
     return access;
   }
 
@@ -70,6 +82,10 @@ export class GroupListComponent implements OnInit {
           canSend = false;
       });
     });
+
+    if (this.canAccess(groupId))
+      canSend = false;
+
     return canSend;
   }
 
