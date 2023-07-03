@@ -113,6 +113,16 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Boolean addGroupAdmin(Long groupId, Long adminId) {
+        return groupRepository.addGroupAdmin(groupId, adminId) > 0;
+    }
+
+    @Override
+    public Boolean addGroupMember(Long groupId, Long memberId) {
+        return groupRepository.addGroupMember(groupId, memberId) > 0;
+    }
+
+    @Override
     public Integer deleteGroupAdmin(Long groupId, Long adminId) {
         return groupRepository.deleteGroupAdmin(groupId, adminId);
     }

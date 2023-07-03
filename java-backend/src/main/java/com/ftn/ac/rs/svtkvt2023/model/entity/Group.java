@@ -44,11 +44,11 @@ public class Group {
     @JoinTable(name = "group_posts", inverseJoinColumns=@JoinColumn(name="post_id"))
     private List<Post> posts;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "group_admins", inverseJoinColumns=@JoinColumn(name="admin_id"))
     private List<User> groupAdmins;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "group_members", inverseJoinColumns=@JoinColumn(name="member_id"))
     private List<User> groupMembers;
 

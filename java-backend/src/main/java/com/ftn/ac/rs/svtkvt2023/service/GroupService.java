@@ -29,6 +29,10 @@ public interface GroupService {
 
     Integer deleteGroup(Long id);
 
+    Boolean addGroupAdmin(Long groupId, Long adminId);
+
+    Boolean addGroupMember(Long groupId, Long memberId);
+
     Integer deleteGroupAdmin(Long groupId, Long adminId);
 
     Integer deleteGroupMembers(Long id);

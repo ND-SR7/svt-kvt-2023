@@ -193,8 +193,43 @@ public class GroupController {
         Integer deleted = groupService.deleteGroup(Long.parseLong(id));
 
         if (deleted != 0)
-            return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(deleted, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/{groupId}/admin/{adminId}")
+    public ResponseEntity addGroupAdmin(@PathVariable String groupId, @PathVariable String adminId,
+                                        @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        boolean added = groupService.addGroupAdmin(Long.parseLong(groupId), Long.parseLong(adminId)) &&
+                        groupService.addGroupMember(Long.parseLong(groupId), Long.parseLong(adminId));
+
+        if (!added)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{groupId}/member/{memberId}")
+    public ResponseEntity addGroupMember(@PathVariable String groupId, @PathVariable String memberId,
+                                        @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Boolean added = groupService.addGroupMember(Long.parseLong(groupId), Long.parseLong(memberId));
+
+        if (!added)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{groupId}/admin/{id}")
@@ -210,7 +245,7 @@ public class GroupController {
         Integer deleted = groupService.deleteGroupAdmin(Long.parseLong(groupId), Long.parseLong(id));
 
         if (deleted != 0)
-            return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(deleted, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
