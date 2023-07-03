@@ -15,6 +15,8 @@ import { User } from '../user/model/user.model';
 })
 export class GroupComponent implements OnInit{
 
+  user: User = new User();
+
   group: Group = new Group();
   posts: Post[] = [];
   users: Map<number, User> = new Map();
@@ -69,11 +71,23 @@ export class GroupComponent implements OnInit{
         this.canPost = true;
       }
     );
+
+    let sub: string;
+    const item = localStorage.getItem('user') || '';
+
+    const jwt: JwtHelperService = new JwtHelperService();
+		const decodedToken = jwt.decodeToken(item);
+    sub = decodedToken.sub;
+
+    this.userService.getOneByUsername(sub).subscribe(
+      result => {
+        this.user = result.body as User;
+      }
+    );
   }
 
   hasAuthority(): boolean {
     let role: string;
-    let sub: string;
     const item = localStorage.getItem('user');
 
     if (!item) {
@@ -85,9 +99,8 @@ export class GroupComponent implements OnInit{
     const jwt: JwtHelperService = new JwtHelperService();
 		const decodedToken = jwt.decodeToken(item);
 		role = decodedToken.role.authority;
-    sub = decodedToken.sub;
     
-    if (role == "ROLE_ADMIN") //todo ako brise admin grupe
+    if (role == "ROLE_ADMIN")
       return true;
     return false;
   }
@@ -141,7 +154,7 @@ export class GroupComponent implements OnInit{
 
     let promptText: string = '';
     this.groupAdmins.forEach(admin => {
-      promptText += admin.id + ' -> ' + admin.displayName || admin.username;
+      promptText += admin.id + ' -> ' + (admin.displayName || admin.username);
     });
 
     const adminId: number = prompt('Enter group admin id to be removed\n' + promptText) as unknown as number;
@@ -169,5 +182,14 @@ export class GroupComponent implements OnInit{
         console.log(error);
       }
     );
+  }
+
+  isGroupAdmin(): boolean {
+    let isAdmin: boolean = false;
+    this.groupAdmins.forEach(groupAdmin => {
+      if (groupAdmin.id == this.user.id)
+        isAdmin = true;
+    });
+    return isAdmin;
   }
 }
