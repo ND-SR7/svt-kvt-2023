@@ -3,6 +3,8 @@
     <h3>{{group.creationDate | date: 'MMMM d, y, HH:mm'}}</h3>
     <br>
     <p>{{group.description}}</p>
+    <button *ngIf="hasAuthority() || isGroupAdmin()" [routerLink]="['/groups/' + group.id + '/group-requests']">View Group Requests</button>
+    <br>
     <button *ngIf="hasAuthority() || isGroupAdmin()" [routerLink]="['/groups/edit', group.id]">Edit Group</button>
     <button *ngIf="hasAuthority() || isGroupAdmin()" (click)="deleteGroup()">Delete Group</button>
     <button *ngIf="hasAuthority()" (click)="suspendGroup()">Suspend Group</button>

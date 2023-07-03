@@ -21,4 +21,8 @@ export class GroupRequest {
         this.createdByUserId = obj.createdByUserId || null as unknown as number;
         this.forGroupId = obj.forGroupId || null as unknown as number;
     }
+
+    get id() {
+        return this._id;
+    }
 }

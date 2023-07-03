@@ -73,7 +73,7 @@ export class GroupService {
     return this.http.get('api/posts/group/'+ id + '/user', {headers: this.headers}) as Observable<HttpResponse<boolean>>;
   }
 
-  sendGroupRequest(groupRequest: GroupRequest): Observable<HttpResponse<boolean>> {
+  sendGroupRequest(groupRequest: GroupRequest): Observable<HttpResponse<GroupRequest>> {
     let queryParams = {};
 
     queryParams = {
@@ -81,6 +81,14 @@ export class GroupService {
       observe: 'response'
     };
 
-    return this.http.post('api/groups/' + groupRequest.forGroupId + '/group-request', groupRequest, queryParams) as Observable<HttpResponse<boolean>>;
+    return this.http.post('api/groups/' + groupRequest.forGroupId + '/group-request', groupRequest, queryParams) as Observable<HttpResponse<GroupRequest>>;
+  }
+
+  updateGroupRequest(groupRequest: GroupRequest): Observable<string> {
+    return this.http.patch('api/groups/group-request', groupRequest, {headers: this.headers, responseType: 'text'});
+  }
+
+  deleteGroupRequest(id: number): Observable<HttpResponse<Number>> {
+    return this.http.delete('api/groups/group-request/' + id, {headers: this.headers}) as Observable<HttpResponse<Number>>;
   }
 }

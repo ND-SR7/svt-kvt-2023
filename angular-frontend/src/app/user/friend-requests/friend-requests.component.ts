@@ -82,7 +82,6 @@ export class FriendRequestsComponent implements OnInit {
     this.userService.updateFriendRequest(respondedRequest).subscribe(
       result => {
         window.alert('Successfully responded to friend request');
-        location.reload();
       },
       error => {
         window.alert('Error while responding to friend request');
