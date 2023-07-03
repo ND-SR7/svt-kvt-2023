@@ -1,9 +1,12 @@
 package com.ftn.ac.rs.svtkvt2023.controller;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.GroupDTO;
+import com.ftn.ac.rs.svtkvt2023.model.dto.GroupRequestDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
+import com.ftn.ac.rs.svtkvt2023.model.entity.GroupRequest;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.security.TokenUtils;
+import com.ftn.ac.rs.svtkvt2023.service.GroupRequestService;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
@@ -28,16 +31,20 @@ public class GroupController {
 
     PostService postService;
 
+    GroupRequestService groupRequestService;
+
     AuthenticationManager authenticationManager;
 
     TokenUtils tokenUtils;
 
     @Autowired
     public GroupController(GroupService groupService, UserService userService, PostService postService,
-                           AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
+                           GroupRequestService groupRequestService, AuthenticationManager authenticationManager,
+                           TokenUtils tokenUtils) {
         this.groupService = groupService;
         this.userService = userService;
         this.postService = postService;
+        this.groupRequestService = groupRequestService;
         this.authenticationManager = authenticationManager;
         this.tokenUtils = tokenUtils;
     }
@@ -80,6 +87,47 @@ public class GroupController {
 
         return new ResponseEntity<>(groupDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/group-requests")
+    public ResponseEntity<List<GroupRequestDTO>> getGroupRequests(@PathVariable String id,
+                                                        @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<GroupRequest> groupRequests = groupRequestService.findAllForGroup(Long.parseLong(id));
+        List<GroupRequestDTO> groupRequestDTOS = new ArrayList<>();
+
+        for (GroupRequest groupRequest: groupRequests)
+            groupRequestDTOS.add(new GroupRequestDTO(groupRequest));
+
+        return new ResponseEntity<>(groupRequestDTOS, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/group-request")
+    public ResponseEntity<GroupRequestDTO> createGroupRequest(@PathVariable String id,
+                                                                  @RequestBody @Validated GroupRequestDTO newGroupRequest,
+                                                                  @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        GroupRequest createdGroupRequest = groupRequestService.createGroupRequest(newGroupRequest);
+
+        if (createdGroupRequest == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+
+        GroupRequestDTO groupRequestDTO = new GroupRequestDTO(createdGroupRequest);
+
+        return new ResponseEntity<>(groupRequestDTO, HttpStatus.CREATED);
+    }
+
 
     @PostMapping("/add")
     public ResponseEntity<GroupDTO> createGroup(@RequestBody @Validated GroupDTO newGroup,
