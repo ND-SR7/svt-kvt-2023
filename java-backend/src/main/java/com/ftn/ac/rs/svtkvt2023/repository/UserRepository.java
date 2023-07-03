@@ -41,4 +41,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Modifying
     Integer deleteUserById(Long id);
+
+    @Query(nativeQuery = true,
+            value = "select * from users where id = :id and is_admin = true and deleted = false;")
+    Optional<User> checkIfUserIsAdmin(@Param("id") Long id);
 }

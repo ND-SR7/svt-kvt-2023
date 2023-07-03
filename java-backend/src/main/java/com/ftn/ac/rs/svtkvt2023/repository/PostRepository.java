@@ -21,7 +21,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<List<Post>> findAllByPostedBy(User user);
 
     @Query(nativeQuery = true,
-            value = "select * from posts where (((posted_by_user_id = :userId\n" +
+            value = "select * from posts where posted_by_user_id = :userId or (((posted_by_user_id = :userId\n" +
                     "\tor posted_by_user_id in (\n" +
                     "\t\tselect friend_id from user_friends where user_id = :userId)\n" +
                     "    or posted_by_user_id in (\n" +

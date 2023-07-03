@@ -5,6 +5,7 @@ import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.repository.GroupRepository;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
+import com.ftn.ac.rs.svtkvt2023.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,13 @@ public class GroupServiceImpl implements GroupService {
     @Autowired
     public void setGroupRepository(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
+    }
+
+    private UserService userService;
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -121,6 +129,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Boolean checkUser(Long groupId, Long userId) {
-        return groupRepository.findUserInGroup(groupId, userId) > 0;
+        return (groupRepository.findUserInGroup(groupId, userId) > 0 || userService.checkUserIsAdmin(userId));
     }
 }

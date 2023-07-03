@@ -107,4 +107,9 @@ public class UserServiceImpl implements UserService {
     public Integer deleteUser(Long id) {
         return userRepository.deleteUserById(id);
     }
+
+    @Override
+    public Boolean checkUserIsAdmin(Long id) {
+        return userRepository.checkIfUserIsAdmin(id).isPresent();
+    }
 }

@@ -162,7 +162,7 @@ public class PostController {
         if (user == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        List<Post> posts = null;
+        List<Post> posts = new ArrayList<>();
         if (order.equals("asc"))
             posts = postService.findHomepagePostsSortedAsc(user.getId());
         else if (order.equals("desc"))
@@ -214,6 +214,9 @@ public class PostController {
         String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
         String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
         User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (userService.checkUserIsAdmin(user.getId()))
+            return new ResponseEntity<>(true, HttpStatus.OK);
 
         if (user == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -26,4 +26,6 @@ public interface UserService {
     User updateUser(User user);
 
     Integer deleteUser(Long id);
+
+    Boolean checkUserIsAdmin(Long id);
 }
