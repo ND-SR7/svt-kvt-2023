@@ -80,7 +80,7 @@ public class UserController {
     }
 
     @PatchMapping("/edit")
-    public ResponseEntity<UserDTO> editPost(@RequestBody @Validated UserDTO editedUser,
+    public ResponseEntity<UserDTO> editUser(@RequestBody @Validated UserDTO editedUser,
                                             @RequestHeader("authorization") String token) {
         String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
         String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
