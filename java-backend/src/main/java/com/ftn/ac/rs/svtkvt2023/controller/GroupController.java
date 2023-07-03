@@ -107,6 +107,50 @@ public class GroupController {
         return new ResponseEntity<>(groupRequestDTOS, HttpStatus.OK);
     }
 
+    @PatchMapping("/group-request")
+    public ResponseEntity<GroupRequestDTO> updateGroupRequest(@RequestBody @Validated GroupRequestDTO groupRequestDTO,
+                                                                @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        GroupRequest oldGroupRequest = groupRequestService.findById(groupRequestDTO.getId());
+        if (oldGroupRequest == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        if (groupRequestDTO.getApproved())
+            groupService.addGroupMember(groupRequestDTO.getForGroupId(), groupRequestDTO.getCreatedByUserId());
+
+        oldGroupRequest.setApproved(groupRequestDTO.getApproved());
+        oldGroupRequest.setAt(LocalDateTime.parse(groupRequestDTO.getAt()));
+
+        oldGroupRequest = groupRequestService.updateGroupRequest(oldGroupRequest);
+
+        GroupRequestDTO newGroupRequest = new GroupRequestDTO(oldGroupRequest);
+
+        return new ResponseEntity<>(newGroupRequest, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/group-request/{id}")
+    public ResponseEntity deleteGroupRequest(@PathVariable String id,
+                                              @RequestHeader("authorization") String token) {
+        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
+        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
+        User user = userService.findByUsername(username); //provera da li postoji u bazi
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Integer deleted = groupRequestService.deleteGroupRequest(Long.parseLong(id));
+
+        if (deleted != 0)
+            return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
     @PostMapping("/{id}/group-request")
     public ResponseEntity<GroupRequestDTO> createGroupRequest(@PathVariable String id,
                                                                   @RequestBody @Validated GroupRequestDTO newGroupRequest,
@@ -127,7 +171,6 @@ public class GroupController {
 
         return new ResponseEntity<>(groupRequestDTO, HttpStatus.CREATED);
     }
-
 
     @PostMapping("/add")
     public ResponseEntity<GroupDTO> createGroup(@RequestBody @Validated GroupDTO newGroup,
