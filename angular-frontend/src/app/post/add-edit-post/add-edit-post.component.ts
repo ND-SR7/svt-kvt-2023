@@ -112,6 +112,16 @@ export class AddEditPostComponent implements OnInit{
       const post: Post = new Post({_id: Number.parseInt(this.router.url.split('/')[3])});
       post.content = this.form.value.content;
 
+      if (this.imagePaths.length > 0) {
+        this.imagePaths.forEach((imageName: string) => {
+          let image: Image = new Image();
+          image.path = '../../assets/images/' + imageName;
+          image.belongsToPostId = post.id;
+          this.images.push(image);
+        });
+        post.images = this.images;
+      }
+
       this.postService.edit(post).subscribe(
         result => {
           window.alert('Successfully edited the post!');
