@@ -349,6 +349,12 @@ public class PostController {
         logger.info("Applying changes");
         oldPost.setContent(editedPost.getContent());
 
+        if (editedPost.getImages().size() > 0) {
+            imageService.deletePostImages(Long.parseLong(id));
+            for (ImageDTO imageDTO: editedPost.getImages())
+                imageService.createImage(imageDTO);
+        }
+
         oldPost = postService.updatePost(oldPost);
 
         logger.info("Creating response");

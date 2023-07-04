@@ -15,11 +15,11 @@ import java.util.Optional;
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
     @Query(nativeQuery = true,
-            value = "select * from images where belongs_to_post_id = :id")
+            value = "select * from images where belongs_to_post_id = :id and deleted = false")
     Optional<List<Image>> findImagesForPost(@Param("id") Long id);
 
     @Query(nativeQuery = true,
-            value = "select * from images where belongs_to_user_id = :userId")
+            value = "select * from images where belongs_to_user_id = :userId and deleted = false")
     Optional<Image> findProfileImageForUser(@Param("userId") Long userId);
 
     @Transactional
