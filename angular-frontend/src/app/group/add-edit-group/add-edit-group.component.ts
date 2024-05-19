@@ -28,7 +28,8 @@ export class AddEditGroupComponent implements OnInit {
   ) { 
     this.form = this.fb.group({
       name: [null, Validators.required],
-      description: [null, Validators.required]
+      description: [null, Validators.required],
+      rules: [null, Validators.required]
     });
 
     if (this.editing) {
@@ -69,6 +70,7 @@ export class AddEditGroupComponent implements OnInit {
       group.description = this.form.value.description;
       group.creationDate = new Date().toISOString().slice(0, -1);
       group.suspended = false;
+      group.rules = this.form.value.rules;
 
       this.groupService.add(group).subscribe(
         result => {
@@ -93,6 +95,7 @@ export class AddEditGroupComponent implements OnInit {
     } else {
       this.group.name = this.form.value.name;
       this.group.description = this.form.value.description;
+      this.group.rules = this.form.value.rules;
 
       this.groupService.edit(this.group).subscribe(
         result => {

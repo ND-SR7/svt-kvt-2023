@@ -17,6 +17,15 @@
         </div>
 
         <div>
+          <label for="rules"><b>Rules:</b></label>
+          <div>
+            <textarea id="rules" name="rules" [formControl]="form.controls['rules']"></textarea>
+            <small class="text-danger"  *ngIf="form.controls.rules.touched && form.controls.rules.errors?.required">
+              This field can't be empty!</small>
+          </div>
+        </div>
+
+        <div>
             <button *ngIf="!editing" type="submit" class="btn btn-primary" [disabled]="!form.valid">Add Group</button>
             <button *ngIf="editing" type="submit" class="btn btn-primary" [disabled]="!form.valid">Save</button>
         </div>
