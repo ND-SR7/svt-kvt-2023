@@ -1,4 +1,4 @@
-Projekat (SVT, KVT) 2023
+Projekat (SVT, KVT, TPUESD) 2023-2024
 
 **Društvena mreža**
 
@@ -10,7 +10,7 @@ Korisnik aplikacije ima na raspolaganju sledeće funkcionalnosti:
 
 [K1] Registracija korisnika. Administrator sistema je predefinisan korisnik u sistemu. [K2] Prijava i odjava sa sistema. Na formi za prijavljivanje na sistem postoji link za prelaz na registraciju korisnika. Kada se korisnik uspešno prijavi na aplikaciju omogućiti korisniku da se odjavi. Bez prijave na sistem nije moguće pristupiti ostatku aplikacije.
 
-[K3] Rukovanje[^1] objavama. Objava može i ne mora da sadrži slike. Ukoliko ih sadrži, može da sadrži jednu ili više njih. Obavezno polje objave su jeste sadržaj tj. tekst te objave.
+[K3] Rukovanje[^1] objavama. Objava može i ne mora da sadrži slike. Ukoliko ih sadrži, može da sadrži jednu ili više njih. Obavezno polje objave su sadržaj tj. tekst te objave i PDF dokument sadržaja objave.
 
 [K4] Ažuriranje komentara. Moguće je odgovoriti (eng. *reply*) na komentar. Moguć je proizvoljan broj odgovora na komentar (*reply* na *reply* na *reply*…).
 
@@ -20,7 +20,7 @@ Korisnik aplikacije ima na raspolaganju sledeće funkcionalnosti:
 
 [K7] Sortiranje objava. Objave je moguće sortirati po datumu objavljivanja (eng. *new*) rastuće i opadajuće.
 
-[K8] Rukovanje grupama. Bilo koji registrovan korisnik može da kreira grupu i automatski postaje administrator date grupe. Jedino administrator sistema ima pravo da suspenduje (logički obriše) grupu.
+[K8] Rukovanje grupama. Bilo koji registrovan korisnik može da kreira grupu i automatski postaje administrator date grupe. Prilikom kreiranja grupe, korisnik upload-uje PDF dokument sa opisom grupe. Jedino administrator sistema ima pravo da suspenduje (logički obriše) grupu.
 
 Svaki korisnik može da uđe u grupu i prati objave unutar te grupe i kreira objave unutar te grupe. Da bi korisnik ušao u grupu potrebno je da napravi zahtev za ulazak u grupu.
 
@@ -52,6 +52,37 @@ Administrator sitema ima na raspolaganju sve funkcionalnosti koje ima registrova
 
 ---
 
+**TPUESD DEO**: 
+
+Omogućiti  indeksiranje  grupa  i  objava  u  *Elasticsearch*-u,  omogućiti  čuvanje dokumenata u *MinIO* bazi. 
+
+[S1] Pretraga grupa:
+
+- Pretraživanje grupa po nazivu 
+- Pretraživanje grupa po opisu 
+- Pretraživanje grupa po opisu iz zakačenog PDF fajla 
+- Pretraživanje grupa po opsegu broja objava (od - do), gde može biti zadata donja i/ili gornja granica opsega 
+- Pretraživanje grupa po prosečnom broju lajkova objava u grupi u opsegu (od - do), gde može biti zadata donja i/ili gornja granica opsega 
+- Kombinacija  prethodnih  parametara  pretrage  (BooleanQuery,  omogućiti AND i OR operator između polja) 
+- Pretprocesirati upit, tako da bude nezavisan od velikog i malog slova, kao i ćiriličnog ili latiničnog pisma 
+- Obezbediti podršku u poljima forme za unos PhrazeQuery i FuzzyQuery 
+- Pretraživanje po pravilima grupe 
+- Prilikom prikaza rezultata prikazati naziv grupe, broj objava, prosečan broj lajkova i dinamički sažetak (Highlighter)
+
+[S2] Pretraga objava:
+
+- Pretraživanje objava po naslovu 
+- Pretraživanje objava po tekstu
+- Pretraživanje objava po tekstu iz zakačenog PDF fajla 
+- Pretraživanje objava po tekstovima u komentarima 
+- Pretraživanje objava po broju lajkova (od – do, računaju se lajkovi na samoj objavi + broj lajkova u komentarima), gde može biti zadata donja i/ili gornja granica opsega 
+- Kombinacija  prethodnih  parametara  pretrage  (BooleanQuery,  omogućiti AND i OR operator između polja) 
+- Pretprocesirati upit, tako da bude nezavisan od velikog i malog slova, kao i ćiriličnog i latiničnog pisma
+- Obezbediti podršku u poljima forme za unos PhrazeQuery i FuzzyQuery 
+- Pretraživanje objava koje imaju broj komentara u opsegu (od-do), gde može biti zadata donja i/ili gornja granica opsega 
+- Prilikom prikaza rezultata prikazati naslov objave, tekst objave i dinamički sažetak (Highlighter)
+---
+
 Za implementaciju aplikacije iskoristiti sledeće softverske pakete:
 
 - Za Serverske veb tehnologije:
@@ -60,8 +91,11 @@ Za implementaciju aplikacije iskoristiti sledeće softverske pakete:
   - MySQL
 - Za Klijentske veb aplikacije
     - Angular framework
+- Za Tehnologije i platforme za upravljanje elektronskim sadržajima i dokumentima:
+    - ElasticSearch
+    - MinIO
 
-Podatke kojima upravlja aplikacija organizovati uz oslonac na SUBP[^2].
+Podatke kojima upravlja aplikacija organizovati uz oslonac na SUBP[^2]. Indekse čuvati u Elasticsearch sistemu a dokumente čuvati u MinIO bazi.
 
 ---
 
@@ -75,7 +109,7 @@ Beležiti poruke o važnim događajima koji su nastali prilikom izvršavanja apl
 
 **Arhitektura aplikacije**
 
-Aplikacija je raspoređena na tri uređaja: Veb pretraživač, Spring kontejner (u Tomcat serveru ili pokrenut pomoću Spring Boot) i SUBP. Dijagram rasporeda prikazan je na slici 1.
+Aplikacija  je  raspoređena  na  tri  uređaja:  Veb  brauzer  ili  android  aplikacija,  Spring kontejner (u Tomcat serveru ili pokrenut pomoću Spring Boot), SUBP, Elasticsearch i MinIO. Dijagram rasporeda prikazan je na slici 1.
 
 
 Back-end aplikaciju implementirati upotrebom Spring framework-a [1], dozvoljeno je koristiti i Spring Boot [2]. Front-end aplikacija mora postojati i komunicira sa back-end aplikacijom putem RESTful servisa. Kao SUBP koristiti MySQL Server [3] ili neki drugi relacioni SUBP. Za beleženje poruka koristiti log4j API [4]. Za izgradnju softvera koristiti Apache Maven [5] ili neki drugi alat, a dozvoljeno je i koristiti Spring Boot i na taj način konfigurisati i pokretati aplikaciju.
