@@ -37,6 +37,9 @@ public class Group {
     @Column(name = "is_suspended", nullable = false)
     private boolean suspended;
 
+    @Column(name = "rules", nullable = false)
+    private String rules;
+
     @Column(name = "suspended_reason") //ako je null, nije suspendovana
     private String suspendedReason;
 

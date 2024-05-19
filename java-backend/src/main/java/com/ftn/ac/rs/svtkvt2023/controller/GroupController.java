@@ -277,6 +277,7 @@ public class GroupController {
         oldGroup.setCreationDate(LocalDateTime.parse(editedGroup.getCreationDate()));
         oldGroup.setSuspended(editedGroup.isSuspended());
         oldGroup.setSuspendedReason(editedGroup.getSuspendedReason());
+        oldGroup.setRules(editedGroup.getRules());
 
         oldGroup = groupService.updateGroup(oldGroup);
 

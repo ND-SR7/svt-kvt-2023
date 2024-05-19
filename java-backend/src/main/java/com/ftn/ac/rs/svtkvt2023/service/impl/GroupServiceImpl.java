@@ -107,6 +107,7 @@ public class GroupServiceImpl implements GroupService {
         newGroup.setCreationDate(LocalDateTime.parse(groupDTO.getCreationDate()));
         newGroup.setSuspended(groupDTO.isSuspended());
         newGroup.setSuspendedReason(groupDTO.getSuspendedReason());
+        newGroup.setRules(groupDTO.getRules());
         newGroup.setDeleted(false);
         newGroup = groupRepository.save(newGroup);
 

@@ -71,12 +71,12 @@ insert into images (deleted, path, belongs_to_post_id, belongs_to_user_id)
     values (false, '../../assets/images/profile-m.png', null, 2);
 
 -- GROUPS --
-insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason)
-    values ('2023-05-11', false, 'Test group for testing purposes', false, 'Test Group 1', null);
-insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason)
-    values ('2023-05-11', false, 'Another test group for testing', false, 'Test Group 2', null);
-insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason)
-    values ('2023-05-12', true, 'Deleted test group for testing', true, 'Test Group 3', 'Un-moderated');
+insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason, rules)
+    values ('2023-05-11', false, 'Test group for testing purposes', false, 'Test Group 1', null, 'No politics');
+insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason, rules)
+    values ('2023-05-11', false, 'Another test group for testing', false, 'Test Group 2', null, 'No politics or animals');
+insert into groupss (creation_date, deleted, description, is_suspended, name, suspended_reason, rules)
+    values ('2023-05-12', true, 'Deleted test group for testing', true, 'Test Group 3', 'Un-moderated', 'No testing');
 
 -- GROUP MEMBERS --
 insert into group_members (group_id, member_id)
