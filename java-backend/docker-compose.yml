@@ -1,0 +1,53 @@
+version: "3.7"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: sn-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    networks:
+      - sn-network
+#    command: >
+#      bash -c '
+#      if ! elasticsearch-plugin list | grep -q "analysis-icu"; then
+#        elasticsearch-plugin install analysis-icu
+#      else
+#        tail -f /dev/null &
+#      fi'
+    restart: always
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: sn-kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - sn-network
+    restart: always
+
+  minio:
+    image: quay.io/minio/minio
+    container_name: sn-minio
+    ports:
+      - 9000:9000
+      - 9090:9090
+    environment:
+      - MINIO_ROOT_USER=ROOTUSER
+      - MINIO_ROOT_PASSWORD=CHANGEME123
+    command: server /data --console-address ":9090"
+    volumes:
+      - minio-data:/data
+    restart: always
+    networks:
+      - sn-network
+
+networks:
+  sn-network:
+    name: sn-network
+
+volumes:
+  minio-data:

@@ -14,7 +14,7 @@
     <name>svt-kvt-2023</name>
     <description>svt-kvt-2023</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -65,6 +65,37 @@
             <scope>test</scope>
         </dependency>
         <!-- rucno dodato -->
+        <!-- TPUESD -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>8.13.4</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.28</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId> <!-- izvlacenje metapodataka -->
+            <artifactId>tika-core</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        <!-- SVT-KVT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
