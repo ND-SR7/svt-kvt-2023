@@ -3,6 +3,7 @@ import { Post } from '../model/post.model';
 import { PostService } from '../services/post.service';
 import { UserService } from '../../user/services/user.service';
 import { User } from '../../user/model/user.model'
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-post-list',
@@ -17,6 +18,7 @@ export class PostListComponent implements OnInit{
   constructor(
     private postService: PostService,
     private userService: UserService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -44,7 +46,7 @@ export class PostListComponent implements OnInit{
         this.posts = result.body as Post[];
       },
       error => {
-        window.alert('Error while sorting posts');
+        this.toastr.error('Error while sorting posts');
         console.log(error);
       }
     );

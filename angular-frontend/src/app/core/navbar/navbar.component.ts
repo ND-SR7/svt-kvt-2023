@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { AuthenticationService } from 'src/app/user/services/authentication.service';
 
 @Component({
@@ -11,6 +12,7 @@ export class NavbarComponent implements OnInit {
   
   constructor(
     private authenticationService: AuthenticationService,
+    private toastr: ToastrService,
     private router: Router
   ) { }
 
@@ -22,11 +24,11 @@ export class NavbarComponent implements OnInit {
     this.authenticationService.logout().subscribe(
       result => {
         localStorage.removeItem('user');
-        window.alert('Successful logout!');
+        this.toastr.success('Successful logout!');
         this.router.navigate(['users/login']).then(() => window.location.reload());
       },
       error => {
-        window.alert('An error occurred!');
+        this.toastr.error('An error occurred!');
         console.log(error);
       }
     )

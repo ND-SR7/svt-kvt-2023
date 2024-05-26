@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
 import { Register } from '../model/register.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -16,6 +17,7 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private authenticationService: AuthenticationService,
+    private toastr: ToastrService,
     private router: Router
   ) {
     this.form = this.fb.group({
@@ -41,7 +43,7 @@ export class RegisterComponent {
 
 		this.authenticationService.register(auth).subscribe(
 			result => {
-				window.alert('Successful registration!');
+				this.toastr.success('Successful registration!');
         console.log(result);
 				this.router.navigate(['users/login']);
 			},

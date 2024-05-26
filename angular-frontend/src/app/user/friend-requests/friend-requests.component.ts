@@ -3,6 +3,7 @@ import { FriendRequest } from '../model/friendRequest.model';
 import { User } from '../model/user.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserService } from '../services/user.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-friend-requests',
@@ -19,7 +20,8 @@ export class FriendRequestsComponent implements OnInit {
   requestUsers: Map<number, User> = new Map(); //id korisnika i korisnik za template
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private toastr: ToastrService
   ) { }
   
   ngOnInit(): void {
@@ -81,10 +83,10 @@ export class FriendRequestsComponent implements OnInit {
 
     this.userService.updateFriendRequest(respondedRequest).subscribe(
       result => {
-        window.alert('Successfully responded to friend request');
+        this.toastr.success('Successfully responded to friend request');
       },
       error => {
-        window.alert('Error while responding to friend request');
+        this.toastr.error('Error while responding to friend request');
         console.log(error);
       }
     );
@@ -93,11 +95,11 @@ export class FriendRequestsComponent implements OnInit {
   deleteRequest(id: number): void {
     this.userService.deleteFriendRequest(id).subscribe(
       result => {
-        window.alert('Successfully deleted friend request');
+        this.toastr.success('Successfully deleted friend request');
         location.reload();
       },
       error => {
-        window.alert('Error while deleting friend request');
+        this.toastr.error('Error while deleting friend request');
         console.log(error);
       }
     );

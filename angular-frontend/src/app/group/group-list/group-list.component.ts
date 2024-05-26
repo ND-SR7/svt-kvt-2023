@@ -5,6 +5,7 @@ import { User } from 'src/app/user/model/user.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserService } from 'src/app/user/services/user.service';
 import { GroupRequest } from '../model/groupRequest.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-group-list',
@@ -21,7 +22,8 @@ export class GroupListComponent implements OnInit {
 
   constructor(
     private groupService: GroupService,
-    private userService: UserService
+    private userService: UserService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -97,11 +99,11 @@ export class GroupListComponent implements OnInit {
 
     this.groupService.sendGroupRequest(groupRequest).subscribe(
       result => {
-        window.alert('Successfully sent request to join group');
+        this.toastr.success('Successfully sent request to join group');
         location.reload();
       },
       error => {
-        window.alert('Error while sending group request');
+        this.toastr.error('Error while sending group request');
         console.log(error);
       }
     );

@@ -3,6 +3,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChangePassword } from '../model/changePassword.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-change-password',
@@ -16,6 +17,7 @@ export class ChangePasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authenticationService: AuthenticationService,
+    private toastr: ToastrService,
     private router: Router
   ) {
     this.form = this.fb.group({
@@ -31,7 +33,7 @@ export class ChangePasswordComponent implements OnInit {
 
   submit() {
     if (this.form.value.newPassword1 != this.form.value.newPassword2) {
-      window.alert('Inputs for new password do not match!');
+      this.toastr.warning('Inputs for new password do not match!');
       return;
     }
 
@@ -41,12 +43,12 @@ export class ChangePasswordComponent implements OnInit {
 
     this.authenticationService.changePassword(auth).subscribe(
       result => {
-        window.alert('Successfully changed password!');
+        this.toastr.success('Successfully changed password!');
         localStorage.removeItem('user');
         this.router.navigate(['/users/login']).then(() => window.location.reload());
       },
       error => {
-        window.alert('An error occurred!');
+        this.toastr.error('An error occurred!');
         console.log(error);        
       }
     )

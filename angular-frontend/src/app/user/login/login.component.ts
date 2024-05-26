@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
 import { Login } from '../model/login.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class LoginComponent implements OnInit{
   constructor(
     private fb: FormBuilder,
     private authenticationService: AuthenticationService,
+    private toastr: ToastrService,
     private router: Router
   ) {
     this.form = this.fb.group({
@@ -35,12 +37,12 @@ export class LoginComponent implements OnInit{
 
 		this.authenticationService.login(auth).subscribe(
 			result => {
-				window.alert('Successful login!');
+				this.toastr.success('Successful login!');
 				localStorage.setItem('user', JSON.stringify(result));
 				this.router.navigate(['posts']);
 			},
 			error => {
-        window.alert('An error occurred!');
+        this.toastr.error('An error occurred!');
 				console.log(error);
 			}
 		);

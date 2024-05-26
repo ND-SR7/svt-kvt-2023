@@ -4,6 +4,7 @@ import { User } from 'src/app/user/model/user.model';
 import { UserService } from 'src/app/user/services/user.service';
 import { GroupService } from '../services/group.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-group-requests',
@@ -18,6 +19,7 @@ export class GroupRequestsComponent implements OnInit {
   constructor(
     private groupService: GroupService,
     private userService: UserService,
+    private toastr: ToastrService,
     private router: Router
   ) { }
 
@@ -55,10 +57,10 @@ export class GroupRequestsComponent implements OnInit {
 
     this.groupService.updateGroupRequest(respondedRequest).subscribe(
       result => {
-        window.alert('Successfully responded to group request');
+        this.toastr.success('Successfully responded to group request');
       },
       error => {
-        window.alert('Error while responding to group request');
+        this.toastr.error('Error while responding to group request');
         console.log(error);
       }
     );
@@ -69,11 +71,11 @@ export class GroupRequestsComponent implements OnInit {
   deleteRequest(id: number): void {
     this.userService.deleteFriendRequest(id).subscribe(
       result => {
-        window.alert('Successfully deleted group request');
+        this.toastr.success('Successfully deleted group request');
         location.reload();
       },
       error => {
-        window.alert('Error while deleting group request');
+        this.toastr.error('Error while deleting group request');
         console.log(error);
       }
     );

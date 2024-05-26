@@ -6,6 +6,7 @@ import { UserQuery } from '../model/userQuery.model';
 import { Image } from 'src/app/post/model/image.model';
 import { FriendRequest } from '../model/friendRequest.model';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-friends',
@@ -23,6 +24,7 @@ export class FriendsComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private toastr: ToastrService,
     private router: Router
   ) { }
   
@@ -56,14 +58,14 @@ export class FriendsComponent implements OnInit {
               }
             },
             error => {
-              window.alert('Error while retriving profile image for friend ' + friend.username);
+              this.toastr.error('Error while retriving profile image for friend ' + friend.username);
               console.log(error);
             }
           );
         });
       },
       error => {
-        window.alert('Error while retriving user\'s friends');
+        this.toastr.error('Error while retriving user\'s friends');
         console.log(error);
       }
     );
@@ -90,14 +92,14 @@ export class FriendsComponent implements OnInit {
               }
             },
             error => {
-              window.alert('Error while retriving profile image for found user ' + foundUser.username);
+              this.toastr.error('Error while retriving profile image for found user ' + foundUser.username);
               console.log(error);
             }
           );
         });
       },
       error => {
-        window.alert('Error while searching for users');
+        this.toastr.error('Error while searching for users');
         console.log(error);
       }
     );
@@ -131,11 +133,11 @@ export class FriendsComponent implements OnInit {
 
     this.userService.sendFriendRequest(friendRequest).subscribe(
       result => {
-        window.alert('Successfully sent friend request');
+        this.toastr.success('Successfully sent friend request');
         this.router.navigate(['/users/friends/requests']);
       },
       error => {
-        window.alert('Error while sending friend request');
+        this.toastr.error('Error while sending friend request');
         console.log(error);
       }
     );

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { User } from '../model/user.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Image } from 'src/app/post/model/image.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-user',
@@ -22,6 +23,7 @@ export class EditUserComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
+    private toastr: ToastrService,
     private router: Router
   ) {
     this.form = this.fb.group({
@@ -65,11 +67,11 @@ export class EditUserComponent implements OnInit {
 
     this.userService.updateUser(this.user).subscribe(
       result => {
-        window.alert('Successfully edited your profile');
+        this.toastr.success('Successfully edited your profile');
         this.router.navigate(['/users/profile']);
       },
       error => {
-        window.alert('Error while editing your profile');
+        this.toastr.error('Error while editing your profile');
         console.log(error);
       }
     );

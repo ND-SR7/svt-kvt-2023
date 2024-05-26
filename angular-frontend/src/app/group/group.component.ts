@@ -7,6 +7,7 @@ import { PostService } from '../post/services/post.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserService } from '../user/services/user.service';
 import { User } from '../user/model/user.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-group',
@@ -28,6 +29,7 @@ export class GroupComponent implements OnInit{
     private groupService: GroupService,
     private postService: PostService,
     private userService: UserService,
+    private toastr: ToastrService,
     private router: Router
   ) { }
 
@@ -108,11 +110,11 @@ export class GroupComponent implements OnInit{
   deleteGroup(): void {
     this.groupService.delete(this.group.id).subscribe(
       result => {
-        window.alert('Successfully deleted group');
+        this.toastr.success('Successfully deleted group');
         this.router.navigate(['/groups']);
       },
       error => {
-        window.alert('Error while deleting group');
+        this.toastr.error('Error while deleting group');
         console.log(error);
       }
     );
@@ -130,17 +132,17 @@ export class GroupComponent implements OnInit{
       result => {
         this.groupService.delete(this.group.id).subscribe(
           result => {
-            window.alert('Group ' + this.group.name + ' suspended');
+            this.toastr.success('Group ' + this.group.name + ' suspended');
             this.router.navigate(['/groups']);
           },
           error => {
-            window.alert('Error while suspending group ' + this.group.name);
+            this.toastr.error('Error while suspending group ' + this.group.name);
             console.log(error);
           }
         );
       },
       error => {
-        window.alert('Error while suspending group ' + this.group.name);
+        this.toastr.error('Error while suspending group ' + this.group.name);
         console.log(error);
       }
     );
@@ -148,7 +150,7 @@ export class GroupComponent implements OnInit{
 
   deleteGroupAdmin(): void {
     if (this.groupAdmins.length == 0) {
-      window.alert('Group is unmoderated');
+      this.toastr.warning('Group is unmoderated');
       return;
     }
 
@@ -168,17 +170,17 @@ export class GroupComponent implements OnInit{
     });
 
     if (!idExists) {
-      window.alert('Wrong input');
+      this.toastr.warning('Wrong input');
       return;
     }
 
     this.groupService.deleteGroupAdmin(this.group.id, adminId).subscribe(
       result => {
-        window.alert('Successfully deleted selected group admin');
+        this.toastr.success('Successfully deleted selected group admin');
         location.reload();
       },
       error => {
-        window.alert('Error while deleting group admin');
+        this.toastr.error('Error while deleting group admin');
         console.log(error);
       }
     );

@@ -6,6 +6,7 @@ import { User } from 'src/app/user/model/user.model';
 import { UserService } from 'src/app/user/services/user.service';
 import { GroupService } from '../services/group.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-edit-group',
@@ -24,6 +25,7 @@ export class AddEditGroupComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private groupService: GroupService,
+    private toastr: ToastrService,
     private router: Router
   ) { 
     this.form = this.fb.group({
@@ -40,7 +42,7 @@ export class AddEditGroupComponent implements OnInit {
           this.form.patchValue(this.group);
         },
         error => {
-          window.alert('An error occurred retriving group!');
+          toastr.error('An error occurred retriving group!');
           console.log(error);
         }
       );
@@ -57,7 +59,7 @@ export class AddEditGroupComponent implements OnInit {
         this.user = result.body as User;
       },
       error => {
-        window.alert('Couln\'t find logged in user');
+        this.toastr.warning('Couln\'t find logged in user');
         console.log(error);
       }
     );
@@ -78,17 +80,17 @@ export class AddEditGroupComponent implements OnInit {
           
           this.groupService.addGroupAdmin(group.id, this.user.id).subscribe(
             result => {
-              window.alert('Successfully created a group');
+              this.toastr.success('Successfully created a group');
               this.router.navigate(['/groups']);
             },
             error => {
-              window.alert('Error while adding group\'s admin');
+              this.toastr.error('Error while adding group\'s admin');
               console.log(error);
             }
           );
         },
         error => {
-          window.alert('Error while creating group');
+          this.toastr.error('Error while creating group');
           console.log(error);
         }
       );
@@ -99,11 +101,11 @@ export class AddEditGroupComponent implements OnInit {
 
       this.groupService.edit(this.group).subscribe(
         result => {
-          window.alert('Successfully edited the group');
+          this.toastr.success('Successfully edited the group');
           this.router.navigate(['/groups/' + this.group.id]);
         },
         error => {
-          window.alert('An error occurred editing the group');
+          this.toastr.error('An error occurred editing the group');
           console.log(error);
         }
       );

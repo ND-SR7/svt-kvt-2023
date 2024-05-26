@@ -10,6 +10,7 @@ import { Comment } from './model/comment.model';
 import { CommentService } from './services/comment.service';
 import { Reaction } from './model/reaction.model';
 import { ReactionService } from './services/reaction.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-post',
@@ -39,6 +40,7 @@ export class PostComponent implements OnInit {
     private commentService: CommentService,
     private userService: UserService,
     private reactionService: ReactionService,
+    private toastr: ToastrService,
     private router: Router
   ) { }
   
@@ -55,7 +57,7 @@ export class PostComponent implements OnInit {
             this.user = result.body as User;
           },
           error => {
-            window.alert('Error while retriving post\'s user');
+            this.toastr.error('Error while retriving post\'s user');
             console.log(error);
           }
         );
@@ -65,7 +67,7 @@ export class PostComponent implements OnInit {
             this.images = result.body as Image[];
           },
           error => {
-            window.alert('Error while retriving images for post');
+            this.toastr.error('Error while retriving images for post');
             console.log(error);
           }
         );
@@ -84,7 +86,7 @@ export class PostComponent implements OnInit {
             });
           },
           error => {
-            window.alert('Error while retriving reactions for post');
+            this.toastr.error('Error while retriving reactions for post');
             console.log(error);
           }
         );
@@ -111,7 +113,7 @@ export class PostComponent implements OnInit {
                   this.commentsReactions.set(comment.id, reactionsMap);
                 },
                 error => {
-                  window.alert('Error while retriving reactions to comment ' + comment.id);
+                  this.toastr.error('Error while retriving reactions to comment ' + comment.id);
                   console.log(error);
                 }
               );
@@ -136,7 +138,7 @@ export class PostComponent implements OnInit {
             });
           },
           error => {
-            window.alert('Error while retriving comments for post');
+            this.toastr.error('Error while retriving comments for post');
             console.log(error);
           }
         );
@@ -204,11 +206,11 @@ export class PostComponent implements OnInit {
 
         this.commentService.add(reply).subscribe(
           result => {
-            window.alert('Replied to comment');
+            this.toastr.success('Replied to comment');
             location.reload();
           },
           error => {
-            window.alert('Error while replying to comment');
+            this.toastr.error('Error while replying to comment');
             console.log(error);
           }
         );
@@ -244,11 +246,11 @@ export class PostComponent implements OnInit {
 
         this.commentService.add(comment).subscribe(
           result => {
-            window.alert('Successfully added a comment');
+            this.toastr.success('Successfully added a comment');
             location.reload();
           },
           error => {
-            window.alert('Error while adding a comment');
+            this.toastr.error('Error while adding a comment');
             console.log(error);
           }
         );
@@ -313,11 +315,11 @@ export class PostComponent implements OnInit {
   deletePost() {
     this.postService.delete(this.post.id).subscribe(
       result => {
-        window.alert('Successfully deleted the post!');
+        this.toastr.success('Successfully deleted the post!');
         this.router.navigate(['posts']);
       },
       error => {
-        window.alert('Error while deleting post');
+        this.toastr.error('Error while deleting post');
         console.log(error);
       }
     );
@@ -326,11 +328,11 @@ export class PostComponent implements OnInit {
   deleteComment(id: number) {
     this.commentService.delete(id).subscribe(
       result => {
-        window.alert('Successfully deleted comment!');
+        this.toastr.success('Successfully deleted comment!');
         location.reload();
       },
       error => {
-        window.alert('Error while deleting comment');
+        this.toastr.error('Error while deleting comment');
         console.log(error);
       }
     );
@@ -368,7 +370,7 @@ export class PostComponent implements OnInit {
             this.dislikes--;
         },
         error => {
-          window.alert('Error while removing reaction on post ' + postId);
+          this.toastr.error('Error while removing reaction on post ' + postId);
           console.log(error);
         }
       );
@@ -390,7 +392,7 @@ export class PostComponent implements OnInit {
           location.reload();
         },
         error => {
-          window.alert('Error while reacting on post ' + postId);
+          this.toastr.error('Error while reacting on post ' + postId);
           console.log(error);
         }
       );
@@ -413,7 +415,7 @@ export class PostComponent implements OnInit {
           location.reload();
         },
         error => {
-          window.alert('Error while reacting on post ' + postId);
+          this.toastr.error('Error while reacting on post ' + postId);
           console.log(error);
         }
       );
@@ -429,7 +431,7 @@ export class PostComponent implements OnInit {
           location.reload();
         },
         error => {
-          window.alert('Error while removing reaction on post ' + postId);
+          this.toastr.error('Error while removing reaction on post ' + postId);
           console.log(error);
         }
       );
@@ -457,7 +459,7 @@ export class PostComponent implements OnInit {
           this.commentsReactions.get(commentId)?.delete(previousReaction.id);
         },
         error => {
-          window.alert('Error while removing reaction on comment ' + commentId);
+          this.toastr.error('Error while removing reaction on comment ' + commentId);
           console.log(error);
         }
       );
@@ -474,7 +476,7 @@ export class PostComponent implements OnInit {
           location.reload();
         },
         error => {
-          window.alert('Error while reacting on comment ' + commentId);
+          this.toastr.error('Error while reacting on comment ' + commentId);
           console.log(error);
         }
       );
@@ -492,7 +494,7 @@ export class PostComponent implements OnInit {
           location.reload();
         },
         error => {
-          window.alert('Error while reacting on comment ' + commentId);
+          this.toastr.error('Error while reacting on comment ' + commentId);
           console.log(error);
         }
       );
@@ -504,7 +506,7 @@ export class PostComponent implements OnInit {
           location.reload();
         },
         error => {
-          window.alert('Error while removing reaction on comment ' + commentId);
+          this.toastr.error('Error while removing reaction on comment ' + commentId);
           console.log(error);
         }
       );

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
@@ -20,6 +21,7 @@ import { FriendsComponent } from './user/friends/friends.component';
 import { EditUserComponent } from './user/edit-user/edit-user.component';
 import { FriendRequestsComponent } from './user/friend-requests/friend-requests.component';
 import { GroupRequestsComponent } from './group/group-requests/group-requests.component';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { GroupRequestsComponent } from './group/group-requests/group-requests.co
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]

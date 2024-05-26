@@ -7,6 +7,7 @@ import { PostService } from '../services/post.service';
 import { UserService } from 'src/app/user/services/user.service';
 import { User } from 'src/app/user/model/user.model';
 import { Image } from '../model/image.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-edit-post',
@@ -25,7 +26,8 @@ export class AddEditPostComponent implements OnInit{
     private fb: FormBuilder,
     private router: Router,
     private postService: PostService,
-    private userService: UserService
+    private userService: UserService,
+    private toastr: ToastrService
   ) {
     this.form = this.fb.group({
       content: [null, Validators.required],
@@ -40,7 +42,7 @@ export class AddEditPostComponent implements OnInit{
           this.form.patchValue(post);
         },
         error => {
-          window.alert('An error occurred retriving post!');
+          this.toastr.error('An error occurred retriving post!');
           console.log(error);
         }
       );
@@ -95,14 +97,14 @@ export class AddEditPostComponent implements OnInit{
 
           this.postService.add(post).subscribe(
             result => {
-              window.alert('Successfully added a post!');
+              this.toastr.success('Successfully added a post!');
               if (this.postForGroup > 0)
                 this.router.navigate(['groups/' + this.postForGroup]);
               else
                 this.router.navigate(['posts']);
             },
             error => {
-              window.alert('An error occurred adding a post!');
+              this.toastr.error('An error occurred adding a post!');
               console.log(error);
             }
           );
@@ -124,11 +126,11 @@ export class AddEditPostComponent implements OnInit{
 
       this.postService.edit(post).subscribe(
         result => {
-          window.alert('Successfully edited the post!');
+          this.toastr.success('Successfully edited the post!');
           this.router.navigate(['posts']);
         },
         error => {
-          window.alert('An error occurred editing the post!');
+          this.toastr.error('An error occurred editing the post!');
           console.log(error);
         }
       );

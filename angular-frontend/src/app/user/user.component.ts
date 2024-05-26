@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Image } from '../post/model/image.model';
 import { Group } from '../group/model/group.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user',
@@ -19,7 +20,7 @@ export class UserComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private router: Router
+    private toastr: ToastrService
   ) { }
   
   ngOnInit(): void {
@@ -37,7 +38,7 @@ export class UserComponent implements OnInit {
               this.image = result.body as Image;
           },
           error => {
-            window.alert('Error while retriving profile image');
+            this.toastr.error('Error while retriving profile image');
             console.log(error);
           }
         );
@@ -47,13 +48,13 @@ export class UserComponent implements OnInit {
             this.groups = result.body as Group[];
           },
           error => {
-            window.alert('Error while retriving groups user is member of');
+            this.toastr.error('Error while retriving groups user is member of');
             console.log(error);
           }
         );
       },
       error => {
-        window.alert('Error while retriving profile info');
+        this.toastr.error('Error while retriving profile info');
         console.log(error);
       }
     );
