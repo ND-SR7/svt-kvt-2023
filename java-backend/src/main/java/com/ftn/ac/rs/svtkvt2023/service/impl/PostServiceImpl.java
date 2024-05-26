@@ -1,7 +1,6 @@
 package com.ftn.ac.rs.svtkvt2023.service.impl;
 
 import com.ftn.ac.rs.svtkvt2023.model.dto.PostDTO;
-import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.repository.PostRepository;
@@ -46,27 +45,27 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post findById(Long id) {
         Optional<Post> post = postRepository.findById(id);
-        if (!post.isEmpty())
+        if (post.isPresent())
             return post.get();
-        logger.error("Repository search for post with id: " + id + " returned null");
+        logger.error("Repository search for post with id: {} returned null", id);
         return null;
     }
 
     @Override
     public List<Post> findByCreationDate(LocalDateTime creationDate) {
         Optional<List<Post>> posts = postRepository.findAllByCreationDate(creationDate);
-        if (!posts.isEmpty())
+        if (posts.isPresent())
             return posts.get();
-        logger.error("Repository search for post created on date: " + creationDate.toString() + " returned null");
+        logger.error("Repository search for post created on date: {} returned null", creationDate.toString());
         return null;
     }
 
     @Override
     public List<Post> findByPostedBy(User user) {
         Optional<List<Post>> posts = postRepository.findAllByPostedBy(user);
-        if (!posts.isEmpty())
+        if (posts.isPresent())
             return posts.get();
-        logger.error("Repository search for post created by user with id: " + user.getId() + " returned null");
+        logger.error("Repository search for post created by user with id: {} returned null", user.getId());
         return null;
     }
 
@@ -78,27 +77,27 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> findHomepagePosts(Long userId) {
         Optional<List<Post>> posts = postRepository.findHomepagePosts(userId);
-        if (!posts.isEmpty())
+        if (posts.isPresent())
             return posts.get();
-        logger.error("Repository search for homepage posts for user with id: " + userId + " returned null");
+        logger.error("Repository search for homepage posts for user with id: {} returned null", userId);
         return null;
     }
 
     @Override
     public List<Post> findHomepagePostsSortedAsc(Long userId) {
         Optional<List<Post>> posts = postRepository.findHomepagePostsSortedAsc(userId);
-        if (!posts.isEmpty())
+        if (posts.isPresent())
             return posts.get();
-        logger.error("Repository search for sorted homepage posts for user with id: " + userId + " returned null");
+        logger.error("Repository search for asc sorted homepage posts for user with id: {} returned null", userId);
         return null;
     }
 
     @Override
     public List<Post> findHomepagePostsSortedDesc(Long userId) {
         Optional<List<Post>> posts = postRepository.findHomepagePostsSortedDesc(userId);
-        if (!posts.isEmpty())
+        if (posts.isPresent())
             return posts.get();
-        logger.error("Repository search for sorted homepage posts for user with id: " + userId + " returned null");
+        logger.error("Repository search for desc sorted homepage posts for user with id: {} returned null", userId);
         return null;
     }
 
@@ -107,7 +106,7 @@ public class PostServiceImpl implements PostService {
         Optional<Post> post = postRepository.findById(postDTO.getId());
 
         if (post.isPresent()) {
-            logger.error("Post with id: " + postDTO.getId() + " already exists in repository");
+            logger.error("Post with id: {} already exists in repository", postDTO.getId());
             return null;
         }
 
@@ -121,9 +120,8 @@ public class PostServiceImpl implements PostService {
             boolean userInGroup = groupService.checkUser(postDTO.getBelongsToGroupId(), postDTO.getPostedByUserId());
 
             if (!userInGroup) {
-                logger.error("User with id: " + postDTO.getPostedByUserId() +
-                        " tried posting in group with id: " + postDTO.getBelongsToGroupId() +
-                        " while not being a member");
+                logger.error("User with id: {} tried posting in group with id: {} while not being a member",
+                        postDTO.getPostedByUserId(), postDTO.getBelongsToGroupId());
                 return null;
             }
         }

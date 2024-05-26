@@ -46,18 +46,18 @@ public class GroupRequestServiceImpl implements GroupRequestService {
     @Override
     public GroupRequest findById(Long id) {
         Optional<GroupRequest> groupRequest = groupRequestRepository.findById(id);
-        if (!groupRequest.isEmpty())
+        if (groupRequest.isPresent())
             return groupRequest.get();
-        logger.error("Repository search for group request with id: " + id + " returned null");
+        logger.error("Repository search for group request with id: {} returned null", id);
         return null;
     }
 
     @Override
     public List<GroupRequest> findAllForGroup(Long groupId) {
         Optional<List<GroupRequest>> groupRequests = groupRequestRepository.findAllByForGroup(groupId);
-        if (!groupRequests.isEmpty())
+        if (groupRequests.isPresent())
             return groupRequests.get();
-        logger.error("Repository search for group requests for group with id: " + groupId + " returned null");
+        logger.error("Repository search for group requests for group with id: {} returned null", groupId);
         return null;
     }
 
@@ -66,7 +66,7 @@ public class GroupRequestServiceImpl implements GroupRequestService {
         Optional<GroupRequest> groupRequest = groupRequestRepository.findById(groupRequestDTO.getId());
 
         if (groupRequest.isPresent()) {
-            logger.error("Group request with id: " + groupRequestDTO.getId() + " already exists in repository");
+            logger.error("Group request with id: {} already exists in repository", groupRequestDTO.getId());
             return null;
         }
 

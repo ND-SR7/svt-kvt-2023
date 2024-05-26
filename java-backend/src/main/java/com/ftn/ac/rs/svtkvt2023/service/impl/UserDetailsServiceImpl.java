@@ -34,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userService.findByUsername(username);
 
         if(user == null){
-            logger.error("User with username: " + username + " not found");
+            logger.error("User with username: {} not found", username);
             throw new UsernameNotFoundException("There is no user with username " + username);
         } else {
             List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

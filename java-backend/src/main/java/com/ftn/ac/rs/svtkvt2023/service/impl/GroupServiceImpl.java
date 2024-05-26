@@ -36,27 +36,27 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group findById(Long id) {
         Optional<Group> group = groupRepository.findById(id);
-        if (!group.isEmpty())
+        if (group.isPresent())
             return group.get();
-        logger.error("Repository search for group with id: " + id + " returned null");
+        logger.error("Repository search for group with id: {} returned null", id);
         return null;
     }
 
     @Override
     public Group findByName(String name) {
         Optional<Group> group = groupRepository.findByName(name);
-        if (!group.isEmpty())
+        if (group.isPresent())
             return group.get();
-        logger.error("Repository search for group with name: " + name + " returned null");
+        logger.error("Repository search for group with name: {} returned null", name);
         return null;
     }
 
     @Override
     public List<Group> findByCreationDate(LocalDateTime creationDate) {
         Optional<List<Group>> groups = groupRepository.findAllByCreationDate(creationDate);
-        if (!groups.isEmpty())
+        if (groups.isPresent())
             return groups.get();
-        logger.error("Repository search for group created on date: " + creationDate.toString() + " returned null");
+        logger.error("Repository search for group created on date: {} returned null", creationDate.toString());
         return null;
     }
 
@@ -68,27 +68,27 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Long> findPostsByGroupId(Long id) {
         Optional<List<Long>> postsIds = groupRepository.findPostsByGroupId(id);
-        if (!postsIds.isEmpty())
+        if (postsIds.isPresent())
             return postsIds.get();
-        logger.error("Repository search for posts for group with id: " + id + " returned null");
+        logger.error("Repository search for posts for group with id: {} returned null", id);
         return null;
     }
 
     @Override
     public List<Group> findGroupsForUser(Long userId) {
         Optional<List<Group>> groups = groupRepository.findGroupsByMemberId(userId);
-        if (!groups.isEmpty())
+        if (groups.isPresent())
             return groups.get();
-        logger.error("Repository search for groups for user with id: " + userId + " returned null");
+        logger.error("Repository search for groups for user with id: {} returned null", userId);
         return null;
     }
 
     @Override
     public Group checkIfPostInGroup(Long postId) {
         Optional<Group> group = groupRepository.checkIfPostInGroup(postId);
-        if (!group.isEmpty())
+        if (group.isPresent())
             return group.get();
-        logger.error("Repository search in groups for post with id: " + postId + " returned null");
+        logger.error("Repository search in groups for post with id: {} returned null", postId);
         return null;
     }
 
@@ -97,7 +97,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<Group> group = groupRepository.findByName(groupDTO.getName());
 
         if (group.isPresent()) {
-            logger.error("Group with id: " + groupDTO.getId() + " already exists in repository");
+            logger.error("Group with id: {} already exists in repository", groupDTO.getId());
             return null;
         }
 

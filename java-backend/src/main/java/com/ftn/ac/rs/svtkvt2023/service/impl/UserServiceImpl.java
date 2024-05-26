@@ -35,18 +35,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        if (!user.isEmpty())
+        if (user.isPresent())
             return user.get();
-        logger.error("Repository search for user with id: " + id + " returned null");
+        logger.error("Repository search for user with id: {} returned null", id);
         return null;
     }
 
     @Override
     public User findByUsername(String username) {
         Optional<User> user = userRepository.findFirstByUsername(username);
-        if (!user.isEmpty())
+        if (user.isPresent())
             return user.get();
-        logger.error("Repository search for user with username: " + username + " returned null");
+        logger.error("Repository search for user with username: {} returned null", username);
         return null;
     }
 
@@ -58,18 +58,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findFriendsForUser(Long userId) {
         Optional<List<User>> users = userRepository.findFriendsByUserId(userId);
-        if (!users.isEmpty())
+        if (users.isPresent())
             return users.get();
-        logger.error("Repository search for friends of user with id: " + userId + " returned null");
+        logger.error("Repository search for friends of user with id: {} returned null", userId);
         return null;
     }
 
     @Override
     public List<User> findGroupAdmins(Long groupId) {
         Optional<List<User>> users = userRepository.findGroupAdmins(groupId);
-        if (!users.isEmpty())
+        if (users.isPresent())
             return users.get();
-        logger.error("Repository search for group admins for group with id: " + groupId + " returned null");
+        logger.error("Repository search for group admins for group with id: {} returned null", groupId);
         return null;
     }
 
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> searchUsers(String name1, String name2) {
         Optional<List<User>> users = userRepository.findUsersByQuery(name1, name2);
-        if (!users.isEmpty())
+        if (users.isPresent())
             return users.get();
         logger.error("Repository search for users with provided query returned null");
         return null;
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findFirstByUsername(userDTO.getUsername());
 
         if(user.isPresent()) {
-            logger.error("User with id: " + userDTO.getId() + " already exists in repository");
+            logger.error("User with id: {} already exists in repository", userDTO.getId());
             return null;
         }
 

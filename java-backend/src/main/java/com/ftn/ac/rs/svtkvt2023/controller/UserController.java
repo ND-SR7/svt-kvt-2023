@@ -20,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
@@ -35,28 +34,20 @@ import java.util.List;
 public class UserController {
 
     UserService userService;
-
-    UserDetailsService userDetailsService;
-
     ImageService imageService;
-
     GroupService groupService;
-
     FriendRequestService friendRequestService;
-
     AuthenticationManager authenticationManager;
-
     TokenUtils tokenUtils;
 
     private static final Logger logger = LogManager.getLogger(UserController.class);
 
     @Autowired
     public UserController(UserServiceImpl userService, AuthenticationManager authenticationManager,
-                          UserDetailsService userDetailsService, ImageService imageService, GroupService groupService,
-                          FriendRequestService friendRequestService, TokenUtils tokenUtils){
+                          ImageService imageService, GroupService groupService, FriendRequestService friendRequestService,
+                          TokenUtils tokenUtils){
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
         this.imageService = imageService;
         this.groupService = groupService;
         this.friendRequestService = friendRequestService;
@@ -64,62 +55,40 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getOne(@PathVariable String id,
-                                           @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding user for id: " + id);
+    public ResponseEntity<UserDTO> getOne(@PathVariable String id) {
+        logger.info("Finding user for id: {}", id);
         User findUser = userService.findById(Long.parseLong(id));
 
         if (findUser == null) {
-            logger.error("User not found for id: " + id);
+            logger.error("User not found for id: {}", id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("Creating response");
+        logger.info("Creating response with user");
         UserDTO userDTO = new UserDTO(findUser);
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with user");
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @PatchMapping("/edit")
-    public ResponseEntity<UserDTO> editUser(@RequestBody @Validated UserDTO editedUser,
-                                            @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding original user for id: " + editedUser.getId());
+    public ResponseEntity<UserDTO> editUser(@RequestBody @Validated UserDTO editedUser) {
+        logger.info("Finding original user for id: {}", editedUser.getId());
         User oldUser = userService.findById(editedUser.getId());
 
         if (oldUser == null) {
-            logger.error("Original user not found for id: " + editedUser.getId());
+            logger.error("Original user not found for id: {}", editedUser.getId());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("Applying changes");
+        logger.info("Applying changes to user");
         if (editedUser.getDisplayName() != null)
             oldUser.setDisplayName(editedUser.getDisplayName());
 
         if (editedUser.getDescription() != null)
             oldUser.setDescription(editedUser.getDescription());
 
-        Image oldImage = imageService.findProfileImageForUser(user.getId());
+        Image oldImage = imageService.findProfileImageForUser(editedUser.getId());
 
         if (editedUser.getProfileImage() != null && oldImage == null)
             imageService.createImage(editedUser.getProfileImage());
@@ -130,142 +99,93 @@ public class UserController {
 
         oldUser = userService.updateUser(oldUser);
 
-        logger.info("Creating response");
+        logger.info("Creating response with updated user");
         UserDTO updatedUser = new UserDTO(oldUser);
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with updated user");
 
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/image")
-    public ResponseEntity<ImageDTO> getProfileImage(@PathVariable String id,
-                                           @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding profile image for user with id: " + id);
+    public ResponseEntity<ImageDTO> getProfileImage(@PathVariable String id) {
+        logger.info("Finding profile image for user with id: {}", id);
         Image image = imageService.findProfileImageForUser(Long.parseLong(id));
 
         if (image == null) {
-            logger.info("Image not found for user with id: " + id);
+            logger.info("Image not found for user with id: {}", id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        logger.info("Creating response");
+        logger.info("Creating response with profile image");
         ImageDTO imageDTO = new ImageDTO(image);
-        logger.info("Created and sent response");
+        logger.info("Created and sent response profile image");
 
         return new ResponseEntity<>(imageDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/groups")
-    public ResponseEntity<List<GroupDTO>> getUserGroups(@PathVariable String id,
-                                                    @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding groups user with id: " + id + " is member of");
+    public ResponseEntity<List<GroupDTO>> getUserGroups(@PathVariable String id) {
+        logger.info("Finding groups user with id: {} is member of", id);
         List<Group> groups = groupService.findGroupsForUser(Long.parseLong(id));
         List<GroupDTO> groupDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with user groups");
         for (Group group: groups) {
             groupDTOS.add(new GroupDTO(group));
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with user groups");
 
         return new ResponseEntity<>(groupDTOS, HttpStatus.OK);
     }
 
     @GetMapping("group/{id}/admins")
-    public ResponseEntity<List<UserDTO>> getGroupAdmins(@PathVariable String id,
-                                                        @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding admins for group with id: " + id);
+    public ResponseEntity<List<UserDTO>> getGroupAdmins(@PathVariable String id) {
+        logger.info("Finding admins for group with id: {}", id);
         List<User> users = userService.findGroupAdmins(Long.parseLong(id));
         List<UserDTO> userDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with group admins");
         for (User temp: users) {
             userDTOS.add(new UserDTO(temp));
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with group admins");
 
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/friend-request")
     public ResponseEntity<List<FriendRequestDTO>> getFriendRequests(@RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
+        User user = getUserFromToken(token);
         if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("Finding friend requests for user with id: " + user.getId());
+        logger.info("Finding friend requests for user with id: {}", user.getId());
         List<FriendRequest> friendRequestsFromUser = friendRequestService.findAllFromUser(user.getId());
         List<FriendRequest> friendRequestsToUser = friendRequestService.findAllToUser(user.getId());
         List<FriendRequestDTO> friendRequestDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with user's friend requests");
         for (FriendRequest friendRequest: friendRequestsFromUser)
             friendRequestDTOS.add(new FriendRequestDTO(friendRequest));
 
         for (FriendRequest friendRequest: friendRequestsToUser)
             friendRequestDTOS.add(new FriendRequestDTO(friendRequest));
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with user's friend requests");
 
         return new ResponseEntity<>(friendRequestDTOS, HttpStatus.OK);
     }
 
     @PatchMapping("/friend-request")
-    public ResponseEntity<FriendRequestDTO> updateFriendRequest(@RequestBody @Validated FriendRequestDTO friendRequestDTO,
-                                                                @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding original friend request for id: " + friendRequestDTO.getId());
+    public ResponseEntity<FriendRequestDTO> updateFriendRequest(@RequestBody @Validated FriendRequestDTO friendRequestDTO) {
+        logger.info("Finding original friend request for id: {}", friendRequestDTO.getId());
         FriendRequest oldFriendRequest = friendRequestService.findById(friendRequestDTO.getId());
         if (oldFriendRequest == null) {
-            logger.error("Original friend request not found for id: " + friendRequestDTO.getId());
+            logger.error("Original friend request not found for id: {}", friendRequestDTO.getId());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("Applying changes");
+        logger.info("Applying changes to friend request");
         if (friendRequestDTO.isApproved())
             userService.addFriendship(friendRequestDTO.getFromUserId(), friendRequestDTO.getToUserId());
 
@@ -274,51 +194,29 @@ public class UserController {
 
         oldFriendRequest = friendRequestService.updateFriendRequest(oldFriendRequest);
 
-        logger.info("Creating response");
+        logger.info("Creating response with updated friend request");
         FriendRequestDTO newFriendRequest = new FriendRequestDTO(oldFriendRequest);
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with updated friend request");
 
         return new ResponseEntity<>(newFriendRequest, HttpStatus.OK);
     }
 
     @DeleteMapping("/friend-request/{id}")
-    public ResponseEntity deleteFriendRequest(@PathVariable String id,
-                                              @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Deleting friend request with id: " + id);
+    public ResponseEntity<Integer> deleteFriendRequest(@PathVariable String id) {
+        logger.info("Deleting friend request with id: {}", id);
         Integer deleted = friendRequestService.deleteFriendRequest(Long.parseLong(id));
 
         if (deleted != 0) {
-            logger.info("Successfully deleted friend request with id: " + id);
-            return new ResponseEntity(deleted, HttpStatus.NO_CONTENT);
+            logger.info("Successfully deleted friend request with id: {}", id);
+            return new ResponseEntity<>(deleted, HttpStatus.NO_CONTENT);
         }
-        logger.error("Failed to delete friend request with id: " + id);
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        logger.error("Failed to delete friend request with id: {}", id);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/{id}/friend-request")
     public ResponseEntity<Boolean> saveFriendRequest(@PathVariable String id,
-                                                     @RequestBody @Validated FriendRequestDTO friendRequestDTO,
-                                                     @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+                                                     @RequestBody @Validated FriendRequestDTO friendRequestDTO) {
         logger.info("Creating friend request from DTO");
         FriendRequest friendRequest = friendRequestService.createFriendRequest(friendRequestDTO);
 
@@ -326,59 +224,43 @@ public class UserController {
             logger.error("Friend request couldn't be created from DTO");
             return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
-        logger.info("Successfully saved friend request for user with id: " + id);
+        logger.info("Successfully saved friend request for user with id: {}", id);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @GetMapping("/friends")
     public ResponseEntity<List<UserDTO>> getUserFriends(@RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
+        User user = getUserFromToken(token);
         if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("Finding friends of user with id: " + user.getId());
+        logger.info("Finding friends of user with id: {}", user.getId());
         List<User> users = userService.findFriendsForUser(user.getId());
         List<UserDTO> userDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with user's friends");
         for (User temp: users) {
             userDTOS.add(new UserDTO(temp));
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with user's friends");
 
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/user/{queryUsername}")
-    public ResponseEntity<UserDTO> getOneByUsername(@PathVariable String queryUsername,
-                                          @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding user for username: " + queryUsername);
+    public ResponseEntity<UserDTO> getOneByUsername(@PathVariable String queryUsername) {
+        logger.info("Finding user for username: {}", queryUsername);
         User findUser = userService.findByUsername(queryUsername);
 
         if (findUser == null) {
-            logger.error("User not found for username: " + queryUsername);
+            logger.error("User not found for username: {}", queryUsername);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("Creating response");
+        logger.info("Creating response with found user");
         UserDTO userDTO = new UserDTO(findUser);
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with found user");
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
@@ -393,9 +275,9 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
 
-        logger.info("Creating response");
+        logger.info("Creating response with new user");
         UserDTO userDTO = new UserDTO(createdUser);
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with new user");
 
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
@@ -430,7 +312,7 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity logoutUser() {
+    public ResponseEntity<String> logoutUser() {
         logger.info("Getting authentication from security context");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -438,10 +320,10 @@ public class UserController {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             SecurityContextHolder.clearContext();
             logger.info("User successfully logged out");
-            return new ResponseEntity("You have successfully logged out!", HttpStatus.OK);
+            return new ResponseEntity<>("You have successfully logged out!", HttpStatus.OK);
         }
         logger.error("User is not authenticated and can't be logged out");
-        return new ResponseEntity("User is not authenticated!", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("User is not authenticated!", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/change-password")
@@ -449,13 +331,8 @@ public class UserController {
             @RequestBody @Validated ChangePasswordRequest changePasswordRequest,
             @RequestHeader("authorization") String token) {
 
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
+        User user = getUserFromToken(token);
         if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -469,7 +346,7 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("Changing password for user with id: " + user.getId());
+        logger.info("Changing password for user with id: {}", user.getId());
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         user = userService.updateUser(user);
 
@@ -478,27 +355,16 @@ public class UserController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<UserDTO>> searchUsers(@RequestBody UserQuery userQuery,
-                                                     @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<List<UserDTO>> searchUsers(@RequestBody UserQuery userQuery) {
         logger.info("Finding users that match query");
         List<User> users = userService.searchUsers(userQuery.getName1(), userQuery.getName2());
         List<UserDTO> userDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with found users");
         for (User temp: users) {
             userDTOS.add(new UserDTO(temp));
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with found users");
 
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
@@ -508,5 +374,11 @@ public class UserController {
     public List<User> loadAllUsers() {
         logger.info("Returning all users per system admin request");
         return this.userService.findAll();
+    }
+
+    private User getUserFromToken(String token) {
+        return userService.findByUsername(
+                tokenUtils.getUsernameFromToken(
+                        token.substring(7)));
     }
 }

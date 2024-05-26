@@ -45,27 +45,27 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Image findById(Long id) {
         Optional<Image> image = imageRepository.findById(id);
-        if (!image.isEmpty())
+        if (image.isPresent())
             return image.get();
-        logger.error("Repository search for image with id: " + id + " returned null");
+        logger.error("Repository search for image with id: {} returned null", id);
         return null;
     }
 
     @Override
     public List<Image> findImagesForPost(Long id) {
         Optional<List<Image>> images = imageRepository.findImagesForPost(id);
-        if (!images.isEmpty())
+        if (images.isPresent())
             return images.get();
-        logger.error("Repository search for images for post with id: " + id + " returned null");
+        logger.error("Repository search for images for post with id: {} returned null", id);
         return null;
     }
 
     @Override
     public Image findProfileImageForUser(Long userId) {
         Optional<Image> image = imageRepository.findProfileImageForUser(userId);
-        if (!image.isEmpty())
+        if (image.isPresent())
             return image.get();
-        logger.error("Repository search for profile image for user with id: " + userId + " returned null");
+        logger.error("Repository search for profile image for user with id: {} returned null", userId);
         return null;
     }
 
@@ -74,7 +74,7 @@ public class ImageServiceImpl implements ImageService {
         Optional<Image> image = imageRepository.findById(imageDTO.getId());
 
         if (image.isPresent()) {
-            logger.error("Image with id: " + imageDTO.getId() + " already exists in repository");
+            logger.error("Image with id: {} already exists in repository", imageDTO.getId());
             return null;
         }
 

@@ -56,27 +56,27 @@ public class ReactionServiceImpl implements ReactionService {
     @Override
     public Reaction findById(Long id) {
         Optional<Reaction> reaction = reactionRepository.findById(id);
-        if (!reaction.isEmpty())
+        if (reaction.isPresent())
             return reaction.get();
-        logger.error("Repository search for reaction with id: " + id + " returned null");
+        logger.error("Repository search for reaction with id: {} returned null", id);
         return null;
     }
 
     @Override
     public List<Reaction> findReactionsForPost(Long postId) {
         Optional<List<Reaction>> reactions = reactionRepository.findAllByOnPostId(postId);
-        if (!reactions.isEmpty())
+        if (reactions.isPresent())
             return reactions.get();
-        logger.error("Repository search for reactions for post with id: " + postId + " returned null");
+        logger.error("Repository search for reactions for post with id: {} returned null", postId);
         return null;
     }
 
     @Override
     public List<Reaction> findReactionsForComment(Long commentId) {
         Optional<List<Reaction>> reactions = reactionRepository.findAllByOnCommentId(commentId);
-        if (!reactions.isEmpty())
+        if (reactions.isPresent())
             return reactions.get();
-        logger.error("Repository search for reactions for comment with id: " + commentId + " returned null");
+        logger.error("Repository search for reactions for comment with id: {} returned null", commentId);
         return null;
     }
 
@@ -85,7 +85,7 @@ public class ReactionServiceImpl implements ReactionService {
         Optional<Reaction> reaction = reactionRepository.findById(reactionDTO.getId());
 
         if (reaction.isPresent()) {
-            logger.error("Reaction with id: " + reactionDTO.getId() + " already exists in repository");
+            logger.error("Reaction with id: {} already exists in repository", reactionDTO.getId());
             return null;
         }
 
@@ -96,8 +96,8 @@ public class ReactionServiceImpl implements ReactionService {
         User user = userService.findById(reactionDTO.getMadeByUserId());
 
         if (user == null) {
-            logger.error("User with id: " + reactionDTO.getMadeByUserId() +
-                    ", that made the reaction, was not found in the database");
+            logger.error("User with id: {}, that made the reaction, was not found in the database",
+                    reactionDTO.getMadeByUserId());
             return null;
         }
 

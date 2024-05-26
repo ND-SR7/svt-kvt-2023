@@ -37,27 +37,27 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     @Override
     public FriendRequest findById(Long id) {
         Optional<FriendRequest> friendRequest = friendRequestRepository.findById(id);
-        if (!friendRequest.isEmpty())
+        if (friendRequest.isPresent())
             return friendRequest.get();
-        logger.error("Repository search for friend request with id: " + id + " returned null");
+        logger.error("Repository search for friend request with id: {} returned null", id);
         return null;
     }
 
     @Override
     public List<FriendRequest> findAllFromUser(Long userId) {
         Optional<List<FriendRequest>> friendRequests = friendRequestRepository.findAllByFromUser(userId);
-        if (!friendRequests.isEmpty())
+        if (friendRequests.isPresent())
             return friendRequests.get();
-        logger.error("Repository search for friend requests from user with id: " + userId + " returned null");
+        logger.error("Repository search for friend requests from user with id: {} returned null", userId);
         return null;
     }
 
     @Override
     public List<FriendRequest> findAllToUser(Long userId) {
         Optional<List<FriendRequest>> friendRequests = friendRequestRepository.findAllByToUser(userId);
-        if (!friendRequests.isEmpty())
+        if (friendRequests.isPresent())
             return friendRequests.get();
-        logger.error("Repository search for friend requests to user with id: " + userId + " returned null");
+        logger.error("Repository search for friend requests to user with id: {} returned null", userId);
         return null;
     }
 
@@ -66,7 +66,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         Optional<FriendRequest> friendRequest = friendRequestRepository.findById(friendRequestDTO.getId());
 
         if (friendRequest.isPresent()) {
-            logger.error("Friend request with id: " + friendRequestDTO.getId() + " already exists in repository");
+            logger.error("Friend request with id: {} already exists in repository", friendRequestDTO.getId());
             return null;
         }
 

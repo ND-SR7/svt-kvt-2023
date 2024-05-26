@@ -1,5 +1,6 @@
 package com.ftn.ac.rs.svtkvt2023.configuration;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
@@ -22,6 +23,7 @@ public class ElasticsearchConfiguration
     @Value("${elasticsearch.password}")
     private String password;
 
+    @NonNull
     @Override
     public ClientConfiguration clientConfiguration() {
         return ClientConfiguration.builder().connectedTo(host + ":" + port)

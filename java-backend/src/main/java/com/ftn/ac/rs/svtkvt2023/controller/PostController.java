@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,151 +22,93 @@ import java.util.List;
 public class PostController {
 
     PostService postService;
-
     GroupService groupService;
-
     UserService userService;
-
     ImageService imageService;
-
     CommentService commentService;
-
     ReactionService reactionService;
-
-    AuthenticationManager authenticationManager;
-
     TokenUtils tokenUtils;
 
     private static final Logger logger = LogManager.getLogger(PostController.class);
 
     @Autowired
     public PostController(PostService postService, UserService userService, GroupService groupService, ImageService imageService,
-                          CommentService commentService, ReactionService reactionService,
-                          AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
+                          CommentService commentService, ReactionService reactionService, TokenUtils tokenUtils) {
         this.postService = postService;
         this.userService = userService;
         this.groupService = groupService;
         this.imageService = imageService;
         this.commentService = commentService;
         this.reactionService = reactionService;
-        this.authenticationManager = authenticationManager;
         this.tokenUtils = tokenUtils;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDTO> getOne(@PathVariable String id,
-                                           @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding post for id: " + id);
+    public ResponseEntity<PostDTO> getOne(@PathVariable String id) {
+        logger.info("Finding post for id: {}", id);
         Post post = postService.findById(Long.parseLong(id));
 
         if (post == null) {
-            logger.error("Post not found for id: " + id);
+            logger.error("Post not found for id: {}", id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("Creating response");
+        logger.info("Creating response with post");
         PostDTO postDTO = new PostDTO(post);
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with post");
 
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/images")
-    public ResponseEntity<List<ImageDTO>> getImagesForPost(@PathVariable String id,
-                                          @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding images for post with id: " + id);
+    public ResponseEntity<List<ImageDTO>> getImagesForPost(@PathVariable String id) {
+        logger.info("Finding images for post with id: {}", id);
         List<Image> images = imageService.findImagesForPost(Long.parseLong(id));
         List<ImageDTO> imageDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with post's images");
         for (Image image: images) {
             imageDTOS.add(new ImageDTO(image));
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with post's images");
 
         return new ResponseEntity<>(imageDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/comments")
-    public ResponseEntity<List<CommentDTO>> getCommentsForPost(@PathVariable String id,
-                                                           @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding comments for post with id: " + id);
+    public ResponseEntity<List<CommentDTO>> getCommentsForPost(@PathVariable String id) {
+        logger.info("Finding comments for post with id: {}", id);
         List<Comment> comments = commentService.findCommentsForPost(Long.parseLong(id));
         List<CommentDTO> commentDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with post's comments");
         for (Comment comment: comments) {
             commentDTOS.add(new CommentDTO(comment));
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with post's comments");
 
         return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
     }
 
     @GetMapping()
-    public ResponseEntity<List<PostDTO>> getAll(@RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<List<PostDTO>> getAll() {
         logger.info("Finding all posts");
         List<Post> posts = postService.findAll();
         List<PostDTO> postsDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with posts");
         for (Post post: posts) {
             postsDTOS.add(new PostDTO(post));
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with posts");
 
         return new ResponseEntity<>(postsDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/homepage")
     public ResponseEntity<List<PostDTO>> getHomepagePosts(@RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
+        User user = getUserFromToken(token);
         if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -175,7 +116,7 @@ public class PostController {
         List<Post> posts = postService.findHomepagePosts(user.getId());
         List<PostDTO> postsDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with homepage posts");
         for (Post post: posts) {
             PostDTO postDTO = new PostDTO(post);
             Group group = groupService.checkIfPostInGroup(post.getId());
@@ -183,7 +124,7 @@ public class PostController {
                 postDTO.setBelongsToGroupId(group.getId());
             postsDTOS.add(postDTO);
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with homepage posts");
 
         return new ResponseEntity<>(postsDTOS, HttpStatus.OK);
     }
@@ -191,13 +132,8 @@ public class PostController {
     @GetMapping("/homepage/sort/{order}")
     public ResponseEntity<List<PostDTO>> getHomepagePostsSorted(@PathVariable String order,
                                                           @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
+        User user = getUserFromToken(token);
         if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -210,7 +146,7 @@ public class PostController {
 
         List<PostDTO> postsDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with sorted homepage posts");
         for (Post post: posts) {
             PostDTO postDTO = new PostDTO(post);
             Group group = groupService.checkIfPostInGroup(post.getId());
@@ -218,42 +154,31 @@ public class PostController {
                 postDTO.setBelongsToGroupId(group.getId());
             postsDTOS.add(postDTO);
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with sorted homepage posts");
 
         return new ResponseEntity<>(postsDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/group/{id}")
-    public ResponseEntity<List<PostDTO>> getAllForGroup(@PathVariable String id,
-                                                        @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding all posts for group with id: " + id);
+    public ResponseEntity<List<PostDTO>> getAllForGroup(@PathVariable String id) {
+        logger.info("Finding all posts for group with id: {}", id);
         List<Long> postsIds = groupService.findPostsByGroupId(Long.parseLong(id));
 
         if (postsIds == null) {
-            logger.error("Posts not found for group with id: " + id);
+            logger.error("Posts not found for group with id: {}", id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         List<PostDTO> postDTOS = new ArrayList<>();
 
-        logger.info("Creating response");
+        logger.info("Creating response with posts for group {}", id);
         for (Long postId: postsIds) {
             Post post = postService.findById(postId);
             PostDTO postDTO = new PostDTO(post);
             postDTO.setBelongsToGroupId(Long.parseLong(id));
             postDTOS.add(postDTO);
         }
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with posts for group {}", id);
 
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
@@ -261,46 +186,30 @@ public class PostController {
     @GetMapping("/group/{id}/user")
     public ResponseEntity<Boolean> checkUserInGroup(@PathVariable String id,
                                                         @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
+        User user = getUserFromToken(token);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         if (userService.checkUserIsAdmin(user.getId())) {
             logger.info("User is system admin and has access to group");
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
 
-        if (user == null) {
-            logger.error("User not found for username: " + username);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Checking if user is in group with id: " + id);
+        logger.info("Checking if user is in group with id: {}", id);
         Boolean userInGroup = groupService.checkUser(Long.parseLong(id), user.getId());
 
         if (!userInGroup) {
-            logger.error("User not found in group with id: " + id);
+            logger.error("User not found in group with id: {}", id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("User found in group with id: " + id);
+        logger.info("User found in group with id: {}", id);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<PostDTO> addPost(@RequestBody @Validated PostDTO newPost,
-                                           @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<PostDTO> addPost(@RequestBody @Validated PostDTO newPost) {
         logger.info("Creating post from DTO");
         Post createdPost = postService.createPost(newPost);
 
@@ -317,39 +226,27 @@ public class PostController {
             }
         }
 
-        logger.info("Creating response");
+        logger.info("Creating response with new post");
         PostDTO postDTO = new PostDTO(createdPost);
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with new post");
 
         return new ResponseEntity<>(postDTO, HttpStatus.CREATED);
     }
 
     @PatchMapping("/edit/{id}")
-    public ResponseEntity<PostDTO> editPost(@PathVariable String id,
-                                              @RequestBody @Validated PostDTO editedPost,
-                                              @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
-
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Finding original post for id: " + id);
+    public ResponseEntity<PostDTO> editPost(@PathVariable String id, @RequestBody @Validated PostDTO editedPost) {
+        logger.info("Finding original post for id: {}", id);
         Post oldPost = postService.findById(Long.parseLong(id));
 
         if (oldPost == null) {
-            logger.error("Original post not found for id: " + id);
+            logger.error("Original post not found for id: {}", id);
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
         logger.info("Applying changes");
         oldPost.setContent(editedPost.getContent());
 
-        if (editedPost.getImages().size() > 0) {
+        if (!editedPost.getImages().isEmpty()) {
             imageService.deletePostImages(Long.parseLong(id));
             for (ImageDTO imageDTO: editedPost.getImages())
                 imageService.createImage(imageDTO);
@@ -357,27 +254,17 @@ public class PostController {
 
         oldPost = postService.updatePost(oldPost);
 
-        logger.info("Creating response");
+        logger.info("Creating response with updated post");
         PostDTO updatedPost = new PostDTO(oldPost);
-        logger.info("Created and sent response");
+        logger.info("Created and sent response with updated post");
 
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deletePost(@PathVariable String id,
-                                      @RequestHeader("authorization") String token) {
-        logger.info("Checking authorization");
-        String cleanToken = token.substring(7); //izbacivanje 'Bearer' iz tokena
-        String username = tokenUtils.getUsernameFromToken(cleanToken); //izvlacenje username-a iz tokena
-        User user = userService.findByUsername(username); //provera da li postoji u bazi
+    public ResponseEntity<Integer> deletePost(@PathVariable String id) {
+        logger.info("Deleting post with id: {}", id);
 
-        if (user == null) {
-            logger.error("User not found for token: " + cleanToken);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("Deleting post with id: " + id);
         postService.deletePostFromGroup(Long.parseLong(id));
         Integer deletedFromAll = postService.deletePost(Long.parseLong(id));
         imageService.deletePostImages(Long.parseLong(id));
@@ -385,10 +272,16 @@ public class PostController {
         reactionService.deletePostReactions(Long.parseLong(id));
 
         if (deletedFromAll != 0) {
-            logger.info("Successfully deleted post with id: " + id);
-            return new ResponseEntity(deletedFromAll, HttpStatus.NO_CONTENT);
+            logger.info("Successfully deleted post with id: {}", id);
+            return new ResponseEntity<>(deletedFromAll, HttpStatus.NO_CONTENT);
         }
-        logger.error("Failed to delete post with id: " + id);
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        logger.error("Failed to delete post with id: {}", id);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    private User getUserFromToken(String token) {
+        return userService.findByUsername(
+                tokenUtils.getUsernameFromToken(
+                        token.substring(7)));
     }
 }

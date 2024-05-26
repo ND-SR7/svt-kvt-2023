@@ -1,6 +1,5 @@
 package com.ftn.ac.rs.svtkvt2023.service.impl;
 
-import com.ftn.ac.rs.svtkvt2023.controller.CommentController;
 import com.ftn.ac.rs.svtkvt2023.model.dto.CommentDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Comment;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
@@ -47,18 +46,18 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment findById(Long id) {
         Optional<Comment> comment = commentRepository.findById(id);
-        if (!comment.isEmpty())
+        if (comment.isPresent())
             return comment.get();
-        logger.error("Repository search for comment with id: " + id + " returned null");
+        logger.error("Repository search for comment with id: {} returned null", id);
         return null;
     }
 
     @Override
     public List<Comment> findCommentsForPost(Long postId) {
         Optional<List<Comment>> comments = commentRepository.findCommentsForPost(postId);
-        if (!comments.isEmpty())
+        if (comments.isPresent())
             return comments.get();
-        logger.error("Repository search for comments for post with id: " + postId + " returned null");
+        logger.error("Repository search for comments for post with id: {} returned null", postId);
         return null;
     }
 
@@ -67,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
         Optional<Comment> comment = commentRepository.findById(commentDTO.getId());
 
         if (comment.isPresent()) {
-            logger.error("Comment with id: " + commentDTO.getId() + " already exists in repository");
+            logger.error("Comment with id: {} already exists in repository", commentDTO.getId());
             return null;
         }
 

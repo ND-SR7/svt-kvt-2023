@@ -1,5 +1,6 @@
 package com.ftn.ac.rs.svtkvt2023.security;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,9 +29,9 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        HttpServletRequest httpServletRequest = request;
-        String token = httpServletRequest.getHeader("authorization");
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+        String token = request.getHeader("authorization");
         if(token != null){
             if(token.startsWith("Bearer ")){
                 token = token.substring(7);
@@ -46,7 +47,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities()
                 );
 
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
