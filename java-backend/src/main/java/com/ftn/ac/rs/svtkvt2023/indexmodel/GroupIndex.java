@@ -37,4 +37,7 @@ public class GroupIndex {
 
     @Field(type = FieldType.Double, store = true, name = "average_likes")
     private Double averageLikes;
+
+    @Field(type = FieldType.Long, store = true, name = "database_id")
+    private Long databaseId;
 }

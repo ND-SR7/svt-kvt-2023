@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,6 +34,9 @@ public class GroupDTO {
 
     @NotNull
     private String rules;
+
+    @NotNull
+    private MultipartFile file;
 
     public GroupDTO(Group createdGroup) {
         this.id = createdGroup.getId();

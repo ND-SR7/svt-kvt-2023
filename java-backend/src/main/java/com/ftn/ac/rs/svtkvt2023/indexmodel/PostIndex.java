@@ -32,6 +32,12 @@ public class PostIndex {
     @Field(type = FieldType.Long, store = true, name = "number_of_likes")
     private Long numberOfLikes;
 
+    @Field(type = FieldType.Long, store = true, name = "number_of_comments")
+    private Long numberOfComments;
+
     @Field(type = FieldType.Text, store = true, name = "comment_content", analyzer = "serbian", searchAnalyzer = "serbian")
     private String commentContent;
+
+    @Field(type = FieldType.Long, store = true, name = "database_id")
+    private Long databaseId;
 }
