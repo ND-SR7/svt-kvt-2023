@@ -1,43 +1,71 @@
 package com.ftn.ac.rs.svtkvt2023.service.impl;
 
+import com.ftn.ac.rs.svtkvt2023.exception.LoadingException;
+import com.ftn.ac.rs.svtkvt2023.indexmodel.GroupIndex;
+import com.ftn.ac.rs.svtkvt2023.indexmodel.PostIndex;
+import com.ftn.ac.rs.svtkvt2023.indexrepository.GroupIndexRepository;
+import com.ftn.ac.rs.svtkvt2023.indexrepository.PostIndexRepository;
 import com.ftn.ac.rs.svtkvt2023.model.dto.PostDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
 import com.ftn.ac.rs.svtkvt2023.model.entity.User;
 import com.ftn.ac.rs.svtkvt2023.repository.PostRepository;
+import com.ftn.ac.rs.svtkvt2023.service.FileService;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import com.ftn.ac.rs.svtkvt2023.service.PostService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
+    private UserService userService;
+    private GroupService groupService;
+    private PostIndexRepository postIndexRepository;
+    private GroupIndexRepository groupIndexRepository;
+    private FileService fileService;
 
     @Autowired
     public void setPostRepository(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
 
-    private UserService userService;
-
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
-    private GroupService groupService;
-
     @Autowired
     public void setGroupService(GroupService groupService) {
         this.groupService = groupService;
+    }
+
+    @Autowired
+    public void setPostIndexRepository(PostIndexRepository postIndexRepository) {
+        this.postIndexRepository = postIndexRepository;
+    }
+
+    @Autowired
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
+    }
+
+    @Autowired
+    public void setGroupIndexRepository(GroupIndexRepository groupIndexRepository) {
+        this.groupIndexRepository = groupIndexRepository;
     }
 
     private static final Logger logger = LogManager.getLogger(PostServiceImpl.class);
@@ -111,6 +139,7 @@ public class PostServiceImpl implements PostService {
         }
 
         Post newPost = new Post();
+        newPost.setTitle(postDTO.getTitle());
         newPost.setContent(postDTO.getContent());
         newPost.setCreationDate(LocalDateTime.parse(postDTO.getCreationDate()));
         newPost.setPostedBy(userService.findById(postDTO.getPostedByUserId()));
@@ -128,24 +157,79 @@ public class PostServiceImpl implements PostService {
 
         newPost = postRepository.save(newPost);
 
-        if (postDTO.getBelongsToGroupId() != null)
+        if (postDTO.getBelongsToGroupId() != null) {
+            GroupIndex groupIndex = groupIndexRepository.findByDatabaseId(
+                    postDTO.getBelongsToGroupId()).orElse(null);
+
+            if (groupIndex == null) {
+                logger.warn("Index not found for group containing post");
+            } else {
+                groupIndex.setNumberOfPosts(groupIndex.getNumberOfPosts() + 1);
+                groupIndexRepository.save(groupIndex);
+            }
             postRepository.saveGroupPost(postDTO.getBelongsToGroupId(), newPost.getId());
+        }
+
+        PostIndex index = new PostIndex();
+        index.setTitle(postDTO.getTitle());
+        index.setFullContent(postDTO.getContent());
+        index.setFileContent(extractDocumentContent(postDTO.getFile()));
+        index.setNumberOfLikes(0L);
+        index.setNumberOfComments(0L);
+        index.setCommentContent("");
+        index.setDatabaseId(newPost.getId());
+        postIndexRepository.save(index);
+
+        fileService.store(postDTO.getFile(), UUID.randomUUID().toString());
 
         return newPost;
     }
 
     @Override
     public Post updatePost(Post post) {
+        PostIndex index = postIndexRepository.findByTitle(post.getTitle()).orElse(null);
+        if (index == null) {
+            logger.warn("No index found for post: {}", post.getTitle());
+        } else {
+            index.setFullContent(post.getContent());
+            postIndexRepository.save(index);
+        }
         return postRepository.save(post);
     }
 
     @Override
     public Integer deletePost(Long id) {
+        postIndexRepository.deleteByDatabaseId(id);
         return postRepository.deletePostById(id);
     }
 
     @Override
     public Integer deletePostFromGroup(Long id) {
+        Long groupId = postRepository.findGroupIdForPost(id).orElse(null);
+        if (groupId != null) {
+            groupIndexRepository
+                    .findByDatabaseId(groupId)
+                    .ifPresent(groupIndex -> {
+                        groupIndex.setNumberOfPosts(groupIndex.getNumberOfPosts() - 1);
+                        groupIndexRepository.save(groupIndex);
+                    });
+
+            postIndexRepository.deleteByDatabaseId(id);
+        }
         return postRepository.deletePostFromGroup(id);
+    }
+
+    private String extractDocumentContent(MultipartFile multipartPdfFile) {
+        String documentContent;
+        try (InputStream pdfFile = multipartPdfFile.getInputStream()) {
+            PDDocument pdDocument = PDDocument.load(pdfFile);
+            PDFTextStripper textStripper = new PDFTextStripper();
+            documentContent = textStripper.getText(pdDocument);
+            pdDocument.close();
+        } catch (IOException e) {
+            throw new LoadingException("Error while trying to load PDF file content for post");
+        }
+
+        return documentContent;
     }
 }

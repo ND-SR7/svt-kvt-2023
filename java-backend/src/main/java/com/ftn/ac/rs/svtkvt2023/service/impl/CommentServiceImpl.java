@@ -1,5 +1,6 @@
 package com.ftn.ac.rs.svtkvt2023.service.impl;
 
+import com.ftn.ac.rs.svtkvt2023.indexrepository.PostIndexRepository;
 import com.ftn.ac.rs.svtkvt2023.model.dto.CommentDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Comment;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
@@ -21,24 +22,28 @@ import java.util.Optional;
 public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepository;
+    private PostService postService;
+    private UserService userService;
+    private PostIndexRepository postIndexRepository;
 
     @Autowired
     public void setCommentRepository(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
 
-    private PostService postService;
-
     @Autowired
     public void setPostService(PostService postService) {
         this.postService = postService;
     }
 
-    private UserService userService;
-
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setPostIndexRepository(PostIndexRepository postIndexRepository) {
+        this.postIndexRepository = postIndexRepository;
     }
 
     private static final Logger logger = LogManager.getLogger(CommentServiceImpl.class);
@@ -85,6 +90,14 @@ public class CommentServiceImpl implements CommentService {
         if (commentDTO.getBelongsToPostId() != null) {
             Post post = postService.findById(commentDTO.getBelongsToPostId());
             newComment.setBelongsToPost(post);
+
+            postIndexRepository
+                    .findByDatabaseId(commentDTO.getBelongsToPostId())
+                    .ifPresent(postIndex -> {
+                        postIndex.setNumberOfComments(postIndex.getNumberOfComments() + 1);
+                        postIndex.setCommentContent(postIndex.getCommentContent() + "\n" + commentDTO.getText());
+                        postIndexRepository.save(postIndex);
+                    });
         }
 
         newComment.setDeleted(false);
@@ -95,16 +108,30 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment updateComment(Comment comment) {
+        Comment oldComment = commentRepository.findById(comment.getId()).orElse(null);
+        if (oldComment != null) {
+            String oldContent = oldComment.getText();
+            postIndexRepository
+                    .findByDatabaseId(comment.getBelongsToPost().getId())
+                    .ifPresent(postIndex -> {
+                        String indexContent = postIndex.getCommentContent();
+                        String updatedContent = indexContent.replace(oldContent, comment.getText());
+                        postIndex.setCommentContent(updatedContent);
+                        postIndexRepository.save(postIndex);
+                    });
+        }
         return commentRepository.save(comment);
     }
 
     @Override
     public Integer deleteComment(Long id) {
+        this.updatePostIndexAfterDelete(id);
         return commentRepository.deleteCommentById(id);
     }
 
     @Override
     public Integer deleteCommentReply(Long commentId) {
+        this.updatePostIndexAfterDelete(commentId);
         return commentRepository.deleteReplyToComment(commentId);
     }
 
@@ -120,5 +147,20 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Integer deleteUserComments(Long userId) {
         return commentRepository.deleteCommentsByBelongsToUserId(userId);
+    }
+
+    private void updatePostIndexAfterDelete(Long commentId) {
+        Comment deletedComment = commentRepository.findById(commentId).orElse(null);
+        if (deletedComment != null) {
+            String deletedContent = deletedComment.getText();
+            postIndexRepository
+                    .findByDatabaseId(commentId)
+                    .ifPresent(postIndex -> {
+                        postIndex.setNumberOfComments(postIndex.getNumberOfComments() - 1);
+                        String updatedContent = postIndex.getCommentContent().replace(deletedContent, "");
+                        postIndex.setCommentContent(updatedContent);
+                        postIndexRepository.save(postIndex);
+                    });
+        }
     }
 }

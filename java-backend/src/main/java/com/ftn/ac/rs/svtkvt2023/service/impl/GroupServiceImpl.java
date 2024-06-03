@@ -1,34 +1,55 @@
 package com.ftn.ac.rs.svtkvt2023.service.impl;
 
+import com.ftn.ac.rs.svtkvt2023.exception.LoadingException;
+import com.ftn.ac.rs.svtkvt2023.indexmodel.GroupIndex;
+import com.ftn.ac.rs.svtkvt2023.indexrepository.GroupIndexRepository;
 import com.ftn.ac.rs.svtkvt2023.model.dto.GroupDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.repository.GroupRepository;
+import com.ftn.ac.rs.svtkvt2023.service.FileService;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import com.ftn.ac.rs.svtkvt2023.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class GroupServiceImpl implements GroupService {
 
     private GroupRepository groupRepository;
+    private UserService userService;
+    private GroupIndexRepository groupIndexRepository;
+    private FileService fileService;
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @Autowired
     public void setGroupRepository(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
 
-    private UserService userService;
+    @Autowired
+    public void setGroupIndexRepository(GroupIndexRepository groupIndexRepository) {
+        this.groupIndexRepository = groupIndexRepository;
+    }
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
     }
 
     private static final Logger logger = LogManager.getLogger(GroupServiceImpl.class);
@@ -111,16 +132,38 @@ public class GroupServiceImpl implements GroupService {
         newGroup.setDeleted(false);
         newGroup = groupRepository.save(newGroup);
 
+        fileService.store(groupDTO.getFile(), UUID.randomUUID().toString());
+
+        GroupIndex index = new GroupIndex();
+        index.setName(groupDTO.getName());
+        index.setDescription(groupDTO.getDescription());
+        index.setFileContent(extractDocumentContent(groupDTO.getFile()));
+        index.setNumberOfPosts(0L);
+        index.setRules(groupDTO.getRules());
+        index.setAverageLikes(0.0);
+        index.setDatabaseId(newGroup.getId());
+        groupIndexRepository.save(index);
+
         return newGroup;
     }
 
     @Override
     public Group updateGroup(Group group) {
+        GroupIndex index = groupIndexRepository.findByName(group.getName()).orElse(null);
+        if (index == null) {
+            logger.warn("No index found for group: {}", group.getName());
+        } else {
+            index.setName(group.getName());
+            index.setDescription(group.getDescription());
+            index.setRules(group.getRules());
+            groupIndexRepository.save(index);
+        }
         return groupRepository.save(group);
     }
 
     @Override
     public Integer deleteGroup(Long id) {
+        groupIndexRepository.deleteByDatabaseId(id);
         return groupRepository.deleteGroupById(id);
     }
 
@@ -152,5 +195,19 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Boolean checkUser(Long groupId, Long userId) {
         return (groupRepository.findUserInGroup(groupId, userId) > 0 || userService.checkUserIsAdmin(userId));
+    }
+
+    private String extractDocumentContent(MultipartFile multipartPdfFile) {
+        String documentContent;
+        try (InputStream pdfFile = multipartPdfFile.getInputStream()) {
+            PDDocument pdDocument = PDDocument.load(pdfFile);
+            PDFTextStripper textStripper = new PDFTextStripper();
+            documentContent = textStripper.getText(pdDocument);
+            pdDocument.close();
+        } catch (IOException e) {
+            throw new LoadingException("Error while trying to load PDF file content for group");
+        }
+
+        return documentContent;
     }
 }

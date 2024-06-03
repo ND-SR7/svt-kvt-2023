@@ -78,4 +78,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(nativeQuery = true,
             value = "delete from group_posts where post_id = :id")
     Integer deletePostFromGroup(@Param("id") Long id);
+
+    @Query(nativeQuery = true,
+            value = "select group_id from group_posts where post_id = :postId")
+    Optional<Long> findGroupIdForPost(@Param("postId") Long postId);
 }

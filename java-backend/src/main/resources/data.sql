@@ -1,7 +1,7 @@
 -- USERS --
 insert into users(deleted, email, first_name, is_admin, last_login, last_name, password, username, display_name, description)
     values (false, 'pera@mail.com', 'Pera', true, null, 'Peric', '$2a$12$6LRoZ4kDywW7WnK9bg16A.XXVHgKXxpi6YZ5JYptFnwW3y97DZGju', 'pera',
-            "-pera-", "Admin you will find in every project");
+            '-pera-', 'Admin you will find in every project');
 insert into users(deleted, email, first_name, is_admin, last_login, last_name, password, username, display_name)
     values (false, 'mika@mail.com', 'Mika', false, null, 'Mikic', '$2a$12$15ymkpdnVT1DGRfGjjqIY.SnwcaMTyiIUb71f3r3Be8i3zHuNRM.i', 'mika',
             'mika-mika');
@@ -26,26 +26,26 @@ insert into reports (accepted, deleted, reason, timestamp, by_user_id, on_commen
     values (true, false, 'HARASSMENT', '2023-05-12', 3, null, null, 4);
 
 -- POSTS --
-insert into posts (content, creation_date, deleted, posted_by_user_id)
-    values ('This is content intended for a test. If you see it, good for you',
+insert into posts (title, content, creation_date, deleted, posted_by_user_id)
+    values ('Title number 1', 'This is content intended for a test. If you see it, good for you',
             '2023-05-12 17:05:00', false, 1);
-insert into posts (content, creation_date, deleted, posted_by_user_id)
-    values ('This is another content intended for a test. Say hi to everyone reading this',
+insert into posts (title, content, creation_date, deleted, posted_by_user_id)
+    values ('Another title', 'This is another content intended for a test. Say hi to everyone reading this',
             '2023-05-13 13:02:30', true, 2);
-insert into posts (content, creation_date, deleted, posted_by_user_id)
-    values ('This is a post in a group. If you see it, you are inside a group',
+insert into posts (title, content, creation_date, deleted, posted_by_user_id)
+    values ('Sun and no clouds', 'This is a post in a group. If you see it, you are inside a group',
             '2023-05-14 15:23:35', false, 1);
-insert into posts (content, creation_date, deleted, posted_by_user_id)
-    values ('This is another post for a group. Say hi to everyone in this group',
+insert into posts (title, content, creation_date, deleted, posted_by_user_id)
+    values ('Clouds and rain', 'This is another post for a group. Say hi to everyone in this group',
             '2023-05-15 14:56:55', false, 2);
-insert into posts (content, creation_date, deleted, posted_by_user_id)
-    values ('This is test post for second group. Say hi to everyone in this group',
+insert into posts (title, content, creation_date, deleted, posted_by_user_id)
+    values ('Sea travel', 'This is test post for second group. Say hi to everyone in this group',
             '2023-06-13 12:12:12', false, 3);
-insert into posts (content, creation_date, deleted, posted_by_user_id)
-    values ('This is Ana\'s global post. Friends can see it',
+insert into posts (title, content, creation_date, deleted, posted_by_user_id)
+    values ('Ana love cooking', 'This is Ana\'s global post. Friends can see it',
         '2023-06-20 05:22:12', false, 3);
-insert into posts (content, creation_date, deleted, posted_by_user_id)
-    values ('This is Mika\'s global post. Friends can see it',
+insert into posts (title, content, creation_date, deleted, posted_by_user_id)
+    values ('Zika was banned for this post', 'This is Mika\'s global post. Friends can see it',
             '2023-06-27 01:12:39', false, 2);
 
 -- COMMENTS --
