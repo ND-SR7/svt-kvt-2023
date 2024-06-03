@@ -9,11 +9,17 @@ import com.ftn.ac.rs.svtkvt2023.service.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,19 +33,22 @@ public class PostController {
     ImageService imageService;
     CommentService commentService;
     ReactionService reactionService;
+    FileService fileService;
     TokenUtils tokenUtils;
 
     private static final Logger logger = LogManager.getLogger(PostController.class);
 
     @Autowired
     public PostController(PostService postService, UserService userService, GroupService groupService, ImageService imageService,
-                          CommentService commentService, ReactionService reactionService, TokenUtils tokenUtils) {
+                          CommentService commentService, ReactionService reactionService, FileService fileService,
+                          TokenUtils tokenUtils) {
         this.postService = postService;
         this.userService = userService;
         this.groupService = groupService;
         this.imageService = imageService;
         this.commentService = commentService;
         this.reactionService = reactionService;
+        this.fileService = fileService;
         this.tokenUtils = tokenUtils;
     }
 
@@ -277,6 +286,18 @@ public class PostController {
         }
         logger.error("Failed to delete post with id: {}", id);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/file/{filename}")
+    @ResponseBody
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws IOException {
+        logger.info("Serving post file with filename: {}", filename);
+
+        var minioResponse = fileService.loadAsResource(filename);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, minioResponse.headers().get("Content-Disposition"))
+                .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(filename)))
+                .body(new InputStreamResource(minioResponse));
     }
 
     private User getUserFromToken(String token) {
