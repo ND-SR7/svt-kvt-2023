@@ -23,12 +23,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/posts")
 public class PostController {
 
     PostService postService;
+    PostSearchService postSearchService;
     GroupService groupService;
     UserService userService;
     ImageService imageService;
@@ -40,10 +42,11 @@ public class PostController {
     private static final Logger logger = LogManager.getLogger(PostController.class);
 
     @Autowired
-    public PostController(PostService postService, UserService userService, GroupService groupService, ImageService imageService,
-                          CommentService commentService, ReactionService reactionService, FileService fileService,
+    public PostController(PostService postService, UserService userService, GroupService groupService, PostSearchService postSearchService,
+                          ImageService imageService, CommentService commentService, ReactionService reactionService, FileService fileService,
                           TokenUtils tokenUtils) {
         this.postService = postService;
+        this.postSearchService = postSearchService;
         this.userService = userService;
         this.groupService = groupService;
         this.imageService = imageService;
@@ -300,6 +303,21 @@ public class PostController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, minioResponse.headers().get("Content-Disposition"))
                 .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(filename)))
                 .body(new InputStreamResource(minioResponse));
+    }
+
+    @GetMapping("/search")
+    public List<Map<String, Object>> searchPosts(@RequestParam(required = false) String title,
+                                                  @RequestParam(required = false) String fullContent,
+                                                  @RequestParam(required = false) String fileContent,
+                                                  @RequestParam(required = false) Long minLikes,
+                                                  @RequestParam(required = false) Long maxLikes,
+                                                  @RequestParam(required = false) Long minComments,
+                                                  @RequestParam(required = false) Long maxComments,
+                                                  @RequestParam(required = false) String commentContent,
+                                                  @RequestParam(required = false) String phrase,
+                                                  @RequestParam(required = false, defaultValue = "OR") String operator) {
+        return postSearchService.searchPosts(title, fullContent, fileContent, minLikes, maxLikes, minComments, maxComments,
+                commentContent, phrase, operator);
     }
 
     private User getUserFromToken(String token) {
