@@ -6,6 +6,7 @@ import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.GroupRequest;
 import com.ftn.ac.rs.svtkvt2023.service.FileService;
 import com.ftn.ac.rs.svtkvt2023.service.GroupRequestService;
+import com.ftn.ac.rs.svtkvt2023.service.GroupSearchService;
 import com.ftn.ac.rs.svtkvt2023.service.GroupService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,20 +26,24 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/groups")
 public class GroupController {
 
     GroupService groupService;
+    GroupSearchService groupSearchService;
     GroupRequestService groupRequestService;
     FileService fileService;
 
     private static final Logger logger = LogManager.getLogger(GroupController.class);
 
     @Autowired
-    public GroupController(GroupService groupService, GroupRequestService groupRequestService, FileService fileService) {
+    public GroupController(GroupService groupService, GroupSearchService groupSearchService,
+                           GroupRequestService groupRequestService, FileService fileService) {
         this.groupService = groupService;
+        this.groupSearchService = groupSearchService;
         this.groupRequestService = groupRequestService;
         this.fileService = fileService;
     }
@@ -255,5 +260,18 @@ public class GroupController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, minioResponse.headers().get("Content-Disposition"))
                 .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(filename)))
                 .body(new InputStreamResource(minioResponse));
+    }
+
+    @GetMapping("/search")
+    public List<Map<String, Object>> searchGroups(@RequestParam(required = false) String name,
+                                                  @RequestParam(required = false) String description,
+                                                  @RequestParam(required = false) String fileContent,
+                                                  @RequestParam(required = false) Long minPosts,
+                                                  @RequestParam(required = false) Long maxPosts,
+                                                  @RequestParam(required = false) Double minLikes,
+                                                  @RequestParam(required = false) Double maxLikes,
+                                                  @RequestParam(required = false) String phrase,
+                                                  @RequestParam(required = false, defaultValue = "OR") String operator) {
+        return groupSearchService.searchGroups(name, description, fileContent, minPosts, maxPosts, minLikes, maxLikes, phrase, operator);
     }
 }
