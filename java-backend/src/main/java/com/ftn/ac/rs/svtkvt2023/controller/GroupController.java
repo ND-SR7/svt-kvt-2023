@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -145,9 +146,10 @@ public class GroupController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<GroupDTO> createGroup(@RequestBody @Validated GroupDTO newGroup) {
+    public ResponseEntity<GroupDTO> createGroup(@RequestParam("file") MultipartFile file,
+                                                @RequestPart("group") @Validated GroupDTO newGroup) {
         logger.info("Creating group from DTO");
-        Group createdGroup = groupService.createGroup(newGroup);
+        Group createdGroup = groupService.createGroup(newGroup, file);
 
         if (createdGroup == null) {
             logger.error("Group couldn't be created from DTO");

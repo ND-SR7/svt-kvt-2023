@@ -12,6 +12,8 @@ export class GroupService {
   private headers = new HttpHeaders({'authorization': 'Bearer ' + JSON.parse(localStorage.user).accessToken,
   'Content-Type': 'application/json'});
 
+  private headersMultipart = new HttpHeaders({'authorization': 'Bearer ' + JSON.parse(localStorage.user).accessToken});
+
   constructor(
     private http: HttpClient
   ) { }
@@ -49,8 +51,8 @@ export class GroupService {
     return this.http.get('api/groups/' + groupId + '/group-requests', queryParams) as Observable<HttpResponse<GroupRequest[]>>;
   }
 
-  add(newGroup: Group): Observable<string> {
-    return this.http.post('api/groups/add', newGroup, {headers: this.headers, responseType: 'text'});
+  add(newGroup: FormData): Observable<string> {
+    return this.http.post('api/groups/add', newGroup, {headers: this.headersMultipart, responseType: 'text'});
   }
 
   edit(editedGroup: Group): Observable<string> {
@@ -90,5 +92,9 @@ export class GroupService {
 
   deleteGroupRequest(id: number): Observable<HttpResponse<Number>> {
     return this.http.delete('api/groups/group-request/' + id, {headers: this.headers}) as Observable<HttpResponse<Number>>;
+  }
+
+  downloadFile(filename: string): Observable<Blob> {
+    return this.http.get('api/groups/file/' + filename, {headers: this.headers, responseType: 'blob'});
   }
 }

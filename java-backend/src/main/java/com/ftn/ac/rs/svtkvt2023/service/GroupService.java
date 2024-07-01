@@ -3,6 +3,7 @@ package com.ftn.ac.rs.svtkvt2023.service;
 import com.ftn.ac.rs.svtkvt2023.model.dto.GroupDTO;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Group;
 import com.ftn.ac.rs.svtkvt2023.model.entity.Post;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public interface GroupService {
 
     Group checkIfPostInGroup(Long postId);
 
-    Group createGroup(GroupDTO groupDTO);
+    Group createGroup(GroupDTO groupDTO, MultipartFile file);
 
     Group updateGroup(Group group);
 

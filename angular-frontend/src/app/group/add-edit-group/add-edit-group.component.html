@@ -26,6 +26,14 @@
         </div>
 
         <div>
+          <label for="rulesFile"><b>Rules File:</b></label>
+          <div>
+            <input type="file" id="rulesFile" name="rulesFile" accept="application/pdf" (change)="onFileChange($event)">
+            <small class="text-danger" *ngIf="fileError">A file must be selected!</small>
+          </div>
+        </div>
+
+        <div>
             <button *ngIf="!editing" type="submit" class="btn btn-primary" [disabled]="!form.valid">Add Group</button>
             <button *ngIf="editing" type="submit" class="btn btn-primary" [disabled]="!form.valid">Save</button>
         </div>

@@ -4,6 +4,7 @@
     <br>
     <p>{{group.description}}</p>
     <button *ngIf="canAccess(group.id) || isAdmin" class="show-btn" [routerLink]="['/groups', group.id]">View Group</button>
+    <button *ngIf="group.filename" (click)="downloadRules(group.filename)" class="show-btn">Download Group Rules</button>
     <button *ngIf="canSendRequest(group.id)" class="show-btn" (click)="sendRequest(group.id)">Send Request to join</button>
     <button *ngIf="!canSendRequest(group.id) && !canAccess(group.id)" class="show-btn" disabled>You already sent a request</button>
 </div>

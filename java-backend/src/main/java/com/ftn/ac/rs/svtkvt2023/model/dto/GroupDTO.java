@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -36,7 +35,7 @@ public class GroupDTO {
     private String rules;
 
     @NotNull
-    private MultipartFile file;
+    private String filename;
 
     public GroupDTO(Group createdGroup) {
         this.id = createdGroup.getId();
@@ -46,5 +45,6 @@ public class GroupDTO {
         this.suspended = createdGroup.isSuspended();
         this.suspendedReason = createdGroup.getSuspendedReason();
         this.rules = createdGroup.getRules();
+        this.filename = createdGroup.getRulesFilename();
     }
 }

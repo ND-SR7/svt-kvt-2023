@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -218,9 +219,10 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<PostDTO> addPost(@RequestBody @Validated PostDTO newPost) {
+    public ResponseEntity<PostDTO> addPost(@RequestParam("file") MultipartFile file,
+                                           @RequestPart("post") @Validated PostDTO newPost) {
         logger.info("Creating post from DTO");
-        Post createdPost = postService.createPost(newPost);
+        Post createdPost = postService.createPost(newPost, file);
 
         if (createdPost == null) {
             logger.error("Post couldn't be created from DTO");

@@ -67,4 +67,23 @@ export class PostListComponent implements OnInit{
   
     return posts;
   }
+
+  downloadContent(filename: string):void {
+    this.postService.downloadFile(filename).subscribe(
+      result => {
+        const url = window.URL.createObjectURL(result);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      },
+      error => {
+        this.toastr.error('Error while fetching file for download');
+        console.log(error);
+      }
+    );
+  }
 }

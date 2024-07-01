@@ -18,6 +18,7 @@ export class AddEditPostComponent implements OnInit{
 
   form: FormGroup;
   editing: boolean = this.router.url.includes('edit');
+  fileError: boolean = false;
   postForGroup: number = Number.parseInt(this.router.url.split('/')[2]) || 0;
   imagePaths: string[] = [];
   images: Image[] = [];
@@ -30,7 +31,9 @@ export class AddEditPostComponent implements OnInit{
     private toastr: ToastrService
   ) {
     this.form = this.fb.group({
+      title: [null, Validators.required],
       content: [null, Validators.required],
+      contentFile: [null, Validators.required],
       images: [null, Validators.nullValidator]
     });
 
@@ -53,7 +56,7 @@ export class AddEditPostComponent implements OnInit{
     
   }
 
-  onFileChange(event: Event) {
+  onImageChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;
     const files: FileList | null = inputElement.files;
     this.imagePaths = [];
@@ -66,9 +69,32 @@ export class AddEditPostComponent implements OnInit{
     }
   }
 
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      this.form.patchValue({
+        contentFile: file
+      });
+      this.fileError = false;
+    } else {
+      this.form.patchValue({
+        contentFile: null
+      });
+      this.fileError = true;
+    }
+  }
+
   submit() {
     if (!this.editing) {
+      if (!this.form.valid) {
+        if (!this.form.controls['contentFile'].value) {
+          this.fileError = true;
+        }
+        return;
+      }
+
       const post: Post = new Post();
+      post.title = this.form.value.title;
       post.content = this.form.value.content;
       post.creationDate = new Date().toISOString().slice(0, -1);
       
@@ -95,7 +121,11 @@ export class AddEditPostComponent implements OnInit{
           if (this.postForGroup > 0)
             post.belongsToGroupId = this.postForGroup;
 
-          this.postService.add(post).subscribe(
+          const formData: FormData = new FormData();
+          formData.append('file', this.form.value.contentFile);
+          formData.append('post', new Blob([JSON.stringify(post)], { type: 'application/json' }));
+
+          this.postService.add(formData).subscribe(
             result => {
               this.toastr.success('Successfully added a post!');
               if (this.postForGroup > 0)

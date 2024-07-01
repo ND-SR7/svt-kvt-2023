@@ -17,6 +17,7 @@ export class AddEditGroupComponent implements OnInit {
 
   form: FormGroup;
   editing: boolean = this.router.url.includes('edit');
+  fileError: boolean = false;
 
   group: Group = new Group();
   user: User = new User();
@@ -31,7 +32,8 @@ export class AddEditGroupComponent implements OnInit {
     this.form = this.fb.group({
       name: [null, Validators.required],
       description: [null, Validators.required],
-      rules: [null, Validators.required]
+      rules: [null, Validators.required],
+      rulesFile: [null, Validators.required]
     });
 
     if (this.editing) {
@@ -65,8 +67,30 @@ export class AddEditGroupComponent implements OnInit {
     );
    }
 
+   onFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      this.form.patchValue({
+        rulesFile: file
+      });
+      this.fileError = false;
+    } else {
+      this.form.patchValue({
+        rulesFile: null
+      });
+      this.fileError = true;
+    }
+  }
+
    submit(): void {
     if (!this.editing) {
+      if (!this.form.valid) {
+        if (!this.form.controls['rulesFile'].value) {
+          this.fileError = true;
+        }
+        return;
+      }
+
       let group: Group = new Group();
       group.name = this.form.value.name;
       group.description = this.form.value.description;
@@ -74,7 +98,11 @@ export class AddEditGroupComponent implements OnInit {
       group.suspended = false;
       group.rules = this.form.value.rules;
 
-      this.groupService.add(group).subscribe(
+      const formData: FormData = new FormData();
+      formData.append('file', this.form.value.rulesFile);
+      formData.append('group', new Blob([JSON.stringify(group)], { type: 'application/json' }));
+
+      this.groupService.add(formData).subscribe(
         result => {
           group = (JSON.parse(result)) as Group;
           

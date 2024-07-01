@@ -40,6 +40,9 @@ public class Group {
     @Column(name = "rules", nullable = false)
     private String rules;
 
+    @Column(name = "rules_filename", nullable = false, columnDefinition = "VARCHAR(255) DEFAULT ''")
+    private String rulesFilename;
+
     @Column(name = "suspended_reason") //ako je null, nije suspendovana
     private String suspendedReason;
 

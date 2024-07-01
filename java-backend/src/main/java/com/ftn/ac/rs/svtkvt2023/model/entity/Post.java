@@ -31,6 +31,9 @@ public class Post {
     @Column(nullable = false, length = 250)
     private String content;
 
+    @Column(name = "content_filename", nullable = false, columnDefinition = "VARCHAR(255) DEFAULT ''")
+    private String contentFilename;
+
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 

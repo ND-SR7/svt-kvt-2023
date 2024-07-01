@@ -36,7 +36,7 @@ public class PostDTO {
     private Long belongsToGroupId;
 
     @NotNull
-    private MultipartFile file;
+    private String filename;
 
     public PostDTO(Post createdPost) {
         this.id = createdPost.getId();
@@ -44,5 +44,6 @@ public class PostDTO {
         this.content = createdPost.getContent();
         this.creationDate = createdPost.getCreationDate().toString();
         this.postedByUserId = createdPost.getPostedBy().getId();
+        this.filename = createdPost.getContentFilename();
     }
 }

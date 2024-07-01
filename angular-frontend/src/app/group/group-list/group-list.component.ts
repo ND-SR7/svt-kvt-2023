@@ -108,4 +108,23 @@ export class GroupListComponent implements OnInit {
       }
     );
   }
+
+  downloadRules(filename: string):void {
+    this.groupService.downloadFile(filename).subscribe(
+      result => {
+        const url = window.URL.createObjectURL(result);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      },
+      error => {
+        this.toastr.error('Error while fetching file for download');
+        console.log(error);
+      }
+    );
+  }
 }

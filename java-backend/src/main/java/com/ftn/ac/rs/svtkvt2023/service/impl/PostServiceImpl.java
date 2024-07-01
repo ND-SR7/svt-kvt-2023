@@ -130,7 +130,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post createPost(PostDTO postDTO) {
+    public Post createPost(PostDTO postDTO, MultipartFile file) {
         Optional<Post> post = postRepository.findById(postDTO.getId());
 
         if (post.isPresent()) {
@@ -144,6 +144,9 @@ public class PostServiceImpl implements PostService {
         newPost.setCreationDate(LocalDateTime.parse(postDTO.getCreationDate()));
         newPost.setPostedBy(userService.findById(postDTO.getPostedByUserId()));
         newPost.setDeleted(false);
+
+        String filename = fileService.store(file, UUID.randomUUID().toString());
+        newPost.setContentFilename(filename);
 
         if (postDTO.getBelongsToGroupId() != null) {
             boolean userInGroup = groupService.checkUser(postDTO.getBelongsToGroupId(), postDTO.getPostedByUserId());
@@ -173,14 +176,12 @@ public class PostServiceImpl implements PostService {
         PostIndex index = new PostIndex();
         index.setTitle(postDTO.getTitle());
         index.setFullContent(postDTO.getContent());
-        index.setFileContent(extractDocumentContent(postDTO.getFile()));
+        index.setFileContent(extractDocumentContent(file));
         index.setNumberOfLikes(0L);
         index.setNumberOfComments(0L);
         index.setCommentContent("");
         index.setDatabaseId(newPost.getId());
         postIndexRepository.save(index);
-
-        fileService.store(postDTO.getFile(), UUID.randomUUID().toString());
 
         return newPost;
     }

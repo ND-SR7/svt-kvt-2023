@@ -6,7 +6,7 @@ export class Group {
     suspended: boolean;
     suspendedReason: string;
     rules: string;
-    file: File;
+    filename: string;
 
     constructor(obj: {
         _id?: number,
@@ -16,7 +16,7 @@ export class Group {
         suspended?: boolean,
         suspendedReason?: string,
         rules?: string,
-        file?: File
+        filename?: string
     } = {}) {
         this._id = obj._id || null as unknown as number;
         this.name = obj.name || null as unknown as string;
@@ -25,7 +25,7 @@ export class Group {
         this.suspended = obj.suspended || null as unknown as boolean;
         this.suspendedReason = obj.suspendedReason || null as unknown as string;
         this.rules = obj.rules || null as unknown as string;
-        this.file = obj.file || null as unknown as File;
+        this.filename = obj.filename || null as unknown as string;
     }
 
     get id(): number {

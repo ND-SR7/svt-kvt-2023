@@ -1,5 +1,14 @@
 <div class="postForm">
     <form [formGroup]="form" (ngSubmit)="submit()">
+      <div>
+        <label for="title"><b>Title:</b></label>
+        <div>
+          <textarea id="title" name="title" [formControl]="form.controls['title']"></textarea>
+          <small class="text-danger"  *ngIf="form.controls.title.touched && form.controls.title.errors?.required">
+            This field can't be empty!</small>
+        </div>
+      </div>
+
         <div>
           <label for="content"><b>Content:</b></label>
           <div>
@@ -8,10 +17,18 @@
               This field can't be empty!</small>
           </div>
         </div>
+
+        <div>
+          <label for="contentFile"><b>Content File:</b></label>
+          <div>
+            <input type="file" id="contentFile" name="contentFile" accept="application/pdf" (change)="onFileChange($event)">
+            <small class="text-danger" *ngIf="fileError">A file must be selected!</small>
+          </div>
+        </div>
         
         <div>
           <label for="images">Images:</label>
-          <input type="file" id="images" name="images" (change)="onFileChange($event)" multiple accept="image/*">
+          <input type="file" id="images" name="images" (change)="onImageChange($event)" multiple accept="image/*">
         </div>
 
         <div>

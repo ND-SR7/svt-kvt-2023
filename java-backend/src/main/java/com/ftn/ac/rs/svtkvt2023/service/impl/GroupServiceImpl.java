@@ -114,7 +114,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group createGroup(GroupDTO groupDTO) {
+    public Group createGroup(GroupDTO groupDTO, MultipartFile file) {
         Optional<Group> group = groupRepository.findByName(groupDTO.getName());
 
         if (group.isPresent()) {
@@ -130,14 +130,16 @@ public class GroupServiceImpl implements GroupService {
         newGroup.setSuspendedReason(groupDTO.getSuspendedReason());
         newGroup.setRules(groupDTO.getRules());
         newGroup.setDeleted(false);
-        newGroup = groupRepository.save(newGroup);
 
-        fileService.store(groupDTO.getFile(), UUID.randomUUID().toString());
+        String filename = fileService.store(file, UUID.randomUUID().toString());
+        newGroup.setRulesFilename(filename);
+
+        newGroup = groupRepository.save(newGroup);
 
         GroupIndex index = new GroupIndex();
         index.setName(groupDTO.getName());
         index.setDescription(groupDTO.getDescription());
-        index.setFileContent(extractDocumentContent(groupDTO.getFile()));
+        index.setFileContent(extractDocumentContent(file));
         index.setNumberOfPosts(0L);
         index.setRules(groupDTO.getRules());
         index.setAverageLikes(0.0);

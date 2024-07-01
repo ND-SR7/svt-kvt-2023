@@ -12,6 +12,8 @@ export class PostService {
   private headers = new HttpHeaders({'authorization': 'Bearer ' + JSON.parse(localStorage.user).accessToken,
   'Content-Type': 'application/json'});
 
+  private headersMultipart = new HttpHeaders({'authorization': 'Bearer ' + JSON.parse(localStorage.user).accessToken});
+
   constructor(
     private http: HttpClient
   ) { }
@@ -93,8 +95,8 @@ export class PostService {
     return this.http.get('api/posts/group/' + id, queryParams) as Observable<HttpResponse<Post[]>>;
   }
 
-  add(newPost: Post): Observable<string> {
-    return this.http.post('api/posts/add', newPost, {headers: this.headers, responseType: 'text'});
+  add(newPost: FormData): Observable<string> {
+    return this.http.post('api/posts/add', newPost, {headers: this.headersMultipart, responseType: 'text'});
   }
 
   edit(editedPost: Post): Observable<string> {
@@ -103,5 +105,9 @@ export class PostService {
 
   delete(id: number): Observable<HttpResponse<Post>> {
     return this.http.delete('api/posts/delete/' + id, {headers: this.headers}) as Observable<HttpResponse<Post>>;
+  }
+
+  downloadFile(filename: string): Observable<Blob> {
+    return this.http.get('api/posts/file/' + filename, {headers: this.headers, responseType: 'blob'});
   }
 }
