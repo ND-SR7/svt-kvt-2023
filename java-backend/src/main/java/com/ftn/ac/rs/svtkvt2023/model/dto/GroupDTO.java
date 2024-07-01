@@ -45,6 +45,6 @@ public class GroupDTO {
         this.suspended = createdGroup.isSuspended();
         this.suspendedReason = createdGroup.getSuspendedReason();
         this.rules = createdGroup.getRules();
-        this.filename = createdGroup.getRulesFilename();
+        this.filename = createdGroup.getDescriptionFilename();
     }
 }

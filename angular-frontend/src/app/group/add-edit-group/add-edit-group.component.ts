@@ -33,7 +33,7 @@ export class AddEditGroupComponent implements OnInit {
       name: [null, Validators.required],
       description: [null, Validators.required],
       rules: [null, Validators.required],
-      rulesFile: [null, Validators.required]
+      descriptionFile: [null, Validators.required]
     });
 
     if (this.editing) {
@@ -71,12 +71,12 @@ export class AddEditGroupComponent implements OnInit {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
       this.form.patchValue({
-        rulesFile: file
+        descriptionFile: file
       });
       this.fileError = false;
     } else {
       this.form.patchValue({
-        rulesFile: null
+        descriptionFile: null
       });
       this.fileError = true;
     }
@@ -85,7 +85,7 @@ export class AddEditGroupComponent implements OnInit {
    submit(): void {
     if (!this.editing) {
       if (!this.form.valid) {
-        if (!this.form.controls['rulesFile'].value) {
+        if (!this.form.controls['descriptionFile'].value) {
           this.fileError = true;
         }
         return;
@@ -99,7 +99,7 @@ export class AddEditGroupComponent implements OnInit {
       group.rules = this.form.value.rules;
 
       const formData: FormData = new FormData();
-      formData.append('file', this.form.value.rulesFile);
+      formData.append('file', this.form.value.descriptionFile);
       formData.append('group', new Blob([JSON.stringify(group)], { type: 'application/json' }));
 
       this.groupService.add(formData).subscribe(

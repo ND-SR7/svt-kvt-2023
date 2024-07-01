@@ -31,6 +31,9 @@ public class Group {
     @Column(nullable = false, length = 200)
     private String description;
 
+    @Column(name = "description_filename", nullable = false, columnDefinition = "VARCHAR(255) DEFAULT ''")
+    private String descriptionFilename;
+
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
@@ -39,9 +42,6 @@ public class Group {
 
     @Column(name = "rules", nullable = false)
     private String rules;
-
-    @Column(name = "rules_filename", nullable = false, columnDefinition = "VARCHAR(255) DEFAULT ''")
-    private String rulesFilename;
 
     @Column(name = "suspended_reason") //ako je null, nije suspendovana
     private String suspendedReason;

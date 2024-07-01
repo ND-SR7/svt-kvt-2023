@@ -17,19 +17,19 @@
         </div>
 
         <div>
+          <label for="descriptionFile"><b>Description File:</b></label>
+          <div>
+            <input type="file" id="descriptionFile" name="descriptionFile" accept="application/pdf" (change)="onFileChange($event)">
+            <small class="text-danger" *ngIf="fileError">A file must be selected!</small>
+          </div>
+        </div>
+
+        <div>
           <label for="rules"><b>Rules:</b></label>
           <div>
             <textarea id="rules" name="rules" [formControl]="form.controls['rules']"></textarea>
             <small class="text-danger"  *ngIf="form.controls.rules.touched && form.controls.rules.errors?.required">
               This field can't be empty!</small>
-          </div>
-        </div>
-
-        <div>
-          <label for="rulesFile"><b>Rules File:</b></label>
-          <div>
-            <input type="file" id="rulesFile" name="rulesFile" accept="application/pdf" (change)="onFileChange($event)">
-            <small class="text-danger" *ngIf="fileError">A file must be selected!</small>
           </div>
         </div>
 

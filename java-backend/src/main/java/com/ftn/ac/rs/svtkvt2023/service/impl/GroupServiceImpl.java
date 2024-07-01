@@ -132,7 +132,7 @@ public class GroupServiceImpl implements GroupService {
         newGroup.setDeleted(false);
 
         String filename = fileService.store(file, UUID.randomUUID().toString());
-        newGroup.setRulesFilename(filename);
+        newGroup.setDescriptionFilename(filename);
 
         newGroup = groupRepository.save(newGroup);
 
