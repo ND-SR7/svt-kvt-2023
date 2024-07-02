@@ -28,9 +28,9 @@ public class PostSearchServiceImpl implements PostSearchService {
     @Override
     public List<Map<String, Object>> searchPosts(String title, String fullContent, String fileContent, Long minLikes,
                                                  Long maxLikes, Long minComments, Long maxComments, String commentContent,
-                                                 String phrase, String operator) {
+                                                 String operator) {
         if (title == null && fullContent == null && fileContent == null && minLikes == null && maxLikes == null &&
-                minComments == null && maxComments == null && commentContent == null && phrase == null && operator == null) {
+                minComments == null && maxComments == null && commentContent == null && operator == null) {
             return Collections.emptyList();
         }
 
@@ -53,9 +53,7 @@ public class PostSearchServiceImpl implements PostSearchService {
                         else b.should(sb -> sb.match(m -> m.field("title")
                                 .fuzziness(Fuzziness.ONE.asString()).query(title)));
 
-                        if (useAnd && phrase != null) b.must(sb -> sb.matchPhrase(p -> p.field("title")
-                                .slop(1).query(title)));
-                        else if (phrase != null) b.should(sb -> sb.matchPhrase(p -> p.field("title")
+                        b.should(sb -> sb.matchPhrase(p -> p.field("title")
                                 .slop(1).query(title)));
                     }
 
@@ -65,9 +63,7 @@ public class PostSearchServiceImpl implements PostSearchService {
                         else b.should(sb -> sb.match(m -> m.field("full_content")
                                 .fuzziness(Fuzziness.ONE.asString()).query(fullContent)));
 
-                        if (useAnd && phrase != null) b.must(sb -> sb.matchPhrase(p -> p.field("full_content")
-                                .slop(1).query(fullContent)));
-                        else if (phrase != null) b.should(sb -> sb.matchPhrase(p -> p.field("full_content")
+                        b.should(sb -> sb.matchPhrase(p -> p.field("full_content")
                                 .slop(1).query(fullContent)));
                     }
 
@@ -77,9 +73,7 @@ public class PostSearchServiceImpl implements PostSearchService {
                         else b.should(sb -> sb.match(m -> m.field("file_content")
                                 .fuzziness(Fuzziness.ONE.asString()).query(fileContent)));
 
-                        if (useAnd && phrase != null) b.must(sb -> sb.matchPhrase(p -> p.field("file_content")
-                                .slop(1).query(fileContent)));
-                        else if (phrase != null) b.should(sb -> sb.matchPhrase(p -> p.field("file_content")
+                        b.should(sb -> sb.matchPhrase(p -> p.field("file_content")
                                 .slop(1).query(fileContent)));
                     }
 
@@ -109,9 +103,7 @@ public class PostSearchServiceImpl implements PostSearchService {
                         else b.should(sb -> sb.match(m -> m.field("comment_content")
                                 .fuzziness(Fuzziness.ONE.asString()).query(commentContent)));
 
-                        if (useAnd && phrase != null) b.must(sb -> sb.matchPhrase(p -> p.field("comment_content")
-                                .slop(1).query(commentContent)));
-                        else if (phrase != null) b.should(sb -> sb.matchPhrase(p -> p.field("comment_content")
+                        b.should(sb -> sb.matchPhrase(p -> p.field("comment_content")
                                 .slop(1).query(commentContent)));
                     }
 

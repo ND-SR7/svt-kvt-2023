@@ -1,8 +1,9 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from '../model/post.model';
 import { Image } from '../model/image.model';
+import { Hit } from '../model/hit.model';
 
 @Injectable({
   providedIn: 'root'
@@ -109,5 +110,14 @@ export class PostService {
 
   downloadFile(filename: string): Observable<Blob> {
     return this.http.get('api/posts/file/' + filename, {headers: this.headers, responseType: 'blob'});
+  }
+
+  searchPosts(params: Map<string, any>): Observable<Hit[]> {
+    let queryParams = new HttpParams();
+    params.forEach((value, key) => {
+      queryParams = queryParams.set(key, value);
+    });
+
+    return this.http.get('api/posts/search', {headers: this.headers, params: queryParams}) as Observable<Hit[]>;
   }
 }

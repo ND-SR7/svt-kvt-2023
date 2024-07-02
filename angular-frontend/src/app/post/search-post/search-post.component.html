@@ -1,1 +1,70 @@
-<p>search-post works!</p>
+<div class="postForm">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div>
+            <label for="title"><b>Title:</b></label>
+            <input type="text" id="title" formControlName="title">
+        </div>
+    
+        <div>
+            <label for="fullContent"><b>Post Content:</b></label>
+            <input type="text" id="fullContent" formControlName="fullContent">
+        </div>
+    
+        <div>
+            <label for="fileContent"><b>File Content:</b></label>
+            <input type="text" id="fileContent" formControlName="fileContent">
+        </div>
+
+        <div>
+            <label for="minLikes"><b>Min Likes:</b></label>
+            <input type="number" id="minLikes" formControlName="minLikes">
+        </div>
+    
+        <div>
+            <label for="maxLikes"><b>Max Likes:</b></label>
+            <input type="number" id="maxLikes" formControlName="maxLikes">
+        </div>
+    
+        <div>
+            <label for="minComments"><b>Min Comments:</b></label>
+            <input type="number" id="minComments" formControlName="minComments">
+        </div>
+    
+        <div>
+            <label for="maxComments"><b>Max Comments:</b></label>
+            <input type="number" id="maxComments" formControlName="maxComments">
+        </div>
+
+        <div>
+            <label for="commentContent"><b>Comment Content:</b></label>
+            <input type="text" id="commentContent" formControlName="commentContent">
+        </div>
+  
+        <div>
+            <label for="operator"><b>Result must include all parameters:</b></label>
+            <select id="operator" formControlName="operator">
+                <option value="OR" selected>No</option>
+                <option value="AND">Yes</option>
+            </select>
+        </div>
+  
+        <button type="submit" [disabled]="!form.valid">Search</button>
+    </form>
+</div>  
+
+<h2 id="postSearchHeading">Search for posts to see results</h2>
+
+<div class="card" *ngFor="let postIndex of postIndexes">
+    <h1>{{postIndex.title}}</h1>
+    <br>
+    <p>{{postIndex.fullContent}}</p>
+    <button class="show-btn" [routerLink]="['/posts', postIndex.databaseId]">View Post</button>
+    <div class="card" *ngFor="let highlight of getHighlightsForIndex(postIndex) | keyvalue">
+        <h3>Parameter found in {{highlight.key}}</h3>
+        <div *ngFor="let instance of highlight.value">
+            <p [innerHTML]="parseAsHTML(instance)"></p>
+            <br>
+            <p *ngIf="highlight.value.length > 1">...</p>
+        </div>
+    </div>
+</div>

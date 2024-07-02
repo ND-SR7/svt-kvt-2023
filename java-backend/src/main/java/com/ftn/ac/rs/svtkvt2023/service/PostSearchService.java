@@ -6,5 +6,5 @@ import java.util.Map;
 public interface PostSearchService {
 
     List<Map<String, Object>> searchPosts(String title, String fullContent, String fileContent, Long minLikes, Long maxLikes,
-                                          Long minComments, Long maxComments, String commentContent, String phrase, String operator);
+                                          Long minComments, Long maxComments, String commentContent, String operator);
 }

@@ -314,10 +314,9 @@ public class PostController {
                                                   @RequestParam(required = false) Long minComments,
                                                   @RequestParam(required = false) Long maxComments,
                                                   @RequestParam(required = false) String commentContent,
-                                                  @RequestParam(required = false) String phrase,
                                                   @RequestParam(required = false, defaultValue = "OR") String operator) {
         return postSearchService.searchPosts(title, fullContent, fileContent, minLikes, maxLikes, minComments, maxComments,
-                commentContent, phrase, operator);
+                commentContent, operator);
     }
 
     private User getUserFromToken(String token) {

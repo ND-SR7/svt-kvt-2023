@@ -1,0 +1,18 @@
+.postForm {
+    width: 450px;
+    margin: 50px auto;
+
+    background-color:lightgray;
+    color: black;
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    text-align: center;
+}
+@media (max-width: 350px) {
+    .myForm {
+      min-width: 90%;
+    }
+}
