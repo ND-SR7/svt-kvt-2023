@@ -1,7 +1,8 @@
-<div style="display: block ruby;">
-    <h3 style="padding: 5px;">Sort By Date:</h3>
+<div class="block">
+    <h3 class="padded">Sort By Date:</h3>
     <button (click)="sortPosts('asc')">Ascending</button>
     <button (click)="sortPosts('desc')">Descending</button>
+    <button class="show-btn float-right" [routerLink]="['/search/posts']">Search Posts</button>
 </div>
 <div class="card" *ngFor="let post of posts">
     <h1 *ngIf="users.get(post.postedByUserId)">{{users.get(post.postedByUserId).displayName || users.get(post.postedByUserId).username}}</h1>

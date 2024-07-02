@@ -1,8 +1,9 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Group } from '../model/group.model';
 import { GroupRequest } from '../model/groupRequest.model';
+import { Hit } from '../model/hit.model';
 
 @Injectable({
   providedIn: 'root'
@@ -96,5 +97,14 @@ export class GroupService {
 
   downloadFile(filename: string): Observable<Blob> {
     return this.http.get('api/groups/file/' + filename, {headers: this.headers, responseType: 'blob'});
+  }
+
+  searchGroups(params: Map<string, any>): Observable<Hit[]> {
+    let queryParams = new HttpParams();
+    params.forEach((value, key) => {
+      queryParams = queryParams.set(key, value);
+    });
+
+    return this.http.get('api/groups/search', {headers: this.headers, params: queryParams}) as Observable<Hit[]>;
   }
 }

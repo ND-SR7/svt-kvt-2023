@@ -26,7 +26,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
 
     @Override
     public List<Map<String, Object>> searchGroups(String name, String description, String fileContent, Long minPosts, Long maxPosts,
-                                                  Double minLikes, Double maxLikes, String phrase, String operator) {
+                                                  Double minLikes, Double maxLikes, String operator) {
         if (name == null && description == null && fileContent == null
                 && minPosts == null && maxPosts == null && minLikes == null && maxLikes == null) {
             return Collections.emptyList();
@@ -50,9 +50,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
                         else b.should(sb -> sb.match(m -> m.field("name")
                                 .fuzziness(Fuzziness.ONE.asString()).query(name)));
 
-                        if (useAnd && phrase != null) b.must(sb -> sb.matchPhrase(p -> p.field("name")
-                                .slop(1).query(name)));
-                        else if (phrase != null) b.should(sb -> sb.matchPhrase(p -> p.field("name")
+                        b.should(sb -> sb.matchPhrase(p -> p.field("name")
                                 .slop(1).query(name)));
                     }
 
@@ -62,9 +60,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
                         else b.should(sb -> sb.match(m -> m.field("description")
                                 .fuzziness(Fuzziness.ONE.asString()).query(description)));
 
-                        if (useAnd && phrase != null) b.must(sb -> sb.matchPhrase(p -> p.field("description")
-                                .slop(1).query(description)));
-                        else if (phrase != null) b.should(sb -> sb.matchPhrase(p -> p.field("description")
+                        b.should(sb -> sb.matchPhrase(p -> p.field("description")
                                 .slop(1).query(description)));
                     }
 
@@ -74,9 +70,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
                         else b.should(sb -> sb.match(m -> m.field("file_content")
                                 .fuzziness(Fuzziness.ONE.asString()).query(fileContent)));
 
-                        if (useAnd && phrase != null) b.must(sb -> sb.matchPhrase(p -> p.field("file_content")
-                                .slop(1).query(fileContent)));
-                        else if (phrase != null) b.should(sb -> sb.matchPhrase(p -> p.field("file_content")
+                        b.should(sb -> sb.matchPhrase(p -> p.field("file_content")
                                 .slop(1).query(fileContent)));
                     }
 

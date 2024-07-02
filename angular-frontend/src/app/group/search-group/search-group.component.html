@@ -1,0 +1,68 @@
+<div class="postForm">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div>
+            <label for="name"><b>Name:</b></label>
+            <input type="text" id="name" formControlName="name">
+        </div>
+    
+        <div>
+            <label for="description"><b>Description:</b></label>
+            <input type="text" id="description" formControlName="description">
+        </div>
+    
+        <div>
+            <label for="fileContent"><b>File Content:</b></label>
+            <input type="text" id="fileContent" formControlName="fileContent">
+        </div>
+    
+        <div>
+            <label for="minPosts"><b>Min Posts:</b></label>
+            <input type="number" id="minPosts" formControlName="minPosts">
+        </div>
+    
+        <div>
+            <label for="maxPosts"><b>Max Posts:</b></label>
+            <input type="number" id="maxPosts" formControlName="maxPosts">
+        </div>
+    
+        <div>
+            <label for="minLikes"><b>Min Likes:</b></label>
+            <input type="number" id="minLikes" formControlName="minLikes">
+        </div>
+    
+        <div>
+            <label for="maxLikes"><b>Max Likes:</b></label>
+            <input type="number" id="maxLikes" formControlName="maxLikes">
+        </div>
+  
+        <div>
+            <label for="operator"><b>Result must include all parameters:</b></label>
+            <select id="operator" formControlName="operator">
+                <option value="OR" selected>No</option>
+                <option value="AND">Yes</option>
+            </select>
+        </div>
+  
+        <button type="submit" [disabled]="!form.valid">Search</button>
+    </form>
+</div>  
+
+<h2 id="groupSearchHeading">Search for groups to see results</h2>
+
+<div class="card" *ngFor="let groupIndex of groupIndexes">
+    <h1>{{groupIndex.name}}</h1>
+    <br>
+    <p>Number of posts: {{groupIndex.numberOfPosts}}</p>
+    <p>Average likes: {{groupIndex.averageLikes}}</p>
+    <button *ngIf="canAccess(groupIndex.databaseId) || isAdmin" class="show-btn" [routerLink]="['/groups', groupIndex.databaseId]">View Group</button>
+    <button *ngIf="canSendRequest(groupIndex.databaseId)" class="show-btn" (click)="sendRequest(groupIndex.databaseId)">Send Request to join</button>
+    <button *ngIf="!canSendRequest(groupIndex.databaseId) && !canAccess(groupIndex.databaseId)" class="show-btn" disabled>You already sent a request</button>
+    <div class="card" *ngFor="let highlight of getHighlightsForIndex(groupIndex) | keyvalue">
+        <h3>Parameter found in {{highlight.key}}</h3>
+        <div *ngFor="let instance of highlight.value">
+            <p [innerHTML]="parseAsHTML(instance)"></p>
+            <br>
+            <p *ngIf="highlight.value.length > 1">...</p>
+        </div>
+    </div>
+</div>

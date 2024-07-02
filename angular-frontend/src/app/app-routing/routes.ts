@@ -14,6 +14,8 @@ import { EditUserComponent } from '../user/edit-user/edit-user.component';
 import { FriendsComponent } from '../user/friends/friends.component';
 import { FriendRequestsComponent } from '../user/friend-requests/friend-requests.component';
 import { GroupRequestsComponent } from '../group/group-requests/group-requests.component';
+import { SearchPostComponent } from '../post/search-post/search-post.component';
+import { SearchGroupComponent } from '../group/search-group/search-group.component';
 
 export const routes :Routes = [
 	{path: 'posts', component: PostListComponent, title: 'Social Network'},
@@ -33,5 +35,7 @@ export const routes :Routes = [
 	{path: 'users/login', component: LoginComponent, title: 'Social Network'},
 	{path: 'users/register', component: RegisterComponent, title: 'Social Network'},
 	{path: 'users/change-password', component: ChangePasswordComponent, title: 'Social Network'},
+	{path: 'search/posts', component: SearchPostComponent, title: 'Social Network'},
+	{path: 'search/groups', component: SearchGroupComponent, title: 'Social Network'},
 	{path: '', pathMatch: 'full', redirectTo: 'users/login', title: 'Social Network'}
 ];

@@ -1,3 +1,7 @@
+<div class="block">
+    <h3 class="padded">​</h3>
+    <button class="show-btn float-right" [routerLink]="['/search/groups']">Search Groups</button>
+</div>
 <div class="card" *ngFor="let group of groups">
     <h1>{{group.name}}</h1>
     <h3>{{group.creationDate | date: 'MMMM d, y, HH:mm'}}</h3>

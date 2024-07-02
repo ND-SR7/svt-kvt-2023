@@ -22,6 +22,8 @@ import { EditUserComponent } from './user/edit-user/edit-user.component';
 import { FriendRequestsComponent } from './user/friend-requests/friend-requests.component';
 import { GroupRequestsComponent } from './group/group-requests/group-requests.component';
 import { ToastrModule } from 'ngx-toastr';
+import { SearchPostComponent } from './post/search-post/search-post.component';
+import { SearchGroupComponent } from './group/search-group/search-group.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { ToastrModule } from 'ngx-toastr';
     EditUserComponent,
     FriendRequestsComponent,
     GroupRequestsComponent,
+    SearchPostComponent,
+    SearchGroupComponent,
   ],
   imports: [
     BrowserModule,

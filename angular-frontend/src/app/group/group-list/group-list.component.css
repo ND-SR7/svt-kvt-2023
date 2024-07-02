@@ -1,0 +1,12 @@
+.float-right {
+    float: right;
+}
+
+.block {
+    display: block ruby;
+    margin-bottom: 10px;
+}
+
+.padded {
+    padding: 5px;
+}

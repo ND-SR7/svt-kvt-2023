@@ -270,8 +270,7 @@ public class GroupController {
                                                   @RequestParam(required = false) Long maxPosts,
                                                   @RequestParam(required = false) Double minLikes,
                                                   @RequestParam(required = false) Double maxLikes,
-                                                  @RequestParam(required = false) String phrase,
                                                   @RequestParam(required = false, defaultValue = "OR") String operator) {
-        return groupSearchService.searchGroups(name, description, fileContent, minPosts, maxPosts, minLikes, maxLikes, phrase, operator);
+        return groupSearchService.searchGroups(name, description, fileContent, minPosts, maxPosts, minLikes, maxLikes, operator);
     }
 }
